@@ -18,7 +18,7 @@ class Database {
     }
 
     public static function Close(): bool {
-        return static::$mysqli->close();
+        return static::$mysqli ? static::$mysqli->close() : true;
     }
 
     public static function InsertId(): int {

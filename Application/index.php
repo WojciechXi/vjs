@@ -2,7 +2,6 @@
 define('ApplicationPath', realpath(__DIR__));
 define('ApplicationUrl', RootUrl . '/Application');
 
-/*
 $application = new Application();
 
 $application->Init();
@@ -17,7 +16,7 @@ $application->RegisterItem('Scripts', 'Utility', '/Assets/Scripts/script.Utility
 $application->RegisterItem('Scripts', 'Theme', '/Assets/Scripts/script.Theme.js');
 $application->RegisterItem('Scripts', 'App', '/Assets/Scripts/script.App.js');
 
-$application->Connect(data['host'], data['user'], data['password'], data['database']);
+// $application->Connect(data['host'], data['user'], data['password'], data['database']);
 
 $application->Load();
 
@@ -26,5 +25,4 @@ $application->RegisterRoutes($application->GetPath('Routes'));
 $application->Loaded();
 $application->Process();
 
-$application->Close();
-*/
+// $application->Close();
