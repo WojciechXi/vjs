@@ -1,0 +1,54 @@
+half-page {
+    background-color: var(--pageBackground);
+    color: var(--pageColor);
+    display: flex;
+    flex-direction: row;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+half-page>main {
+    background-color: var(--pageBackground);
+    color: var(--pageColor);
+    display: flex;
+    flex-direction: column;
+    width: 20rem;
+    height: 100%;
+    overflow: auto;
+}
+
+half-page>layout {
+    background-color: var(--pageBackground);
+    color: var(--pageColor);
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    position: relative;
+    width: 0%;
+    height: 100%;
+    overflow: auto;
+}
+
+@media(max-width:1080px) {
+
+    half-page>main {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        z-index: 0;
+    }
+
+    half-page>layout {
+        position: absolute;
+        left: 0px;
+        top: 0px;
+        width: 100%;
+        z-index: 1;
+    }
+
+}

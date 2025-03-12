@@ -1,0 +1,15 @@
+@keyframes spin {
+    0% {
+        transform: rotateZ(0deg);
+    }
+
+    100% {
+        transform: rotateZ(360deg);
+    }
+}
+
+[spin="true"] {
+    animation-name: spin;
+    animation-duration: 1s;
+    animation-iteration-count: infinite;
+}

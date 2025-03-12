@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /Uploads/
+Disallow: /Application/
+Disallow: /System/

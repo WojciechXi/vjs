@@ -1,0 +1,9 @@
+textarea {
+    background-color: var(--textareaBackground);
+    color: var(--textareaColor);
+
+    padding: 0.5rem 1rem;
+
+    flex-grow: 1;
+    resize: vertical;
+}

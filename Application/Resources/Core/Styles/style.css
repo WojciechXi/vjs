@@ -1,0 +1,36 @@
+* {
+    box-sizing: border-box;
+
+    background: initial;
+    color: inherit;
+    border: initial;
+    outline: initial;
+
+    cursor: inherit;
+
+    margin: initial;
+    padding: initial;
+
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+
+    text-align: inherit;
+}
+
+:root {
+    font-size: 18px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}

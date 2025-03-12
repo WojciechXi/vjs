@@ -1,0 +1,22 @@
+app[night="true"] {
+    --pageBackground: #333333;
+    --pageColor: #ffffff;
+
+    --buttonBackground: initial;
+    --buttonColor: inherit;
+
+    --buttonBackgroundHover: #000000;
+    --buttonColorHover: var(--buttonColor);
+
+    --inputBackground: #000000;
+    --inputColor: #ffffff;
+
+    --selectBackground: var(--inputBackground);
+    --selectColor: var(--inputColor);
+
+    --textareaBackground: var(--inputBackground);
+    --textareaColor: var(--inputColor);
+
+    --editableBackground: var(--inputBackground);
+    --editableColor: var(--inputColor);
+}

@@ -1,0 +1,7 @@
+img {
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}

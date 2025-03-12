@@ -1,0 +1,277 @@
+:root {
+    font-size: 18px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+
+    --hrColor: #7f7f7f;
+
+    --pageBackground: #ffffff;
+    --pageColor: #000000;
+
+    --buttonBackground: initial;
+    --buttonColor: inherit;
+
+    --buttonBackgroundHover: #f5f5f5;
+    --buttonColorHover: #333333;
+
+    --inputBackground: #f5f5f5;
+    --inputColor: #000;
+
+    --outputBackground: initial;
+    --outputColor: #ff7700;
+
+    --selectBackground: var(--inputBackground);
+    --selectColor: var(--inputColor);
+
+    --textareaBackground: var(--inputBackground);
+    --textareaColor: var(--inputColor);
+
+    --editableBackground: var(--inputBackground);
+    --editableColor: var(--inputColor);
+}
+
+app {
+    display: block;
+    position: relative;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+}
+
+button {
+    background-color: var(--buttonBackground);
+    color: var(--buttonColor);
+
+    cursor: pointer;
+
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+button:hover {
+    background-color: var(--buttonBackgroundHover);
+    color: var(--buttonColorHover);
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    background-color: var(--inputBackground);
+    color: var(--inputColor);
+    display: block;
+    border-radius: 1rem;
+    line-height: 1;
+    position: relative;
+    padding: 0px !important;
+    min-width: 2rem;
+    max-width: 2rem;
+    min-height: 1rem;
+    max-height: 1rem;
+}
+
+input[type="checkbox"]::after {
+    content: '';
+    display: block;
+    background-color: var(--inputColor);
+    color: var(--inputBackground);
+    border-radius: 1rem;
+    position: absolute;
+    left: 2px;
+    top: 2px;
+    width: calc(1rem - 4px);
+    height: calc(1rem - 4px);
+    transition: 0.2s left;
+}
+
+input[type="checkbox"]:checked {
+    background-color: var(--inputColor);
+    color: var(--inputBackground);
+}
+
+input[type="checkbox"]:checked::after {
+    left: calc(1rem + 2px);
+    background-color: var(--inputBackground);
+    color: var(--inputColor);
+}
+
+column {
+    display: flex;
+    flex-direction: column;
+}
+
+editable {
+    background-color: var(--editableBackground);
+    color: var(--editableColor);
+
+    display: block;
+
+    padding: 0.5rem 1rem;
+
+    flex-grow: 1;
+}
+
+form {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+grid {
+    display: grid;
+}
+
+hr {
+    border-top: 1px solid var(--hrColor);
+    display: block;
+    flex-grow: 1;
+}
+
+img {
+    object-fit: contain;
+    object-position: center;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+}
+
+input {
+    background-color: var(--inputBackground);
+    color: var(--inputColor);
+
+    padding: 0.5rem 1rem;
+
+    flex-grow: 1;
+}
+
+label {
+    display: flex;
+}
+
+layout {
+    display: flex;
+    flex-direction: column;
+}
+
+ul,
+ol {
+    padding-left: 1rem;
+}
+
+output {
+    background-color: var(--outputBackground);
+    color: var(--outputColor);
+
+    text-align: center;
+
+    padding: 0.5rem 1rem;
+
+    flex-grow: 1;
+}
+
+page {
+    background-color: var(--pageBackground);
+    color: var(--pageColor);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    position: absolute;
+    left: 0px;
+    top: 0px;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    z-index: 1;
+}
+
+page>main {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+row {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: wrap;
+}
+
+select {
+    background-color: var(--selectBackground);
+    color: var(--selectColor);
+
+    padding: 0.5rem 1rem;
+
+    flex-grow: 1;
+    width: 8rem;
+}
+
+table {
+    table-layout: fixed;
+    width: 100%;
+}
+
+text {
+    display: block;
+}
+
+textarea {
+    background-color: var(--textareaBackground);
+    color: var(--textareaColor);
+
+    padding: 0.5rem 1rem;
+
+    flex-grow: 1;
+    resize: vertical;
+}
+
+th {
+    text-align: center;
+    font-size: 0.6em;
+}
+
+view {
+    display: block;
+}
+
+[disabled="true"] {
+    user-select: none;
+    pointer-events: none;
+    opacity: 0.5;
+}
+
+* {
+    box-sizing: border-box;
+
+    background: initial;
+    color: inherit;
+    border: initial;
+    outline: initial;
+
+    cursor: inherit;
+
+    margin: initial;
+    padding: initial;
+
+    font-size: inherit;
+    font-family: inherit;
+    line-height: inherit;
+
+    text-align: inherit;
+}
+
+:root {
+    font-size: 18px;
+    font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+}
+
+html {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}
+
+body {
+    width: 100%;
+    height: 100%;
+    overflow: hidden;
+}

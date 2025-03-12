@@ -1,0 +1,55 @@
+app[night="true"] {
+    --pageBackground: #000000;
+    --pageColor: #ffffff;
+
+    --buttonBackground: initial;
+    --buttonColor: inherit;
+
+    --buttonBackgroundHover: #1f1f1f;
+    --buttonColorHover: var(--buttonColor);
+
+    --inputBackground: #1f1f1f;
+    --inputColor: #ffffff;
+
+    --selectBackground: var(--inputBackground);
+    --selectColor: var(--inputColor);
+
+    --textareaBackground: var(--inputBackground);
+    --textareaColor: var(--inputColor);
+
+    --editableBackground: var(--inputBackground);
+    --editableColor: var(--inputColor);
+}
+
+button {
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+}
+
+editable {
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+
+
+
+input {
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+
+label {
+    padding: 0.5rem 1rem;
+    gap: 1rem;
+}
+
+select {
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+
+textarea {
+    border-radius: 1.5rem;
+    padding: 0.5rem 1rem;
+}
+
