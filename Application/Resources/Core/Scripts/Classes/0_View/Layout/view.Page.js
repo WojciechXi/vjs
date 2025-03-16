@@ -40,7 +40,7 @@ class Page extends Layout {
 
         new Binding(object, 'Content', function (sender, data) {
             data.value.forEach(function (child) {
-                child.Parent = object.ContentView;
+                if (child) child.Parent = object.ContentView;
             });
         });
     }
