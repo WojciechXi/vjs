@@ -95,7 +95,8 @@ class ConfirmPage extends Page {
                             new Row({
                                 justifyContent: 'flex-end',
                                 children: [
-                                    new Button({
+                                    new Link({
+                                        classes: ['button'],
                                         children: [
                                             new Text({
                                                 text: 'Anuluj',
@@ -106,7 +107,8 @@ class ConfirmPage extends Page {
                                             object.OnCancel.Invoke(object, event);
                                         },
                                     }),
-                                    new Button({
+                                    new Link({
+                                        classes: ['button'],
                                         children: [
                                             new Text({
                                                 text: 'Potwierdź',

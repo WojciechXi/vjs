@@ -20,6 +20,8 @@ class View {
         new Property(object, 'Classes', data.classes ?? [], object.OnPropertyChanged);
         new Property(object, 'Name', data.name ?? null, object.OnPropertyChanged);
         new Property(object, 'Tooltip', data.tooltip ?? null, object.OnPropertyChanged);
+        new Property(object, 'CanSelect', data.canSelect ?? false, object.OnPropertyChanged);
+        new Property(object, 'IsSelected', data.isSelected ?? false, object.OnPropertyChanged);
         new Property(object, 'Disabled', data.disabled ?? null, object.OnPropertyChanged);
         new Property(object, 'Multiple', data.multiple ?? null, object.OnPropertyChanged);
 
@@ -103,6 +105,8 @@ class View {
         if (data.onFocus) object.OnFocus.Listen(data.onFocus);
         if (data.onBlur) object.OnBlur.Listen(data.onBlur);
 
+        if (data.onMouseWheel) object.OnMouseWheel.Listen(data.onMouseWheel);
+
         if (data.onMouseDown) object.OnMouseDown.Listen(data.onMouseDown);
         if (data.onMouseUp) object.OnMouseUp.Listen(data.onMouseUp);
         if (data.onMouseEnter) object.OnMouseEnter.Listen(data.onMouseEnter);
@@ -125,6 +129,14 @@ class View {
         if (data.onKeyUp) object.OnKeyUp.Listen(data.onKeyUp);
 
         if (data.onRemove) object.OnRemove.Listen(data.onRemove);
+
+        object.OnMouseDown.Listen(function (sender, event) {
+            if (event.ctrlKey && object.CanSelect) {
+                event.preventDefault();
+                event.stopPropagation();
+                object.IsSelected = !object.IsSelected;
+            }
+        });
     }
 
     Bind() {
@@ -152,6 +164,14 @@ class View {
         });
         new Binding(object, 'Multiple', function (sender, data) {
             object.Attr('multiple', object.Multiple);
+        });
+        new Binding(object, 'CanSelect', function (sender, data) {
+            if (object.CanSelect) object.Attr('selectable', true);
+            else object.Attr('selectable', null);
+        });
+        new Binding(object, 'IsSelected', function (sender, data) {
+            if (object.IsSelected) object.Attr('is-selected', true);
+            else object.Attr('is-selected', null);
         });
 
         new Binding(object, 'BackgroundColor', function (sender, data) {
@@ -401,6 +421,9 @@ class View {
                 object.OnBlur.Invoke(object, event);
             },
             // Mouse
+            wheel: function (event) {
+                object.OnMouseWheel.Invoke(object, event);
+            },
             mousedown: function (event) {
                 object.OnMouseDown.Invoke(object, event);
             },
@@ -611,6 +634,11 @@ class View {
     }
 
     //Mouse
+
+    get OnMouseWheel() {
+        let object = this;
+        return object.onMouseWheel ?? (object.onMouseWheel = new Callback());
+    }
 
     get OnMouseDown() {
         let object = this;

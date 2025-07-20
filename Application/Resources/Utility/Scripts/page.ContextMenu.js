@@ -38,7 +38,8 @@ class ContextMenu extends Page {
                     new Binding(object, 'Options', function (sender, data) {
                         let children = [];
                         Object.keys(object.Options).forEach(function (key) {
-                            children.push(new Button({
+                            children.push(new Link({
+                                classes: ['button'],
                                 children: [
                                     new Text({
                                         text: key,

@@ -11,11 +11,19 @@ class Layout extends View {
 
             if (object.ChildrenLoop) {
                 let newChildren = [];
-                children.forEach(function (child, index) {
-                    newChildren[index] = object.ChildrenLoop(child);
-                });
+                if (Array.isArray(children)) {
+                    children.forEach(function (child, index) {
+                        newChildren[index] = object.ChildrenLoop(child, index);
+                    });
+                } else if (children instanceof Object) {
+                    Object.keys(children).forEach(function (key, index) {
+                        let value = children[key];
+                        newChildren[index] = object.ChildrenLoop(value, key);
+                    });
+                }
                 return newChildren;
             }
+
             return children;
         });
     }
@@ -27,6 +35,7 @@ class Layout extends View {
         new Binding(object, 'Direction', function (sender, data) {
             object.Css('flex-direction', data.value);
         });
+
         new Binding(object, 'Children', function (sender, data) {
             object.RenderChildren();
         });

@@ -48,7 +48,8 @@ class TitlePage extends Page {
                         }),
                     ],
                 }),
-                new Button({
+                new Link({
+                    classes: ['button'],
                     onClick: function (sender, event) {
                         object.Pull();
                     },
