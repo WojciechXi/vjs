@@ -14,6 +14,7 @@ class Response {
 
     private string $content = '';
     private string $file = '';
+    private ?string $fileName = null;
 
     public function ContentType(string $contentType): self {
         $this->contentType = $contentType;
@@ -43,6 +44,10 @@ class Response {
         return $this->ContentType('text/xml')->Content($content);
     }
 
+    public function Print(mixed $content): self {
+        return $this->ContentType('text/html')->Content('<body style="white-space: pre-wrap;">' . print_r($content, true) . '</body>');
+    }
+
     public function Html(string $content): self {
         return $this->ContentType('text/html')->Content($content);
     }
@@ -55,27 +60,29 @@ class Response {
         return $this->ContentType('text/javascript')->Content($content);
     }
 
-    public function File(string $path): self {
+    public function File(string $path, ?string $fileName = null): self {
         $mimeType = mime_content_type($path);
         $this->ContentType($mimeType);
         $this->file = $path;
+        $this->fileName = $fileName;
         return $this;
     }
 
     public function Close() {
         http_response_code($this->responseCode);
         header("Content-type: {$this->contentType}");
-        header("Response-type: {$this->contentType}");
-        header('Access-Control-Allow-Origin: *');
         if ($this->redirect) header("Location: {$this->redirect}");
         if ($this->file) {
             $pathInfo = pathinfo($this->file);
-            $file = "{$pathInfo['filename']}.{$pathInfo['extension']}";
+            $fileName = $this->fileName ?? "{$pathInfo['filename']}.{$pathInfo['extension']}";
             header($_SERVER["SERVER_PROTOCOL"] . " 200 OK");
-            header("Cache-Control: public");
-            header("Content-Transfer-Encoding: Binary");
+            header("Content-Disposition: inline; filename={$fileName}");
             header("Content-Length:" . filesize($this->file));
-            header("Content-Disposition: inline; filename={$file}");
+            header('Cache-Control: public, max-age=604800, immutable');
+            header('Content-Transfer-Encoding: Binary');
+            header('Content-Description: File Transfer');
+            header('Expires: 0');
+            header('Pragma: public');
             die(readfile($this->file));
         } else {
             die($this->content);

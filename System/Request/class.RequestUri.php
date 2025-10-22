@@ -38,17 +38,16 @@ class RequestUri {
                 $scheme = explode('-', $scheme);
                 foreach ($scheme as $index => $s) {
                     if ($s == '-') continue;
+                    $element[$index] = strval($element[$index]);
 
                     $s = explode(':', $s);
                     $type = $s[1];
 
                     switch ($type) {
                         case 'int':
-                            if (!filter_var($element[$index], FILTER_VALIDATE_INT)) return false;
-                            break;
                         case 'float':
-                            $element[$index] = floatval($element[$index]);
-                            if (!filter_var($element[$index], FILTER_VALIDATE_FLOAT)) return false;
+                            if ($element[$index] == '0' || $element[$index] == 0 || !$element[$index]) break;
+                            if (!ctype_digit($element[$index])) return false;
                             break;
                     }
                 }

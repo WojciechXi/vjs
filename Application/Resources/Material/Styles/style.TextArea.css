@@ -1,0 +1,34 @@
+text-area-material {
+    background-color: lightgray;
+    border-bottom: 1px solid gray;
+    font-size: 1;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    position: relative;
+}
+
+text-area-material {
+    position: relative;
+    align-items: center;
+}
+
+text-area-material>textarea {
+    flex-grow: 1;
+    line-height: 1;
+    padding: 0.75rem;
+}
+
+text-area-material>text {
+    pointer-events: none;
+    opacity: 0.5;
+    position: absolute;
+    left: 0.75rem;
+    top: 0.75rem;
+    transition: 0.1s font-size, 0.1s top;
+}
+
+text-area-material>textarea:not(:placeholder-shown)+text {
+    font-size: 0.5em;
+    top: 0.25rem;
+}

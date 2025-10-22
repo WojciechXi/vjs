@@ -3,6 +3,8 @@ class Model implements JsonSerializable {
 
     //Global
 
+    private static array $cache = [];
+
     public static string $database = '';
     public static string $table = '';
     protected static string $primaryKey = '';
@@ -40,7 +42,16 @@ class Model implements JsonSerializable {
         $query = static::Query();
         $query->Join($join, $joinOn);
         $query->Where($where, $values);
-        return static::ObjectQuery($query);
+
+        $object = static::ObjectQuery($query);
+
+        if ($object) {
+            $primaryKey = static::$primaryKey;
+            if (!array_key_exists(static::class, static::$cache)) static::$cache[static::class] = [];
+            static::$cache[static::class][$object->$primaryKey] = $object;
+        }
+
+        return $object;
     }
 
     public static function ObjectsQuery(DatabaseQuery $databaseQuery): array {
@@ -57,7 +68,13 @@ class Model implements JsonSerializable {
         $query->Limit($limit);
         $query->Offset($offset);
         $query->OrderBy($orderBy);
-        return static::ObjectsQuery($query);
+        $objects = static::ObjectsQuery($query);
+
+        $primaryKey = static::$primaryKey;
+        if (!array_key_exists(static::class, static::$cache)) static::$cache[static::class] = [];
+        foreach ($objects as $object) static::$cache[static::class][$object->$primaryKey] = $object;
+
+        return $objects;
     }
 
     public static function DeleteMany(string $where, int $limit = 0, int $offset = 0, array $values = []): bool {
@@ -99,13 +116,13 @@ class Model implements JsonSerializable {
 
     public static function ById(string|null $primaryValue): ?static {
         if (!static::$table) return null;
-        if (!$primaryValue) return null;
         return static::Object(Database::Equals(static::$primaryKey, $primaryValue));
     }
 
     public static function Many(string $column, string|null $primaryValue, string $orderBy = ''): array {
         if (!static::$table) return [];
-        return static::Objects(Database::Equals($column, $primaryValue), 0, 0, $orderBy);
+        $objects = static::Objects(Database::Equals($column, $primaryValue), 0, 0, $orderBy);
+        return $objects;
     }
 
     //Local
@@ -138,6 +155,10 @@ class Model implements JsonSerializable {
         if ($success) $this->SetData($this->GetData());
         Hook::Invoke([static::class, 'Update'], ['model' => $this, 'success' => $success]);
         $this->OnUpdate($success);
+
+        if (!array_key_exists(static::class, static::$cache)) static::$cache[static::class] = [];
+        static::$cache[static::class][$this->$primaryKey] = $this;
+
         return $success;
     }
 
@@ -155,7 +176,7 @@ class Model implements JsonSerializable {
     }
 
     public function Duplicate(): ?static {
-        if (!static::$table) return false;
+        if (!static::$table) return null;
         $data = (array)$this;
         unset($data[static::$primaryKey]);
         $data = $this->BeforeDuplicate($data);
@@ -189,10 +210,7 @@ class Model implements JsonSerializable {
     }
 
     public function ToJson() {
-        Hook::Invoke([static::class, 'Json'], ['model' => $this]);
-        $data = (object)((array)$this);
-        $data->class = static::class;
-        return $data;
+        return (object)((array)$this);
     }
 
     public function jsonSerialize(): mixed {

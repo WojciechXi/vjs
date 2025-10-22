@@ -41,6 +41,8 @@ class Plugin extends Load {
         }
     }
 
+    protected string $version = '1.0.0.0';
+
     protected ?Application $application = null;
     protected ?Request $request = null;
     protected ?Route $route = null;

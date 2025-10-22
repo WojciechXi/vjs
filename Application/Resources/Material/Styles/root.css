@@ -1,0 +1,10 @@
+:root {
+    --input-bg: hsl(298, 63%, 31%);
+    --input-txt: white;
+    --button-bg: hsl(298, 63%, 31%);
+    --button-txt: white;
+    --button-grey-bg: hsl(0, 0%, 90%);
+    --button-grey-txt: black;
+    --button-light-bg: hsl(298, 63%, 75%);
+    --button-light-txt: black;
+}

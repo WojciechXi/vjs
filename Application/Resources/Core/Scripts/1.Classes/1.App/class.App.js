@@ -8,12 +8,19 @@ class App extends Layout {
         new Property(object, 'Title', data.title ?? 'App', object.OnPropertyChanged);
         new Property(object, 'Description', data.description ?? '', object.OnPropertyChanged);
 
-        window.addEventListener('load', function (event) {
-            document.body.appendChild(object.Element);
+        if (data.body) {
+            data.body.appendChild(object.Element);
 
             object.Loaded();
             object.OnLoad.Invoke(object, event);
-        });
+        } else {
+            window.addEventListener('load', function (event) {
+                document.body.appendChild(object.Element);
+
+                object.Loaded();
+                object.OnLoad.Invoke(object, event);
+            });
+        }
 
         window.addEventListener('resize', function (event) {
             object.OnResize.Invoke(object, event);

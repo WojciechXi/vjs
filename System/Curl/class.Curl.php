@@ -12,15 +12,16 @@ class Curl {
 
     private CurlHandle|false $curlHandle = false;
 
-    public function Post(array|string $post, bool $autoClose = true): string|bool {
+    public function Post(string $post, bool $autoClose = true): string|bool {
         curl_setopt($this->curlHandle, CURLOPT_POST, true);
         curl_setopt($this->curlHandle, CURLOPT_POSTFIELDS, $post);
+        curl_setopt($this->curlHandle, CURLOPT_CUSTOMREQUEST, 'POST');
         $response = curl_exec($this->curlHandle);
         if ($autoClose) $this->Close();
         return $response;
     }
 
-    public function Execute(bool $autoClose = true): mixed {
+    public function Get(bool $autoClose = true): string|bool {
         $response = curl_exec($this->curlHandle);
         if ($autoClose) $this->Close();
         return $response;
