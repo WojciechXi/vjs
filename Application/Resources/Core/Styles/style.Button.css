@@ -1,15 +1,7 @@
 button {
-    background-color: var(--buttonBackground);
-    color: var(--buttonColor);
-
     cursor: pointer;
-
     display: flex;
     flex-direction: row;
+    flex-wrap: wrap;
     align-items: center;
-}
-
-button:hover {
-    background-color: var(--buttonBackgroundHover);
-    color: var(--buttonColorHover);
 }

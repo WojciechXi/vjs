@@ -1,6 +1,4 @@
 page {
-    background-color: var(--pageBackground);
-    color: var(--pageColor);
     display: flex;
     flex-direction: column;
     align-items: center;

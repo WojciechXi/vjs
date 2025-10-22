@@ -7,13 +7,14 @@ class Img extends View {
         new Property(object, 'Alt', data.alt ?? '', object.OnPropertyChanged);
         new Property(object, 'ObjectFit', data.objectFit ?? '', object.OnPropertyChanged);
         new Property(object, 'ObjectPosition', data.objectPosition ?? '', object.OnPropertyChanged);
+        new Property(object, 'IsLazy', data.isLazy ?? true, object.OnPropertyChanged);
     }
 
     Bind() {
         super.Bind();
         let object = this;
         new Binding(object, 'Source', function (sender, data) {
-            if (object.Source.startsWith('http')) {
+            if (object.IsLazy && object.Source && object.Source.startsWith('http')) {
                 let image = new Image();
                 image.onload = function (event) {
                     object.Attr('src', object.Source);
