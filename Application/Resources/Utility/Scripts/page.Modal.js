@@ -1,13 +1,13 @@
 class ModalPage extends Page {
 
     Init(data = {}) {
+        data.zIndex = data.zIndex ?? 1000;
         super.Init(data);
         let object = this;
 
         object.AlignItems = 'center';
 
         object.Padding = 1;
-        object.ZIndex = 1000;
 
         object.BackgroundColor = 'rgba(0, 0, 0, 0.5)';
         object.ContentView.BackgroundColor = 'var(--pageBackground)';
