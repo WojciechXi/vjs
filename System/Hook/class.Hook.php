@@ -28,7 +28,20 @@ class Hook {
     }
 
     public function InvokeCallbacks(array $pass = []): bool {
-        foreach ($this->callbacks as $callback) call_user_func_array($callback, $pass);
+        $passKeys = array_keys($pass);
+        foreach ($this->callbacks as $callback) {
+            $reflectionFunction = new ReflectionFunction($callback);
+            $reflectionParameters = $reflectionFunction->getParameters();
+
+            $arguments = [];
+            foreach ($reflectionParameters as $reflectionParameter) {
+                $parameterName = $reflectionParameter->getName();
+                if (in_array($parameterName, $passKeys)) $arguments[$parameterName] = $pass[$parameterName];
+                else $arguments[$parameterName] = $reflectionParameter->getDefaultValue();
+            }
+
+            call_user_func_array($callback, $arguments);
+        }
         return true;
     }
 }

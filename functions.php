@@ -96,9 +96,13 @@ function FormDelete(): string {
     return '<input type="hidden" name="REQUEST_METHOD" value="DELETE">';
 }
 
-function TrimObject(object $input): object {
+function TrimObject(object $input, array|object $defaultValues = []): object {
     foreach ($input as $key => $value) {
         if (is_string($value)) $input->$key = trim($value);
+    }
+
+    foreach ($defaultValues as $key => $value) {
+        if (!isset($input->$key)) $input->$key = $value;
     }
 
     return $input;
@@ -120,3 +124,21 @@ function DayOfWeek(string $date): int {
     if (!$dayOfWeek) return 6;
     return $dayOfWeek - 1;
 }
+
+function CommonSubstring(array $array): string {
+    $substr = [];
+
+    $first = $array[0];
+    $firstLength = mb_strlen($first);
+    for ($i = 0; $i < $firstLength; $i++) {
+        $letter = $first[$i];
+
+        foreach ($array as $a) {
+            if ($a[$i] != $letter) return implode('', $substr);
+        }
+
+        $substr[] = $letter;
+    }
+
+    return implode('', $substr);
+};

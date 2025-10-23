@@ -8,10 +8,9 @@ class Storage {
     }
 
     public static function Delete(string $file): bool {
-        if (!static::Exists($file)) return false;
         $uploadsPath = UploadsPath;
         $path = "{$uploadsPath}/{$file}";
-        return unlink($path);
+        return file_exists($path) ? unlink($path) : false;
     }
 
     public static function File(string $key): ?array {

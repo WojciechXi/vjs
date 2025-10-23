@@ -1,7 +1,7 @@
 <?php
 class ScriptCompiler {
 
-    public function __construct(string $path = null, string $saveAs = null, Load $load = null) {
+    public function __construct(?string $path = null, ?string $saveAs = null, ?Load $load = null) {
         if ($path) {
             $scripts = $load->Files($path);
             $this->AddScripts($scripts);

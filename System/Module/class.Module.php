@@ -62,6 +62,9 @@ class Module extends Load {
         $classes = $this->Files($this->GetPath('Classes'));
         foreach ($classes as $class) $this->File($class);
 
+        $functions = $this->Files($this->GetPath('Functions'));
+        foreach ($functions as $function) $this->File($function);
+
         $libraries = $this->Files($this->GetPath('Libraries'));
         foreach ($libraries as $library) $this->File($library);
 

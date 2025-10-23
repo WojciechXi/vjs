@@ -12,6 +12,7 @@ class Application extends Load {
         $this->SetUrl('Config', ApplicationUrl . '/Config');
         $this->SetUrl('Functions', ApplicationUrl . '/Functions');
         $this->SetUrl('Cache', ApplicationUrl . '/Cache');
+        $this->SetUrl('Assets', ApplicationUrl . '/Assets');
         $this->SetUrl('Resources', ApplicationUrl . '/Resources');
         $this->SetUrl('Classes', ApplicationUrl . '/Classes');
         $this->SetUrl('Libraries', ApplicationUrl . '/Libraries');
@@ -20,12 +21,12 @@ class Application extends Load {
         $this->SetUrl('Modules', ApplicationUrl . '/Modules');
         $this->SetUrl('Routes', ApplicationUrl . '/Routes');
         $this->SetUrl('Views', ApplicationUrl . '/Views');
-        $this->SetUrl('Assets', '/Assets');
-        $this->SetUrl('Uploads', '/Uploads');
+        $this->SetUrl('Uploads', RootUrl . '/Uploads');
 
         $this->SetPath('Config', ApplicationPath . '/Config');
         $this->SetPath('Functions', ApplicationPath . '/Functions');
         $this->SetPath('Cache', ApplicationPath . '/Cache');
+        $this->SetPath('Assets', ApplicationPath . '/Assets');
         $this->SetPath('Resources', ApplicationPath . '/Resources');
         $this->SetPath('Classes', ApplicationPath . '/Classes');
         $this->SetPath('Libraries', ApplicationPath . '/Libraries');
@@ -34,7 +35,6 @@ class Application extends Load {
         $this->SetPath('Modules', ApplicationPath . '/Modules');
         $this->SetPath('Routes', ApplicationPath . '/Routes');
         $this->SetPath('Views', ApplicationPath . '/Views');
-        $this->SetPath('Assets', RootPath . '/Assets');
         $this->SetPath('Uploads', RootPath . '/Uploads');
 
         Session::Start();
@@ -79,7 +79,7 @@ class Application extends Load {
         return parent::File($file, $pass, $mergeData);
     }
 
-    public function Init(callable $before = null, callable $after = null) {
+    public function Init(?callable $before = null, ?callable $after = null) {
         $this->config = new Config($this);
 
         if ($before && is_callable($before)) $before($this);
@@ -92,7 +92,7 @@ class Application extends Load {
         if ($after && is_callable($after)) $after($this);
     }
 
-    public function Connect(string $host, string $user, string $password, string $database, callable $before = null, callable $after = null) {
+    public function Connect(string $host, string $user, string $password, string $database, ?callable $before = null, ?callable $after = null) {
         if ($before && is_callable($before)) $before($this);
 
         Database::Connect($host, $user, $password, $database, 'utf8mb4');
@@ -100,7 +100,7 @@ class Application extends Load {
         if ($after && is_callable($after)) $after($this);
     }
 
-    public function Load(callable $before = null, callable $after = null) {
+    public function Load(?callable $before = null, ?callable $after = null) {
         if ($before && is_callable($before)) $before($this);
 
         $functions = $this->Files($this->GetPath('Functions'));
@@ -133,13 +133,13 @@ class Application extends Load {
         if ($after && is_callable($after)) $after($this);
     }
 
-    public function Loaded(callable $before = null, callable $after = null) {
+    public function Loaded(?callable $before = null, ?callable $after = null) {
         if ($before && is_callable($before)) $before($this);
 
         if ($after && is_callable($after)) $after($this);
     }
 
-    public function Process(callable $before = null, callable $after = null) {
+    public function Process(?callable $before = null, ?callable $after = null) {
         if ($before && is_callable($before)) $before($this);
 
         $this->route->Process();
@@ -149,7 +149,7 @@ class Application extends Load {
         Database::Close();
     }
 
-    public function Close(callable $before = null, callable $after = null) {
+    public function Close(?callable $before = null, ?callable $after = null) {
         if ($before && is_callable($before)) $before($this);
 
         $this->response->Close();

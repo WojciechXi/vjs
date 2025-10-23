@@ -3,7 +3,7 @@ define('Https', isset($_SERVER['HTTPS']) && $_SERVER['HTTPS'] == 'on' || $_SERVE
 define('Scheme', Https ? 'https' : 'http');
 
 define('RootPath', realpath(__DIR__));
-define('RootUrl', Scheme . '://' . $_SERVER['SERVER_NAME']);
+define('RootUrl', Scheme . '://' . $_SERVER['HTTP_HOST']);
 
 define('AssetsPath', RootPath . '/Assets');
 define('AssetsUrl', RootUrl . '/Assets');

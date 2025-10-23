@@ -3,6 +3,39 @@ class Session {
 
     //Global
 
+    public static function GetBots() {
+        return [
+            'wget' => 'Wget',
+
+            'snapchat' => 'Snapchat',
+            'facebookexternalhit' => 'Facebook',
+            'archive.org_bot' => 'archive.org',
+            'python-requests' => 'Python',
+
+            'twitterbot' => 'TwitterBot',
+            'pinterestbot' => 'PinterestBot',
+            'googlebot' => 'GoogleBot',
+            'google-inspectiontool' => 'GoogleInspectionTool',
+            'applebot' => 'AppleBot',
+            'bingbot' => 'BingBot',
+            'yandex' => 'YandexBot',
+            'dotbot' => 'DotBot',
+            'serpstatbot' => 'SerpStatBot',
+            'mj12bot' => 'MJ12Bot',
+            'msnbot' => 'MSNBot',
+            'claudebot' => 'ClaudeBot',
+            'superbot' => 'SuperBot',
+            'wpbot' => 'WPBot',
+            'robot' => 'Robot',
+
+            'bot' => 'Bot',
+        ];
+    }
+
+    public static function SetHandler(?SessionHandler $sessionHandler): bool {
+        return session_set_save_handler($sessionHandler, true);
+    }
+
     public static function Get(string $sessionKey, ?string $defaultValue = null): ?string {
         return isset($_SESSION[$sessionKey]) ? $_SESSION[$sessionKey] : $defaultValue;
     }
@@ -17,33 +50,15 @@ class Session {
     }
 
     public static function Start() {
-        if (!array_key_exists('HTTP_USER_AGENT', $_SERVER)) $_SERVER['HTTP_USER_AGENT'] = '';
+        $bots = static::GetBots();
 
-        if (strpos($_SERVER['HTTP_USER_AGENT'], "Googlebot") !== false) {
-            session_id(md5("Google"));
-        } else if (strpos($_SERVER['HTTP_USER_AGENT'], "bingbot") !== false) {
-            session_id(md5("Bing"));
-        } else if (strpos($_SERVER['HTTP_USER_AGENT'], 'Yandex') !== false) {
-            session_id(md5("Yandex"));
-        } else if (strpos($_SERVER['HTTP_USER_AGENT'], 'DotBot') !== false) {
-            session_id(md5("DotBot"));
-        } else if (strpos($_SERVER['HTTP_USER_AGENT'], "bot") !== false || strpos($_SERVER['HTTP_USER_AGENT'], "Bot") !== false) {
-            session_id(md5("Bot"));
-
-            $path = __DIR__ . '/Agents.json';
-            if (!file_exists($path)) file_put_contents($path, '[]');
-            $agents = Json::Decode(file_get_contents($path));
-            if (!in_array($_SERVER['HTTP_USER_AGENT'], $agents)) {
-                $agents[] = $_SERVER['HTTP_USER_AGENT'];
-                file_put_contents($path, Json::Encode($agents));
+        $httpUserAgent = mb_strtolower($_SERVER['HTTP_USER_AGENT']);
+        foreach ($bots as $key => $value) {
+            if (strpos($httpUserAgent, $key) !== false) {
+                session_id($value);
+                break;
             }
-        } else if (strpos($_SERVER['HTTP_USER_AGENT'], "Wget") !== false) {
-            session_id(md5("Wget"));
         }
-
-        $timeout = 3600 * 24 * 7;
-        ini_set("session.gc_maxlifetime", $timeout);
-        ini_set("session.cookie_lifetime", $timeout);
 
         session_start();
     }
