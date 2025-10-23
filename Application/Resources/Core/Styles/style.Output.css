@@ -1,10 +1,4 @@
 output {
-    background-color: var(--outputBackground);
-    color: var(--outputColor);
-
     text-align: center;
-
-    padding: 0.5rem 1rem;
-
     flex-grow: 1;
 }

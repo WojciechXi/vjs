@@ -6,7 +6,7 @@ class Textarea extends View {
 
         new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
         new Property(object, 'Placeholder', data.placeholder ?? '', object.OnPropertyChanged);
-        new Property(object, 'Rows', data.rows ?? '', object.OnPropertyChanged);
+        new Property(object, 'Rows', data.rows ?? '5', object.OnPropertyChanged);
 
         if (data.onInput) object.OnInput.Listen(data.onInput);
         if (data.onChange) object.OnChange.Listen(data.onChange);

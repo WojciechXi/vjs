@@ -1,8 +1,6 @@
 input[type="checkbox"] {
     appearance: none;
     -webkit-appearance: none;
-    background-color: var(--inputBackground);
-    color: var(--inputColor);
     display: block;
     border-radius: 1rem;
     line-height: 1;
@@ -17,8 +15,6 @@ input[type="checkbox"] {
 input[type="checkbox"]::after {
     content: '';
     display: block;
-    background-color: var(--inputColor);
-    color: var(--inputBackground);
     border-radius: 1rem;
     position: absolute;
     left: 2px;
@@ -28,13 +24,8 @@ input[type="checkbox"]::after {
     transition: 0.2s left;
 }
 
-input[type="checkbox"]:checked {
-    background-color: var(--inputColor);
-    color: var(--inputBackground);
-}
+input[type="checkbox"]:checked {}
 
 input[type="checkbox"]:checked::after {
     left: calc(1rem + 2px);
-    background-color: var(--inputBackground);
-    color: var(--inputColor);
 }

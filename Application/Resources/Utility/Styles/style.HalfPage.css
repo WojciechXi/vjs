@@ -34,7 +34,6 @@ half-page>layout {
 }
 
 @media(max-width:1080px) {
-
     half-page>main {
         position: absolute;
         left: 0px;
@@ -50,5 +49,4 @@ half-page>layout {
         width: 100%;
         z-index: 1;
     }
-
 }

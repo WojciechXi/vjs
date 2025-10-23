@@ -1,7 +1,6 @@
 class ConfirmPage extends Page {
 
     Init(data = {}) {
-        data.zIndex = data.zIndex ?? 1000;
         super.Init(data);
         let object = this;
 

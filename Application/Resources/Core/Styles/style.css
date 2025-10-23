@@ -1,21 +1,17 @@
 * {
     box-sizing: border-box;
-
     background: initial;
     color: inherit;
     border: initial;
     outline: initial;
-
     cursor: inherit;
-
     margin: initial;
     padding: initial;
-
     font-size: inherit;
     font-family: inherit;
     line-height: inherit;
-
     text-align: inherit;
+    text-decoration: inherit;
 }
 
 :root {
