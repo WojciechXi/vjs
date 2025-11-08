@@ -1,0 +1,134 @@
+{
+  "ftp://u234675_vules@web-002.webh.cloud": {
+    "www": {
+      "vjs.vules-studio.pl": {
+        ".htaccess": {
+          "type": "-",
+          "size": 225,
+          "lmtime": 0,
+          "modified": false
+        },
+        "Application": {
+          "Resources": {
+            "Utility": {
+              "Scripts": {
+                "button.Icon.js": {
+                  "type": "-",
+                  "size": 1972,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "button.Setting.js": {
+                  "type": "-",
+                  "size": 2375,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Confirm.js": {
+                  "type": "-",
+                  "size": 6012,
+                  "lmtime": 1762475330441.4172,
+                  "modified": false
+                },
+                "page.ContextMenu.js": {
+                  "type": "-",
+                  "size": 2456,
+                  "lmtime": 1762475227170.4138,
+                  "modified": false
+                },
+                "page.Half.js": {
+                  "type": "-",
+                  "size": 1153,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Modal.js": {
+                  "type": "-",
+                  "size": 2815,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Notify.js": {
+                  "type": "-",
+                  "size": 3859,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Title.js": {
+                  "type": "-",
+                  "size": 2421,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Window.js": {
+                  "type": "-",
+                  "size": 17217,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.WindowManager.js": {
+                  "type": "-",
+                  "size": 242,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.Box.js": {
+                  "type": "-",
+                  "size": 364,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.FilesInput.js": {
+                  "type": "-",
+                  "size": 5341,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.Icon.js": {
+                  "type": "-",
+                  "size": 69,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.Loading.js": {
+                  "type": "-",
+                  "size": 827,
+                  "lmtime": 0,
+                  "modified": false
+                }
+              }
+            }
+          }
+        },
+        "Assets": {},
+        "System": {},
+        "Uploads": {},
+        "config.php": {
+          "type": "-",
+          "size": 762,
+          "lmtime": 0,
+          "modified": false
+        },
+        "functions.php": {
+          "type": "-",
+          "size": 3796,
+          "lmtime": 0,
+          "modified": false
+        },
+        "index.php": {
+          "type": "-",
+          "size": 547,
+          "lmtime": 0,
+          "modified": false
+        },
+        "robots.txt": {
+          "type": "-",
+          "size": 76,
+          "lmtime": 0,
+          "modified": false
+        }
+      }
+    }
+  },
+  "$version": 1
+}

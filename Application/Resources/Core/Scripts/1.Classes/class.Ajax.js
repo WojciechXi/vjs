@@ -84,6 +84,8 @@ class Ajax {
             });
         }
 
+        if (data.before) data.before(object);
+
         object.xhr.send(formData);
     }
 

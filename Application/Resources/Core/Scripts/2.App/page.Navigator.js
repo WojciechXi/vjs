@@ -32,8 +32,13 @@ class Navigator extends Layout {
     Init(data = {}) {
         super.Init(data);
         let object = this;
+    }
 
-        App.Instance.AddChild(object);
+    Render() {
+        let object = this;
+
+        if (App.Instance) App.Instance.AddChild(object);
+        else document.body.appendChild(object.Element);
     }
 
 }
