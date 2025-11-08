@@ -16,6 +16,7 @@ class ContextMenu extends Page {
         });
 
         new Property(object, 'Event', data.event ?? null, object.OnPropertyChanged);
+        new Property(object, 'Label', data.label ?? null, object.OnPropertyChanged);
         new Property(object, 'Options', data.options ?? {}, object.OnPropertyChanged);
 
         new Property(object, 'Rect', { x: 0, y: 0 }, object.OnPropertyChanged);
@@ -30,56 +31,68 @@ class ContextMenu extends Page {
         let object = this;
 
         object.Children = [
-            new Layout({
+            new Column({
                 backgroundColor: 'var(--pageBackground)',
                 color: 'var(--pageColor)',
                 boxShadow: '0rem 0.5rem 1rem rgba(0, 0, 0, 0.5)',
                 position: 'absolute',
                 left: '0px',
                 top: '0px',
-                callback: function (layout) {
+                whiteSpace: 'nowrap',
+                children: [
+                    new Text({
+                        callback: function (view) {
+                            new Binding(object, 'Label', function () {
+                                view.Display = object.Label ? null : 'none';
+                                view.Text = object.Label;
+                            });
+                        },
+                    }),
+                    new Column({
+                        callback: function (view) {
+                            new Binding(object, 'Options', function (sender, data) {
+                                let children = [];
+                                Object.keys(object.Options).forEach(function (key) {
+                                    children.push(new Link({
+                                        classes: ['button'],
+                                        children: [
+                                            new Text({
+                                                text: key,
+                                            }),
+                                        ],
+                                        onClick: function (sender, event) {
+                                            object.Pull();
+                                            object.Options[key](object, event);
+                                        },
+                                    }));
+                                });
+                                view.Children = children;
+                            });
+                        },
+                    }),
+                ],
+                callback: function (view) {
                     let updatePosition = function () {
-                        layout.Left = '0px';
-                        layout.Top = '0px';
+                        view.Left = '0px';
+                        view.Top = '0px';
 
-                        let elementHeight = layout.Element.clientHeight;
-                        let elementWidth = layout.Element.clientWidth;
+                        let elementHeight = view.Element.clientHeight;
+                        let elementWidth = view.Element.clientWidth;
 
                         requestAnimationFrame(function () {
                             if (object.Rect.x + elementWidth > window.innerWidth) {
-                                layout.Left = window.innerWidth - elementWidth;
+                                view.Left = window.innerWidth - elementWidth;
                             } else {
-                                layout.Left = object.Rect.x;
+                                view.Left = object.Rect.x;
                             }
 
                             if (object.Rect.y + elementHeight > window.innerHeight) {
-                                layout.Top = window.innerHeight - elementHeight;
+                                view.Top = window.innerHeight - elementHeight;
                             } else {
-                                layout.Top = object.Rect.y;
+                                view.Top = object.Rect.y;
                             }
                         });
                     };
-
-                    new Binding(object, 'Options', function (sender, data) {
-                        let children = [];
-                        Object.keys(object.Options).forEach(function (key) {
-                            children.push(new Link({
-                                classes: ['button'],
-                                children: [
-                                    new Text({
-                                        text: key,
-                                    }),
-                                ],
-                                onClick: function (sender, event) {
-                                    object.Pull();
-                                    object.Options[key](object, event);
-                                },
-                            }));
-                        });
-                        layout.Children = children;
-
-                        updatePosition();
-                    });
 
                     new Binding(object, 'Event', function (sender, data) {
                         if (object.Event) {
@@ -89,9 +102,11 @@ class ContextMenu extends Page {
                             };
 
                             updatePosition();
-                        } else {
-
                         }
+                    });
+
+                    new Binding(object, 'Options', function (sender, data) {
+                        updatePosition();
                     });
                 },
             }),
