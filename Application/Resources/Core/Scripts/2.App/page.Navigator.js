@@ -12,9 +12,14 @@ class Navigator extends Layout {
         this.Instance.AddChild(page);
     }
 
+    static PopPage(page) {
+        let index = this.Instance.Children.indexOf(page);
+        if (index >= 0) this.Instance.Children[index].Pull();
+    }
+
     static Pop() {
         let index = this.Instance.Children.length - 1;
-        if (index >= 0) this.Instance.Children[index].Remove();
+        if (index >= 0) this.Instance.Children[index].Pull();
     }
 
     static PopTo(index = 1) {
