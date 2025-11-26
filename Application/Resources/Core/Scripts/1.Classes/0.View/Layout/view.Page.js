@@ -73,6 +73,13 @@ class Page extends Layout {
         return object.onPull ?? (object.onPull = new Callback());
     }
 
+    GetHistory() {
+        let object = this;
+        return {
+            class: object.constructor.name,
+        };
+    }
+
     Push() {
         let object = this;
 
