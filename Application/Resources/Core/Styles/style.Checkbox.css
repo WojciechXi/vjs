@@ -13,6 +13,7 @@ input[type="checkbox"] {
 }
 
 input[type="checkbox"]::after {
+    background-color: black;
     content: '';
     display: block;
     border-radius: 1rem;
@@ -21,11 +22,13 @@ input[type="checkbox"]::after {
     top: 2px;
     width: calc(1rem - 4px);
     height: calc(1rem - 4px);
-    transition: 0.2s left;
+    opacity: 0.5;
+    transition: 0.1s left, 0.1s opacity;
 }
 
 input[type="checkbox"]:checked {}
 
 input[type="checkbox"]:checked::after {
     left: calc(1rem + 2px);
+    opacity: 1;
 }

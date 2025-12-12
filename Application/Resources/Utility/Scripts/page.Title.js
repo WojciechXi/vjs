@@ -25,14 +25,6 @@ class TitlePage extends Page {
             width: '100%',
             alignItems: 'center',
             children: [
-                new Row({
-                    alignItems: 'center',
-                    callback: function (view) {
-                        new Binding(object, 'ActionButtons', function (sender, data) {
-                            view.Children = object.ActionButtons;
-                        });
-                    },
-                }),
                 new Label({
                     width: '0%',
                     flexGrow: 1,
@@ -47,6 +39,14 @@ class TitlePage extends Page {
                             },
                         }),
                     ],
+                }),
+                new Row({
+                    alignItems: 'center',
+                    callback: function (view) {
+                        new Binding(object, 'ActionButtons', function (sender, data) {
+                            view.Children = object.ActionButtons;
+                        });
+                    },
                 }),
                 new Link({
                     classes: ['button'],
