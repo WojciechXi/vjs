@@ -5,6 +5,7 @@ text-field-material {
     display: flex;
     flex-direction: row;
     align-items: center;
+    flex-wrap: nowrap;
     position: relative;
 }
 
@@ -15,6 +16,7 @@ text-field-material>icon {
 text-field-material>row {
     position: relative;
     align-items: center;
+    flex-wrap: nowrap;
 }
 
 text-field-material>row>input {

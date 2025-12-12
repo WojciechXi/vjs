@@ -1,0 +1,3 @@
+class ButtonMaterial extends Button {
+
+}
