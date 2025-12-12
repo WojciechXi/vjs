@@ -12,9 +12,14 @@ class Navigator extends Layout {
         this.Instance.AddChild(page);
     }
 
+    static PopPage(page) {
+        let index = this.Instance.Children.indexOf(page);
+        if (index >= 0) this.Instance.Children[index].Pull();
+    }
+
     static Pop() {
         let index = this.Instance.Children.length - 1;
-        if (index >= 0) this.Instance.Children[index].Remove();
+        if (index >= 0) this.Instance.Children[index].Pull();
     }
 
     static PopTo(index = 1) {
@@ -32,8 +37,13 @@ class Navigator extends Layout {
     Init(data = {}) {
         super.Init(data);
         let object = this;
+    }
 
-        App.Instance.AddChild(object);
+    Render() {
+        let object = this;
+
+        if (App.Instance) App.Instance.AddChild(object);
+        else document.body.appendChild(object.Element);
     }
 
 }

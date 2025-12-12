@@ -5,38 +5,39 @@ class Ajax {
     }
 
     static Get(url, data = {}) {
-        let ajax = new Ajax('GET', url);
+        const params = new URLSearchParams(data.data ?? {});
+        const ajax = new Ajax('GET', `${url}?${params.toString()}`);
         ajax.Send(data);
         return ajax;
     }
 
     static Post(url, data = {}) {
-        let ajax = new Ajax('POST', url);
+        const ajax = new Ajax('POST', url);
         ajax.Send(data);
         return ajax;
     }
 
     static Put(url, data = {}) {
-        let ajax = new Ajax('PUT', url);
+        const ajax = new Ajax('PUT', url);
         ajax.Send(data);
         return ajax;
     }
 
     static Delete(url, data = {}) {
-        let ajax = new Ajax('DELETE', url);
+        const ajax = new Ajax('DELETE', url);
         ajax.Send(data);
         return ajax;
     }
 
     constructor(method, url, async = true) {
-        let object = this;
+        const object = this;
         object.method = method;
         object.url = url;
         object.async = async;
     }
 
     Send(data) {
-        let object = this;
+        const object = this;
 
         object.xhr = new XMLHttpRequest();
         object.xhr.open(object.method == 'GET' ? 'GET' : 'POST', object.url, object.async);
@@ -68,7 +69,7 @@ class Ajax {
             data.error(object.xhr.error);
         });
 
-        let formData = data.form ? new FormData(data.form) : new FormData();
+        const formData = data.form ? new FormData(data.form) : new FormData();
 
         formData.append('REQUEST_METHOD', object.method);
 
@@ -83,6 +84,8 @@ class Ajax {
                 formData.append(`file-${index}`, data.files[index]);
             });
         }
+
+        if (data.before) data.before(object);
 
         object.xhr.send(formData);
     }

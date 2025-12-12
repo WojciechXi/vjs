@@ -7,17 +7,22 @@ class Page extends Layout {
 
         new Property(object, 'In', data.in ?? new Anim(125, function (sender, data) {
             let opacity = data.t;
+            let scale = Math.Lerp(0.9, 1, data.t);
 
             object.Opacity = opacity;
+            object.ContentView.Transform = `scale(${scale})`;
         }, function (sender, data) {
             object.Opacity = null;
         }), object.OnPropertyChanged);
 
         new Property(object, 'Out', data.out ?? new Anim(125, function (sender, data) {
             let opacity = data.i;
+            let scale = Math.Lerp(1, 0.9, data.t);
 
             object.Opacity = opacity;
+            object.ContentView.Transform = `scale(${scale})`;
         }), object.OnPropertyChanged);
+
         new Binding(object, 'Out', function (sender, data) {
             if (data.value) data.value.OnEnd.Listen(function (sender, success) {
                 if (success) object.Remove();

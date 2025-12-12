@@ -1,0 +1,362 @@
+{
+  "ftp://u234675_vules@web-002.webh.cloud": {
+    "www": {
+      "vjs.vules-studio.pl": {
+        ".htaccess": {
+          "type": "-",
+          "size": 225,
+          "lmtime": 0,
+          "modified": false
+        },
+        "Application": {
+          "Resources": {
+            "Utility": {
+              "Scripts": {
+                "button.Icon.js": {
+                  "type": "-",
+                  "size": 1972,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "button.Setting.js": {
+                  "type": "-",
+                  "size": 2375,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Confirm.js": {
+                  "type": "-",
+                  "size": 6012,
+                  "lmtime": 1762475330441.4172,
+                  "modified": false
+                },
+                "page.ContextMenu.js": {
+                  "type": "-",
+                  "size": 4591,
+                  "lmtime": 1762566830371.088,
+                  "modified": false
+                },
+                "page.Half.js": {
+                  "type": "-",
+                  "size": 1153,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Modal.js": {
+                  "type": "-",
+                  "size": 2815,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Notify.js": {
+                  "type": "-",
+                  "size": 3859,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Title.js": {
+                  "type": "-",
+                  "size": 2421,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.Window.js": {
+                  "type": "-",
+                  "size": 17217,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "page.WindowManager.js": {
+                  "type": "-",
+                  "size": 242,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.Box.js": {
+                  "type": "-",
+                  "size": 364,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.FilesInput.js": {
+                  "type": "-",
+                  "size": 5341,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.Icon.js": {
+                  "type": "-",
+                  "size": 69,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "view.Loading.js": {
+                  "type": "-",
+                  "size": 827,
+                  "lmtime": 0,
+                  "modified": false
+                }
+              }
+            },
+            "Core": {
+              "Scripts": {
+                "1.Classes": {
+                  "0.View": {},
+                  "1.App": {},
+                  "class.Ajax.js": {
+                    "type": "-",
+                    "size": 2986,
+                    "lmtime": 1763342581544.0398,
+                    "modified": false
+                  },
+                  "class.Anim.js": {
+                    "type": "-",
+                    "size": 2070,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "class.Binding.js": {
+                    "type": "-",
+                    "size": 909,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "class.BindingProperty.js": {
+                    "type": "-",
+                    "size": 1128,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "class.Callback.js": {
+                    "type": "-",
+                    "size": 380,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "class.Model.js": {
+                    "type": "-",
+                    "size": 2863,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "class.Property.js": {
+                    "type": "-",
+                    "size": 896,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "class.Storage.js": {
+                    "type": "-",
+                    "size": 315,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "class.View.js": {
+                    "type": "-",
+                    "size": 30579,
+                    "lmtime": 1762566582641.674,
+                    "modified": false
+                  }
+                },
+                "2.App": {
+                  "page.Navigator.js": {
+                    "type": "-",
+                    "size": 989,
+                    "lmtime": 1762565587371.0613,
+                    "modified": false
+                  }
+                }
+              },
+              "Styles": {
+                "root.css": {
+                  "type": "-",
+                  "size": 183,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.App.css": {
+                  "type": "-",
+                  "size": 106,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Button.css": {
+                  "type": "-",
+                  "size": 121,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Checkbox.css": {
+                  "type": "-",
+                  "size": 701,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Column.css": {
+                  "type": "-",
+                  "size": 57,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Editable.css": {
+                  "type": "-",
+                  "size": 50,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Form.css": {
+                  "type": "-",
+                  "size": 73,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Grid.css": {
+                  "type": "-",
+                  "size": 27,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Hr.css": {
+                  "type": "-",
+                  "size": 86,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Img.css": {
+                  "type": "-",
+                  "size": 119,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Input.css": {
+                  "type": "-",
+                  "size": 27,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Label.css": {
+                  "type": "-",
+                  "size": 77,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Layout.css": {
+                  "type": "-",
+                  "size": 78,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Link.css": {
+                  "type": "-",
+                  "size": 116,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.List.css": {
+                  "type": "-",
+                  "size": 34,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Navigator.css": {
+                  "type": "-",
+                  "size": 254,
+                  "lmtime": 1762574188955.0957,
+                  "modified": false
+                },
+                "style.Output.css": {
+                  "type": "-",
+                  "size": 52,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Page.css": {
+                  "type": "-",
+                  "size": 283,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Row.css": {
+                  "type": "-",
+                  "size": 72,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Select.css": {
+                  "type": "-",
+                  "size": 45,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Table.css": {
+                  "type": "-",
+                  "size": 51,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Text.css": {
+                  "type": "-",
+                  "size": 28,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Textarea.css": {
+                  "type": "-",
+                  "size": 52,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Th.css": {
+                  "type": "-",
+                  "size": 52,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.View.css": {
+                  "type": "-",
+                  "size": 118,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.css": {
+                  "type": "-",
+                  "size": 635,
+                  "lmtime": 0,
+                  "modified": false
+                }
+              }
+            }
+          }
+        },
+        "Assets": {},
+        "System": {},
+        "Uploads": {},
+        "config.php": {
+          "type": "-",
+          "size": 762,
+          "lmtime": 0,
+          "modified": false
+        },
+        "functions.php": {
+          "type": "-",
+          "size": 3796,
+          "lmtime": 0,
+          "modified": false
+        },
+        "index.php": {
+          "type": "-",
+          "size": 547,
+          "lmtime": 0,
+          "modified": false
+        },
+        "robots.txt": {
+          "type": "-",
+          "size": 76,
+          "lmtime": 0,
+          "modified": false
+        }
+      }
+    }
+  },
+  "$version": 1
+}
