@@ -17,7 +17,7 @@ class Navigator extends Layout {
     static Push(page) {
         const object = this;
         object.Instance.AddChild(page);
-        window.history.pushState(page.GetHistory(), '');
+        if (page.GetHistory) window.history.pushState(page.GetHistory(), '');
     }
 
     static PushAfter(page, after) {
