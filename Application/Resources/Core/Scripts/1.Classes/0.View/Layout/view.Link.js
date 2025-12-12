@@ -6,8 +6,8 @@ class Link extends Layout {
         super.Init(data);
         let object = this;
 
-        new Property(object, 'Target', data.target ?? '', object.OnPropertyChanged);
-        new Property(object, 'Href', data.href ?? '', object.OnPropertyChanged);
+        new Property(object, 'Target', data.target ?? null, object.OnPropertyChanged);
+        new Property(object, 'Href', data.href ?? null, object.OnPropertyChanged);
     }
 
     Bind() {
