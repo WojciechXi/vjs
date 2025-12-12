@@ -33,12 +33,12 @@ class Navigator extends Layout {
 
     static PopTo(index = 1) {
         const object = this;
-        while (object.Instance.Children.length > index) object.Instance.Pop();
+        for (let page of object.Instance.Children) object.Pop(page);
     }
 
     static Clear() {
         const object = this;
-        while (object.Instance.Children.length > 0) object.Instance.Pop();
+        for (let page of object.Instance.Children) object.Pop(page);
     }
 
     get ElementTag() {
