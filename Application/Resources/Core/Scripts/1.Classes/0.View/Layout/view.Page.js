@@ -44,9 +44,7 @@ class Page extends Layout {
         });
 
         new Binding(object, 'Content', function (sender, data) {
-            data.value.forEach(function (child) {
-                if (child) child.Parent = object.ContentView;
-            });
+            object.ContentView.Children = Array.isArray(object.Content) ? object.Content : [];
         });
     }
 

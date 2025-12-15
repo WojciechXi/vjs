@@ -1,7 +1,7 @@
 class View {
 
     constructor(data = {}) {
-        let object = this;
+        const object = this;
 
         object.Init(data);
         object.Bind();
@@ -15,7 +15,7 @@ class View {
     }
 
     Init(data = {}) {
-        let object = this;
+        const object = this;
         new Property(object, 'Parent', data.parent ?? null, object.OnPropertyChanged);
         new Property(object, 'Classes', data.classes ?? [], object.OnPropertyChanged);
         new Property(object, 'Name', data.name ?? null, object.OnPropertyChanged);
@@ -140,15 +140,7 @@ class View {
     }
 
     Bind() {
-        let object = this;
-        new Binding(object, 'Parent', function (sender, data) {
-            if (object.Parent) {
-                object.Parent.Element.appendChild(object.Element);
-            } else {
-                object.Element.remove();
-                object.Removed();
-            }
-        });
+        const object = this;
         new Binding(object, 'Classes', function (sender, data) {
             if (data.value && data.value.length) object.Attr('class', data.value.join(' '));
             else object.Attr('class', null);
@@ -383,24 +375,18 @@ class View {
     }
 
     Render() {
-        let object = this;
-    }
-
-    SetParent(parent) {
-        let object = this;
-        if (object.Parent) object.Parent.RemoveChild(object);
-        object.Parent = parent;
+        const object = this;
     }
 
     get ElementTag() { return 'view'; }
     get ElementAttrs() {
-        let object = this;
+        const object = this;
         return {
 
         };
     }
     get ElementEvents() {
-        let object = this;
+        const object = this;
         return {
             // Click
             click: function (event) {
@@ -488,7 +474,7 @@ class View {
     }
 
     get Element() {
-        let object = this;
+        const object = this;
         if (!object.element) {
             object.element = document.createElement(object.ElementTag);
             object.element.view = object;
@@ -513,7 +499,7 @@ class View {
     set InnerText(text) { return this.element.innerText = text; }
 
     Property(propertyName, defaultValue, callback) {
-        let object = this;
+        const object = this;
         return new Property(object, propertyName, defaultValue ?? null, callback ?? object.OnPropertyChanged);
     }
 
@@ -522,7 +508,7 @@ class View {
     }
 
     Trigger(event) {
-        let object = this;
+        const object = this;
         let customEvent = new CustomEvent(event, {
             bubbles: true,
         });
@@ -530,28 +516,28 @@ class View {
     }
 
     Click() {
-        let object = this;
+        const object = this;
         object.Element.click();
     }
 
     Input() {
-        let object = this;
+        const object = this;
         object.Trigger('input');
     }
 
     Change() {
-        let object = this;
+        const object = this;
         object.Trigger('change');
     }
 
     Find(name) {
-        let object = this;
+        const object = this;
         let element = object.Element.querySelector(`[name="${name}"]`);
         return element ? element.view : null;
     }
 
     Css(property, value, defaultUnit = null) {
-        let object = this;
+        const object = this;
         if (value !== null) {
             if (defaultUnit) {
                 if (typeof value == 'number') object.Element.style.setProperty(property, `${value}${defaultUnit}`);
@@ -564,183 +550,204 @@ class View {
     }
 
     Attr(attribute, value) {
-        let object = this;
+        const object = this;
         if (value !== null) object.Element.setAttribute(attribute, value);
         else object.Element.removeAttribute(attribute);
     }
 
     Prop(property, value) {
-        let object = this;
+        const object = this;
         object.Element[property] = value;
     }
 
     OnPropertyChanged(propertyName) {
-        let object = this;
+        const object = this;
         object.OnPropertyChange.Invoke(object, propertyName);
     }
 
     OnLayoutChanged() {
-        let object = this;
+        const object = this;
         object.OnLayoutChange.Invoke(object, {});
     }
 
-    Remove() {
-        let object = this;
-        object.SetParent(null);
+    DetachChild(object) {
+
     }
 
-    Removed() {
-        let object = this;
+    AttachChild(object) {
+
+    }
+
+    SetParent(newParent) {
+        const object = this;
+        if (newParent != object.Parent) if (object.Parent) object.Parent.DetachChild(object);
+
+        if (newParent.AttachChild(object)) object.Parent = newParent;
+        else object.Parent = null;
+    }
+
+    Remove() {
+        const object = this;
+
+        if (object.Parent) object.Parent.DetachChild(object);
+        object.Parent = null;
+        object.Element.remove();
+
+        object.Removed();
+    }
+
+    Removed(from = null) {
+        const object = this;
         object.OnRemove.Invoke(object, {});
     }
 
     //Layout Change
 
     get OnLayoutChange() {
-        let object = this;
+        const object = this;
         return object.onLayoutChange ?? (object.onLayoutChange = new Callback());
     }
 
     //Property Change
 
     get OnPropertyChange() {
-        let object = this;
+        const object = this;
         return object.onPropertyChange ?? (object.onPropertyChange = new Callback());
     }
 
     //Click
 
     get OnClick() {
-        let object = this;
+        const object = this;
         return object.onClick ?? (object.onClick = new Callback());
     }
 
     get OnDblClick() {
-        let object = this;
+        const object = this;
         return object.onDblClick ?? (object.onDblClick = new Callback());
     }
 
     //ContextMenu
 
     get OnContextMenu() {
-        let object = this;
+        const object = this;
         return object.onContextMenu ?? (object.onContextMenu = new Callback());
     }
 
     // Focus
 
     get OnFocus() {
-        let object = this;
+        const object = this;
         return object.onFocus ?? (object.onFocus = new Callback());
     }
 
     get OnBlur() {
-        let object = this;
+        const object = this;
         return object.onBlur ?? (object.onBlur = new Callback());
     }
 
     //Mouse
 
     get OnMouseWheel() {
-        let object = this;
+        const object = this;
         return object.onMouseWheel ?? (object.onMouseWheel = new Callback());
     }
 
     get OnMouseDown() {
-        let object = this;
+        const object = this;
         return object.onMouseDown ?? (object.onMouseDown = new Callback());
     }
 
     get OnMouseUp() {
-        let object = this;
+        const object = this;
         return object.onMouseUp ?? (object.onMouseUp = new Callback());
     }
 
     get OnMouseEnter() {
-        let object = this;
+        const object = this;
         return object.onMouseEnter ?? (object.onMouseEnter = new Callback());
     }
 
     get OnMouseMove() {
-        let object = this;
+        const object = this;
         return object.onMouseMove ?? (object.onMouseMove = new Callback());
     }
 
     get OnMouseOver() {
-        let object = this;
+        const object = this;
         return object.onMouseOver ?? (object.onMouseOver = new Callback());
     }
 
     get OnMouseLeave() {
-        let object = this;
+        const object = this;
         return object.onMouseLeave ?? (object.onMouseLeave = new Callback());
     }
 
     //Touch
 
     get OnTouchStart() {
-        let object = this;
+        const object = this;
         return object.onTouchStart ?? (object.onTouchStart = new Callback());
     }
 
     get OnTouchMove() {
-        let object = this;
+        const object = this;
         return object.onTouchMove ?? (object.onTouchMove = new Callback());
     }
 
     get OnTouchEnd() {
-        let object = this;
+        const object = this;
         return object.onTouchEnd ?? (object.onTouchEnd = new Callback());
     }
 
     get OnTouchCancel() {
-        let object = this;
+        const object = this;
         return object.onTouchCancel ?? (object.onTouchCancel = new Callback());
     }
 
     //Drag
 
     get OnDragStart() {
-        let object = this;
+        const object = this;
         return object.onDragStart ?? (object.onDragStart = new Callback());
     }
 
     get OnDragEnter() {
-        let object = this;
+        const object = this;
         return object.onDragEnter ?? (object.onDragEnter = new Callback());
     }
 
     get OnDragOver() {
-        let object = this;
+        const object = this;
         return object.onDragOver ?? (object.onDragOver = new Callback());
     }
 
     get OnDragLeave() {
-        let object = this;
+        const object = this;
         return object.onDragLeave ?? (object.onDragLeave = new Callback());
     }
 
     get OnDrop() {
-        let object = this;
+        const object = this;
         return object.onDrop ?? (object.onDrop = new Callback());
     }
 
     //Key
 
     get OnKeyDown() {
-        let object = this;
+        const object = this;
         return object.onKeyDown ?? (object.onKeyDown = new Callback());
     }
 
     get OnKeyUp() {
-        let object = this;
+        const object = this;
         return object.onKeyUp ?? (object.onKeyUp = new Callback());
     }
 
     //Remove
 
     get OnRemove() {
-        let object = this;
+        const object = this;
         return object.onRemove ?? (object.onRemove = new Callback());
     }
 

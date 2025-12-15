@@ -2,73 +2,89 @@ class Layout extends View {
 
     Init(data = {}) {
         super.Init(data);
-        let object = this;
+        const object = this;
+        object.childrenLoop = data.childrenLoop ?? null;
+
+        object.children = [];
+        object.Children = data.children;
 
         new Property(object, 'Direction', data.direction ?? null, object.OnPropertyChanged);
-        new Property(object, 'ChildrenLoop', data.childrenLoop ?? null, object.OnPropertyChanged);
-        new Property(object, 'Children', data.children ?? [], object.OnPropertyChanged, function (children) {
-            if (!children) return [];
-
-            if (object.ChildrenLoop) {
-                let newChildren = [];
-                if (Array.isArray(children)) {
-                    children.forEach(function (child, index) {
-                        newChildren[index] = object.ChildrenLoop(child, index);
-                    });
-                } else if (children instanceof Object) {
-                    Object.keys(children).forEach(function (key, index) {
-                        let value = children[key];
-                        newChildren[index] = object.ChildrenLoop(value, key);
-                    });
-                }
-                return newChildren;
-            }
-
-            return children;
-        });
     }
 
     Bind() {
         super.Bind();
-        let object = this;
+        const object = this;
 
         new Binding(object, 'Direction', function (sender, data) {
             object.Css('flex-direction', data.value);
         });
-
-        new Binding(object, 'Children', function (sender, data) {
-            object.RenderChildren();
-        });
     }
 
-    RenderChildren() {
-        let object = this;
-        object.Element.innerHTML = null;
-        object.Children.forEach(function (child) {
-            if (child) child.Parent = object;
-        });
+    get Children() {
+        const object = this;
+        return object.children ?? (object.children = []);
+    }
+    set Children(newChildren) {
+        const object = this;
+
+        object.Clear();
+
+        if (Array.isArray(newChildren)) {
+            newChildren.forEach(function (newChild, index) {
+                if (object.childrenLoop) newChild = object.childrenLoop(newChild, index);
+                if (newChild) object.AttachChild(newChild);
+            });
+        } else if (newChildren instanceof Object) {
+            Object.keys(newChildren).forEach(function (key, index) {
+                let newChild = newChildren[key];
+                if (object.childrenLoop) newChild = object.childrenLoop(newChild, key);
+                if (newChild) object.AttachChild(newChild);
+            });
+        }
     }
 
     Clear() {
-        let object = this;
+        const object = this;
+
+        object.Element.innerHTML = null;
         object.Children.forEach(function (child) {
-            if (child) child.Parent = null;
+            if (child) child.Remove();
         });
+
+        object.children = [];
     }
 
     AddChild(child) {
-        let object = this;
-        object.Children.Add(child);
-        object.Element.appendChild(child.Element);
-        child.Parent = object;
-        object.OnLayoutChange.Invoke(object, {});
+        const object = this;
+        return object.AttachChild(child);
     }
 
     RemoveChild(child) {
-        let object = this;
-        object.Children.Remove(child);
-        child.Parent = null;
+        const object = this;
+        return object.DetachChild(child);
+    }
+
+    AttachChild(child) {
+        const object = this;
+        if (object.Element.appendChild) {
+            if (object.Children.indexOf(child) < 0) object.Children.push(child);
+
+            object.Element.appendChild(child.Element);
+            object.OnLayoutChange.Invoke(object, {});
+            child.Parent = object;
+            return true;
+        }
+        return false;
+    }
+
+    DetachChild(child) {
+        const object = this;
+        const index = object.Children.indexOf(child);
+        object.Children.splice(index, 1);
         object.OnLayoutChange.Invoke(object, {});
+        child.Element.remove();
+        child.Parent = object;
+        return true;
     }
 
     get ElementTag() { return 'layout'; }
