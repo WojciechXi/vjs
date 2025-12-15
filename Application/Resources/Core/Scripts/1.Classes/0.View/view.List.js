@@ -1,4 +1,4 @@
-class List extends View {
+class List extends Layout {
 
     Init(data = {}) {
         super.Init(data);

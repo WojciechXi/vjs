@@ -506,6 +506,12 @@ class View {
         return object.element;
     }
 
+    get InnerHTML() { return this.element.innerHTML; }
+    set InnerHTML(html) { return this.element.innerHTML = html; }
+
+    get InnerText() { return this.element.innerText; }
+    set InnerText(text) { return this.element.innerText = text; }
+
     Property(propertyName, defaultValue, callback) {
         let object = this;
         return new Property(object, propertyName, defaultValue ?? null, callback ?? object.OnPropertyChanged);

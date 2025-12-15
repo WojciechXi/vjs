@@ -1,4 +1,4 @@
-class ListItem extends View {
+class ListItem extends Layout {
 
     get ElementTag() { return 'li'; }
 
