@@ -1,6 +1,7 @@
 class TitlePage extends Page {
 
     Init(data = {}) {
+        data.backgroundColor = data.backgroundColor ?? 'hsla(0, 0%, 0%, 0.50)';
         super.Init(data);
         let object = this;
 
