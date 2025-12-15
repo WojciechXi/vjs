@@ -1,7 +1,7 @@
-class TextFieldMaterial extends Layout {
+class EmailFieldMaterial extends Layout {
 
     get ElementTag() {
-        return 'text-field-material';
+        return 'email-field-material';
     }
 
     Init(data = {}) {
@@ -37,7 +37,7 @@ class TextFieldMaterial extends Layout {
                 flexGrow: 1,
                 children: [
                     new Input({
-                        type: 'text',
+                        type: 'email',
                         onInput: function (sender, event) {
                             object.Value = sender.Value;
                             object.OnInput.Invoke(object, event);

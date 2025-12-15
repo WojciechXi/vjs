@@ -8,7 +8,10 @@ class DateFieldMaterial extends Layout {
         super.Init(data);
         let object = this;
 
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
+        new Property(object, 'Icon', data.icon ?? null, object.OnPropertyChanged);
+        new Property(object, 'Autocomplete', data.autocomplete ?? null, object.OnPropertyChanged);
+        new Property(object, 'Placeholder', data.placeholder ?? null, object.OnPropertyChanged);
+        new Property(object, 'Value', data.value ?? null, object.OnPropertyChanged);
     }
 
     Render() {
@@ -26,6 +29,14 @@ class DateFieldMaterial extends Layout {
                     object.Value = sender.Value;
                 },
                 callback: function (view) {
+                    new Binding(object, 'Autocomplete', function (sender, data) {
+                        view.Autocomplete = object.Autocomplete;
+                    });
+
+                    new Binding(object, 'Name', function (sender, data) {
+                        view.Name = object.Name;
+                    });
+
                     new Binding(object, 'Value', function (sender, data) {
                         view.Value = object.Value;
                     });

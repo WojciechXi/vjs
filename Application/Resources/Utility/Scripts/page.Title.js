@@ -5,6 +5,9 @@ class TitlePage extends Page {
         super.Init(data);
         let object = this;
 
+        object.ContentView.Height = '0%';
+        object.ContentView.FlexGrow = 1;
+
         new Property(object, 'Title', data.title ?? 'Tytuł', object.OnPropertyChanged);
         new Property(object, 'ActionButtons', data.actionButtons ?? [], object.OnPropertyChanged);
     }
@@ -25,6 +28,7 @@ class TitlePage extends Page {
             color: 'var(--pageColor)',
             width: '100%',
             alignItems: 'center',
+            gap: 1,
             children: [
                 new Label({
                     width: '0%',
@@ -42,6 +46,7 @@ class TitlePage extends Page {
                     ],
                 }),
                 new Row({
+                    gap: 1,
                     alignItems: 'center',
                     callback: function (view) {
                         new Binding(object, 'ActionButtons', function (sender, data) {
