@@ -2,6 +2,12 @@
   "ftp://u234675_vules@web-002.webh.cloud": {
     "www": {
       "vjs.vules-studio.pl": {
+        ".gitignore": {
+          "type": "-",
+          "size": 32,
+          "lmtime": 1765825569396.1602,
+          "modified": false
+        },
         ".htaccess": {
           "type": "-",
           "size": 225,
@@ -56,9 +62,9 @@
                 },
                 "page.Title.js": {
                   "type": "-",
-                  "size": 2708,
+                  "size": 2711,
                   "lmtime": 1765568507616.2197,
-                  "modified": false
+                  "modified": true
                 },
                 "page.Window.js": {
                   "type": "-",
@@ -161,9 +167,9 @@
                       },
                       "view.Page.js": {
                         "type": "-",
-                        "size": 2669,
-                        "lmtime": 1764117033923.4746,
-                        "modified": true
+                        "size": 2766,
+                        "lmtime": 1765831392795.1982,
+                        "modified": false
                       },
                       "view.Row.js": {
                         "type": "-",
@@ -264,20 +270,20 @@
                     },
                     "view.Layout.js": {
                       "type": "-",
-                      "size": 2264,
-                      "lmtime": 0,
+                      "size": 2602,
+                      "lmtime": 1765831605309.8164,
                       "modified": false
                     },
                     "view.List.js": {
                       "type": "-",
                       "size": 983,
-                      "lmtime": 1765805313108.9836,
+                      "lmtime": 1765825569400.1611,
                       "modified": false
                     },
                     "view.ListItem.js": {
                       "type": "-",
                       "size": 77,
-                      "lmtime": 1765805310497.622,
+                      "lmtime": 1765825569401.1616,
                       "modified": false
                     },
                     "view.Output.js": {
@@ -345,8 +351,8 @@
                   "class.Callback.js": {
                     "type": "-",
                     "size": 817,
-                    "lmtime": 0,
-                    "modified": true
+                    "lmtime": 1765638242380.4592,
+                    "modified": false
                   },
                   "class.Model.js": {
                     "type": "-",
@@ -368,8 +374,8 @@
                   },
                   "class.View.js": {
                     "type": "-",
-                    "size": 30829,
-                    "lmtime": 1765806322934.1646,
+                    "size": 30953,
+                    "lmtime": 1765831631210.9006,
                     "modified": false
                   }
                 },
