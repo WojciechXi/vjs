@@ -64,6 +64,7 @@ class MainPage extends Page {
                                             new Binding(column, 'Todo', function (sender, data) {
                                                 view.Title = column.Todo.Title;
                                             });
+
                                             view.Content = [
                                                 new TextFieldMaterial({
                                                     width: '100%',
