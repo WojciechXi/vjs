@@ -1,5 +1,14 @@
 class App extends Layout {
 
+    static {
+        App.v2 = false;
+        App.v2Prevent = [
+            'submit',
+            'click', 'mousedown', 'mouseup',
+            'dragmove', 'dragenter', 'dragover', 'dragstart', 'dragleave', 'drop',
+        ];
+    }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
@@ -7,6 +16,9 @@ class App extends Layout {
 
         new Property(object, 'Title', data.title ?? 'App', object.OnPropertyChanged);
         new Property(object, 'Description', data.description ?? '', object.OnPropertyChanged);
+
+        if (App.v2) { console.log('App.v2'); for (let event of App.v2Prevent) window.addEventListener(event, function (event) { event.preventDefault(); event.stopPropagation(); }); }
+        else console.log('App.v1');
 
         if (data.body) {
             data.body.appendChild(object.Element);
