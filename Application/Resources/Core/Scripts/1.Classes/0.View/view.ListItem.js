@@ -1,5 +1,5 @@
-class ListItem extends Layout {
-
-    get ElementTag() { return 'li'; }
-
+class ListItem extends Layout {
+
+    get ElementTag() { return 'li'; }
+
 }

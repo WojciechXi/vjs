@@ -1,19 +1,15 @@
 class View {
-
     constructor(data = {}) {
         const object = this;
-
         object.Init(data);
         object.Bind();
         object.Render();
-
         if (data.callback) {
             requestAnimationFrame(function () {
                 data.callback(object);
             });
         }
     }
-
     Init(data = {}) {
         const object = this;
         new Property(object, 'Parent', data.parent ?? null, object.OnPropertyChanged);
@@ -24,14 +20,12 @@ class View {
         new Property(object, 'IsSelected', data.isSelected ?? false, object.OnPropertyChanged);
         new Property(object, 'Disabled', data.disabled ?? null, object.OnPropertyChanged);
         new Property(object, 'Multiple', data.multiple ?? null, object.OnPropertyChanged);
-
         new Property(object, 'BackgroundColor', data.backgroundColor ?? null, object.OnPropertyChanged);
         new Property(object, 'BackgroundImage', data.backgroundImage ?? null, object.OnPropertyChanged);
         new Property(object, 'BackgroundSize', data.backgroundSize ?? null, object.OnPropertyChanged);
         new Property(object, 'BackgroundRepeat', data.backgroundRepeat ?? null, object.OnPropertyChanged);
         new Property(object, 'BackgroundPosition', data.backgroundPosition ?? null, object.OnPropertyChanged);
         new Property(object, 'BackgroundAttachment', data.backgroundAttachment ?? null, object.OnPropertyChanged);
-
         new Property(object, 'Border', data.border ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderWidth', data.borderWidth ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderStyle', data.borderStyle ?? null, object.OnPropertyChanged);
@@ -41,7 +35,6 @@ class View {
         new Property(object, 'BorderRight', data.bordeRight ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderBottom', data.borderBottom ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderRadius', data.borderRadius ?? null, object.OnPropertyChanged);
-
         new Property(object, 'PointerEvents', data.pointerEvents ?? null, object.OnPropertyChanged);
         new Property(object, 'Cursor', data.cursor ?? null, object.OnPropertyChanged);
         new Property(object, 'Display', data.display ?? null, object.OnPropertyChanged);
@@ -94,51 +87,39 @@ class View {
         new Property(object, 'WritingMode', data.writingMode ?? null, object.OnPropertyChanged);
         new Property(object, 'Transition', data.transition ?? null, object.OnPropertyChanged);
         new Property(object, 'Transform', data.transform ?? null, object.OnPropertyChanged);
-
         if (data.onPropertyChange) {
             object.Listen('propertyChange', data.onPropertyChange);
             object.OnPropertyChange.Listen(data.onPropertyChange);
         }
-
         if (data.onLayoutChange) {
             object.Listen('layoutChange', data.onLayoutChange);
             object.OnLayoutChange.Listen(data.onLayoutChange);
         }
-
         if (data.onClick) object.Listen('click', data.onClick);
         if (data.onDblClick) object.Listen('dblClick', data.onDblClick);
         if (data.onContextMenu) object.Listen('contextmenu', data.onContextMenu);
-
         if (data.onFocus) object.Listen('focus', data.onFocus);
         if (data.onBlur) object.Listen('blur', data.onBlur);
-
         if (data.onMouseWheel) object.Listen('mousewheel', data.onMouseWheel);
-
         if (data.onMouseDown) object.Listen('mousedown', data.onMouseDown);
         if (data.onMouseUp) object.Listen('mouseup', data.onMouseUp);
         if (data.onMouseEnter) object.Listen('mouseenter', data.onMouseEnter);
         if (data.onMouseMove) object.Listen('mousedown', data.onMouseMove);
         if (data.onMouseOver) object.Listen('mouseover', data.onMouseOver);
         if (data.onMouseLeave) object.Listen('mouseleave', data.onMouseLeave);
-
         if (data.onTouchStart) object.Listen('touchstart', data.onTouchStart);
         if (data.onTouchMove) object.Listen('touchmove', data.onTouchMove);
         if (data.onTouchEnd) object.Listen('touchend', data.onTouchEnd);
         if (data.onTouchCancel) object.Listen('touchcancel', data.onTouchCancel);
-
         if (data.onDragStart) object.Listen('dragstart', data.onDragStart);
         if (data.onDragEnter) object.Listen('dragenter', data.onDragEnter);
         if (data.onDragOver) object.Listen('dragover', data.onDragOver);
         if (data.onDragLeave) object.Listen('dragleave', data.onDragLeave);
         if (data.onDrop) object.Listen('drop', data.onDrop);
-
         if (data.onKeyDown) object.Listen('keydown', data.onKeyDown);
         if (data.onKeyUp) object.Listen('keyup', data.onKeyUp);
-
         if (data.onRemove) object.Listen('remove', data.onRemove);
-
         if (data.onRemove) object.OnRemove.Listen(data.onRemove);
-
         object.OnMouseDown.Listen(function (sender, event) {
             if (event.ctrlKey && object.CanSelect) {
                 event.preventDefault();
@@ -147,7 +128,6 @@ class View {
             }
         });
     }
-
     Bind() {
         const object = this;
         new Binding(object, 'Parent', function (sender, data) {
@@ -182,7 +162,6 @@ class View {
             if (object.IsSelected) object.Attr('is-selected', true);
             else object.Attr('is-selected', null);
         });
-
         new Binding(object, 'BackgroundColor', function (sender, data) {
             object.Css('background-color', object.BackgroundColor);
         });
@@ -201,7 +180,6 @@ class View {
         new Binding(object, 'BackgroundAttachment', function (sender, data) {
             object.Css('background-attachment', object.BackgroundAttachment);
         });
-
         new Binding(object, 'BorderLeft', function (sender, data) {
             object.Css('border-left', object.BorderLeft);
         });
@@ -232,7 +210,6 @@ class View {
         new Binding(object, 'BorderRadius', function (sender, data) {
             object.Css('border-radius', object.BorderRadius, 'rem');
         });
-
         new Binding(object, 'Display', function (sender, data) {
             object.Css('display', data.value);
         });
@@ -390,123 +367,116 @@ class View {
             object.Css('transform', object.Transform);
         });
     }
-
     Render() {
         const object = this;
     }
-
     SetParent(parent) {
         const object = this;
         if (object.Parent) object.Parent.RemoveChild(object);
         object.Parent = parent;
     }
-
     get ElementTag() { return 'view'; }
     get ElementAttrs() {
         const object = this;
         return {
-
         };
     }
     get ElementEvents() {
         const object = this;
         return App.v2 ? {} : {
             // Click
-            click: function (event) {
+            click: function (sender, event) {
                 object.OnClick.Invoke(object, event);
             },
-            dblclick: function (event) {
+            dblclick: function (sender, event) {
                 object.OnDblClick.Invoke(object, event);
             },
             // ContextMenu
-            contextmenu: function (event) {
+            contextmenu: function (sender, event) {
                 object.OnContextMenu.Invoke(object, event);
             },
             // Focus
-            focus: function (event) {
+            focus: function (sender, event) {
                 object.OnFocus.Invoke(object, event);
             },
-            blur: function (event) {
+            blur: function (sender, event) {
                 object.OnBlur.Invoke(object, event);
             },
             // Mouse
-            wheel: function (event) {
+            wheel: function (sender, event) {
                 object.OnMouseWheel.Invoke(object, event);
             },
-            mousedown: function (event) {
+            mousedown: function (sender, event) {
                 object.OnMouseDown.Invoke(object, event);
             },
-            mouseup: function (event) {
+            mouseup: function (sender, event) {
                 object.OnMouseUp.Invoke(object, event);
             },
-            mouseenter: function (event) {
+            mouseenter: function (sender, event) {
                 object.OnMouseEnter.Invoke(object, event);
             },
-            mousemove: function (event) {
+            mousemove: function (sender, event) {
                 object.OnMouseMove.Invoke(object, event);
             },
-            mouseover: function (event) {
+            mouseover: function (sender, event) {
                 object.OnMouseOver.Invoke(object, event);
             },
-            mouseleave: function (event) {
+            mouseleave: function (sender, event) {
                 object.OnMouseLeave.Invoke(object, event);
             },
             // Touch
-            touchstart: function (event) {
+            touchstart: function (sender, event) {
                 object.OnTouchStart.Invoke(object, event);
             },
-            touchmove: function (event) {
+            touchmove: function (sender, event) {
                 object.OnTouchMove.Invoke(object, event);
             },
-            touchend: function (event) {
+            touchend: function (sender, event) {
                 object.onTouchEnd.Invoke(object, event);
             },
-            touchcancel: function (event) {
+            touchcancel: function (sender, event) {
                 object.OnTouchCancel.Invoke(object, event);
             },
             // Drag
-            dragstart: function (event) {
+            dragstart: function (sender, event) {
                 window.dragItem = event.target.view;
                 object.OnDragStart.Invoke(object, event);
             },
-            dragenter: function (event) {
+            dragenter: function (sender, event) {
                 event.preventDefault();
                 object.OnDragEnter.Invoke(object, event);
             },
-            dragover: function (event) {
+            dragover: function (sender, event) {
                 event.preventDefault();
                 object.OnDragOver.Invoke(object, event);
             },
-            dragleave: function (event) {
+            dragleave: function (sender, event) {
                 event.preventDefault();
                 object.OnDragLeave.Invoke(object, event);
             },
             // Drop
-            drop: function (event) {
+            drop: function (sender, event) {
                 event.preventDefault();
                 object.OnDrop.Invoke(object, event);
             },
             // Key
-            keydown: function (event) {
+            keydown: function (sender, event) {
                 object.OnKeyDown.Invoke(object, event);
             },
-            keyup: function (event) {
+            keyup: function (sender, event) {
                 object.OnKeyUp.Invoke(object, event);
             },
         };
     }
-
     get Element() {
         const object = this;
         if (!object.element) {
             object.element = document.createElement(object.ElementTag);
             object.element.view = object;
-
             let attrs = object.ElementAttrs;
             Object.keys(attrs).forEach(function (attr) {
                 object.Attr(attr, attrs[attr]);
             });
-
             let events = object.ElementEvents;
             Object.keys(events).forEach(function (event) {
                 object.Listen(event, events[event]);
@@ -514,32 +484,27 @@ class View {
         }
         return object.element;
     }
-
     get InnerHTML() { return this.element.innerHTML; }
     set InnerHTML(html) { return this.element.innerHTML = html; }
-
     get InnerText() { return this.element.innerText; }
     set InnerText(text) { return this.element.innerText = text; }
-
     Property(propertyName, defaultValue, callback) {
         const object = this;
         return new Property(object, propertyName, defaultValue ?? null, callback ?? object.OnPropertyChanged);
     }
-
     GC() {
         delete this;
     }
-
     Listen(event, callback) {
         const object = this;
-        this.Element.addEventListener(event, callback);
+        const eventListener = function (event) { callback(object, event); };
+        this.Element.addEventListener(event, eventListener);
+        return eventListener;
     }
-
     Unlisten(event, callback) {
         const object = this;
         this.Element.removeEventListener(event, callback);
     }
-
     Trigger(event, data = {}) {
         const object = this;
         let customEvent = new CustomEvent(event, {
@@ -547,57 +512,47 @@ class View {
         });
         object.Element.dispatchEvent(customEvent);
     }
-
     Click(data = {}) {
         const object = this;
         object.Trigger('click', data);
     }
-
     Input() {
         const object = this;
         object.Trigger('input');
     }
-
     Change() {
         const object = this;
         object.Trigger('change');
     }
-
     Find(name) {
         const object = this;
         let element = object.Element.querySelector(`[name="${name}"]`);
         return element ? element.view : null;
     }
-
     Attr(attribute, value) {
         const object = this;
         if (value !== null) object.Element.setAttribute(attribute, value);
         else object.Element.removeAttribute(attribute);
     }
-
     Attrs(attributes) {
         const object = this;
         Object.keys(attributes).forEach(function (key) {
             object.Attr(key, attributes[key]);
         });
     }
-
     Prop(property, value) {
         const object = this;
         object.Element[property] = value;
     }
-
     Props(properties) {
         const object = this;
         Object.keys(properties).forEach(function (key) {
             object.Prop(key, properties[key]);
         });
     }
-
     Css(property, value, unit = null) {
         if (!property) return false;
         property = property.split(/(?=[A-Z])/).join('-').toLowerCase();
-
         const object = this;
         if (value !== null) {
             if (unit) {
@@ -608,11 +563,9 @@ class View {
             }
         } else object.Element.style.removeProperty(property);
     }
-
     Style(property, value, unit = null) {
         if (!property) return false;
         property = property.split(/(?=[A-Z])/).join('-').toLowerCase();
-
         const object = this;
         if (value !== null) {
             if (unit) {
@@ -623,7 +576,6 @@ class View {
             }
         } else object.Element.style.removeProperty(property);
     }
-
     Styles(style) {
         const object = this;
         Object.keys(style).forEach(function (key) {
@@ -631,176 +583,135 @@ class View {
             else object.Css(key, style[key]);
         });
     }
-
     OnPropertyChanged(propertyName) {
         const object = this;
         object.OnPropertyChange.Invoke(object, propertyName);
     }
-
     OnLayoutChanged() {
         const object = this;
         object.OnLayoutChange.Invoke(object, {});
     }
-
     Remove() {
         const object = this;
         object.SetParent(null);
     }
-
     Removed() {
         const object = this;
         object.OnRemove.Invoke(object, {});
         object.Trigger('remove');
     }
-
     //Layout Change
-
     get OnLayoutChange() {
         const object = this;
         return object.onLayoutChange ?? (object.onLayoutChange = new Callback());
     }
-
     //Property Change
-
     get OnPropertyChange() {
         const object = this;
         return object.onPropertyChange ?? (object.onPropertyChange = new Callback());
     }
-
     //Click
-
     get OnClick() {
         const object = this;
         return object.onClick ?? (object.onClick = new Callback());
     }
-
     get OnDblClick() {
         const object = this;
         return object.onDblClick ?? (object.onDblClick = new Callback());
     }
-
     //ContextMenu
-
     get OnContextMenu() {
         const object = this;
         return object.onContextMenu ?? (object.onContextMenu = new Callback());
     }
-
     // Focus
-
     get OnFocus() {
         const object = this;
         return object.onFocus ?? (object.onFocus = new Callback());
     }
-
     get OnBlur() {
         const object = this;
         return object.onBlur ?? (object.onBlur = new Callback());
     }
-
     //Mouse
-
     get OnMouseWheel() {
         const object = this;
         return object.onMouseWheel ?? (object.onMouseWheel = new Callback());
     }
-
     get OnMouseDown() {
         const object = this;
         return object.onMouseDown ?? (object.onMouseDown = new Callback());
     }
-
     get OnMouseUp() {
         const object = this;
         return object.onMouseUp ?? (object.onMouseUp = new Callback());
     }
-
     get OnMouseEnter() {
         const object = this;
         return object.onMouseEnter ?? (object.onMouseEnter = new Callback());
     }
-
     get OnMouseMove() {
         const object = this;
         return object.onMouseMove ?? (object.onMouseMove = new Callback());
     }
-
     get OnMouseOver() {
         const object = this;
         return object.onMouseOver ?? (object.onMouseOver = new Callback());
     }
-
     get OnMouseLeave() {
         const object = this;
         return object.onMouseLeave ?? (object.onMouseLeave = new Callback());
     }
-
     //Touch
-
     get OnTouchStart() {
         const object = this;
         return object.onTouchStart ?? (object.onTouchStart = new Callback());
     }
-
     get OnTouchMove() {
         const object = this;
         return object.onTouchMove ?? (object.onTouchMove = new Callback());
     }
-
     get OnTouchEnd() {
         const object = this;
         return object.onTouchEnd ?? (object.onTouchEnd = new Callback());
     }
-
     get OnTouchCancel() {
         const object = this;
         return object.onTouchCancel ?? (object.onTouchCancel = new Callback());
     }
-
     //Drag
-
     get OnDragStart() {
         const object = this;
         return object.onDragStart ?? (object.onDragStart = new Callback());
     }
-
     get OnDragEnter() {
         const object = this;
         return object.onDragEnter ?? (object.onDragEnter = new Callback());
     }
-
     get OnDragOver() {
         const object = this;
         return object.onDragOver ?? (object.onDragOver = new Callback());
     }
-
     get OnDragLeave() {
         const object = this;
         return object.onDragLeave ?? (object.onDragLeave = new Callback());
     }
-
     get OnDrop() {
         const object = this;
         return object.onDrop ?? (object.onDrop = new Callback());
     }
-
     //Key
-
     get OnKeyDown() {
         const object = this;
         return object.onKeyDown ?? (object.onKeyDown = new Callback());
     }
-
     get OnKeyUp() {
         const object = this;
         return object.onKeyUp ?? (object.onKeyUp = new Callback());
     }
-
     //Remove
-
     get OnRemove() {
         const object = this;
         return object.onRemove ?? (object.onRemove = new Callback());
     }
-
 }
