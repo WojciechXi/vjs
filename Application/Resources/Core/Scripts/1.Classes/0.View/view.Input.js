@@ -36,16 +36,16 @@ class Input extends View {
     get ElementEvents() {
         let events = super.ElementEvents;
         let object = this;
-        events.input = function (event) {
-            object.Value = this.value;
+        events.input = function (sender, event) {
+            object.Value = object.Element.value;
             object.OnInput.Invoke(object, event);
         };
-        events.change = function (event) {
-            object.Value = this.value;
+        events.change = function (sender, event) {
+            object.Value = object.Element.value;
             object.OnChange.Invoke(object, event);
         };
-        events.paste = function (event) {
-            object.Value = this.value;
+        events.paste = function (sender, event) {
+            object.Value = object.Element.value;
             object.OnPaste.Invoke(object, event);
         };
         return events;

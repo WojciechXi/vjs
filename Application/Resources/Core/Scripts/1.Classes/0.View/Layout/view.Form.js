@@ -30,7 +30,7 @@ class Form extends Layout {
     get ElementEvents() {
         let events = super.ElementEvents;
         let object = this;
-        events.submit = function (event) {
+        events.submit = function (sender, event) {
             event.preventDefault();
             event.stopPropagation();
             object.OnSubmit.Invoke(object, event);

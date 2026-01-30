@@ -38,11 +38,11 @@ class Editable extends View {
     get ElementEvents() {
         let events = super.ElementEvents;
         let object = this;
-        events.input = function (event) {
+        events.input = function (sender, event) {
             object.Value = object.Element.innerHTML;
             object.OnInput.Invoke(object, event);
         };
-        events.blur = function (event) {
+        events.blur = function (sender, event) {
             object.Value = object.Element.innerHTML;
             object.OnBlur.Invoke(object, event);
         };

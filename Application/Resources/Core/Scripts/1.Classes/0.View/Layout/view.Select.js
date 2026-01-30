@@ -22,8 +22,8 @@ class Select extends Layout {
     get ElementEvents() {
         let events = super.ElementEvents;
         let object = this;
-        events.change = function (event) {
-            object.Value = this.value;
+        events.change = function (sender, event) {
+            object.Value = object.Element.value;
             object.OnChange.Invoke(object, event);
         };
         return events;
