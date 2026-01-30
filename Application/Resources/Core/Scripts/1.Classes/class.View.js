@@ -120,14 +120,6 @@ class View {
         if (data.onKeyUp) object.Listen('keyup', data.onKeyUp);
         if (data.onRemove) object.Listen('remove', data.onRemove);
         if (data.onRemove) object.OnRemove.Listen(data.onRemove);
-
-        object.Listen('mousedown', function (sender, event) {
-            if (event.ctrlKey && object.CanSelect) {
-                event.preventDefault();
-                event.stopPropagation();
-                object.IsSelected = !object.IsSelected;
-            }
-        });
     }
     Bind() {
         const object = this;
