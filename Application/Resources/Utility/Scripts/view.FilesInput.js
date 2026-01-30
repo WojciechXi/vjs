@@ -10,7 +10,7 @@ class FilesInput extends Row {
         new Property(object, 'ShowButton', data.showButton ?? true, object.OnPropertyChanged);
         new Property(object, 'Files', data.files ?? [], object.OnPropertyChanged);
 
-        object.OnDrop.Listen(function (sender, event) {
+        object.Listen('drop', function (sender, event) {
             object.AddFiles(event.dataTransfer.files);
         });
     }

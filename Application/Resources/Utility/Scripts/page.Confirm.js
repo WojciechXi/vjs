@@ -34,7 +34,7 @@ class ConfirmPage extends Page {
         new Property(object, 'Body', data.body ?? '', object.OnPropertyChanged);
         new Property(object, 'Footer', data.footer ?? '', object.OnPropertyChanged);
 
-        object.OnClick.Listen(function (sender, event) {
+        object.Listen('click', function (sender, event) {
             if (event.target != object.Element) return;
             object.Pull();
         });

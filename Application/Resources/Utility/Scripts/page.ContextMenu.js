@@ -6,12 +6,12 @@ class ContextMenu extends Page {
         let object = this;
 
         object.BackgroundColor = 'transparent';
-        object.OnClick.Listen(function (sender, event) {
+        object.Listen('click', function (sender, event) {
             if (event.target != object.Element) return;
             object.Pull();
         });
 
-        object.OnContextMenu.Listen(function (sender, event) {
+        object.Listen('contextmenu', function (sender, event) {
             event.preventDefault();
         });
 

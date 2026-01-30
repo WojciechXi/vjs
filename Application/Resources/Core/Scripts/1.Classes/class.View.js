@@ -120,7 +120,8 @@ class View {
         if (data.onKeyUp) object.Listen('keyup', data.onKeyUp);
         if (data.onRemove) object.Listen('remove', data.onRemove);
         if (data.onRemove) object.OnRemove.Listen(data.onRemove);
-        object.OnMouseDown.Listen(function (sender, event) {
+
+        object.Listen('mousedown', function (sender, event) {
             if (event.ctrlKey && object.CanSelect) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -495,15 +496,18 @@ class View {
     GC() {
         delete this;
     }
-    Listen(event, callback) {
+    Listen(eventName, callback) {
+        if (!eventName) return null;
+        if (!callback) return null;
         const object = this;
         const eventListener = function (event) { callback(object, event); };
-        this.Element.addEventListener(event, eventListener);
+        this.Element.addEventListener(eventName, eventListener);
         return eventListener;
     }
-    Unlisten(event, callback) {
-        const object = this;
-        this.Element.removeEventListener(event, callback);
+    Unlisten(eventName, callback) {
+        if (!eventName) return null;
+        if (!callback) return null;
+        this.Element.removeEventListener(eventName, callback);
     }
     Trigger(event, data = {}) {
         const object = this;

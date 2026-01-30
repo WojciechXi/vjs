@@ -38,7 +38,7 @@ class WindowPage extends Page {
         new Property(object, 'BodyChildren', data.bodyChildren ?? [], object.OnPropertyChanged);
         new Property(object, 'FooterChildren', data.footerChildren ?? [], object.OnPropertyChanged);
 
-        object.OnClick.Listen(function (sender, event) {
+        object.Listen('click', function (sender, event) {
             if (object.Parent.Children[object.Parent.Children.length - 1] != object) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -46,7 +46,7 @@ class WindowPage extends Page {
             }
         });
 
-        App.Instance.OnMouseMove.Listen(function (sender, event) {
+        App.Instance.Listen('mousemove', function (sender, event) {
             if (object.Dragging) {
                 let mousePosition = {
                     left: event.clientX,
@@ -107,7 +107,7 @@ class WindowPage extends Page {
             }
         });
 
-        App.Instance.OnMouseUp.Listen(function (sender, event) {
+        App.Instance.Listen('mouseup', function (sender, event) {
             if (!object.Dragging && !object.Resizing) return;
 
             object.Dragging = false;

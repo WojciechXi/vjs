@@ -163,7 +163,7 @@ class ConfirmPage extends Page {
         new Property(object, 'Body', data.body ?? '', object.OnPropertyChanged);
         new Property(object, 'Footer', data.footer ?? '', object.OnPropertyChanged);
 
-        object.OnClick.Listen(function (sender, event) {
+        object.Listen('click', function (sender, event) {
             if (event.target != object.Element) return;
             object.Pull();
         });
@@ -279,12 +279,12 @@ class ContextMenu extends Page {
         let object = this;
 
         object.BackgroundColor = 'transparent';
-        object.OnClick.Listen(function (sender, event) {
+        object.Listen('click', function (sender, event) {
             if (event.target != object.Element) return;
             object.Pull();
         });
 
-        object.OnContextMenu.Listen(function (sender, event) {
+        object.Listen('contextmenu', function (sender, event) {
             event.preventDefault();
         });
 
@@ -693,7 +693,7 @@ class WindowPage extends Page {
         new Property(object, 'BodyChildren', data.bodyChildren ?? [], object.OnPropertyChanged);
         new Property(object, 'FooterChildren', data.footerChildren ?? [], object.OnPropertyChanged);
 
-        object.OnClick.Listen(function (sender, event) {
+        object.Listen('click', function (sender, event) {
             if (object.Parent.Children[object.Parent.Children.length - 1] != object) {
                 event.preventDefault();
                 event.stopPropagation();
@@ -701,7 +701,7 @@ class WindowPage extends Page {
             }
         });
 
-        App.Instance.OnMouseMove.Listen(function (sender, event) {
+        App.Instance.Listen('mousemove', function (sender, event) {
             if (object.Dragging) {
                 let mousePosition = {
                     left: event.clientX,
@@ -762,7 +762,7 @@ class WindowPage extends Page {
             }
         });
 
-        App.Instance.OnMouseUp.Listen(function (sender, event) {
+        App.Instance.Listen('mouseup', function (sender, event) {
             if (!object.Dragging && !object.Resizing) return;
 
             object.Dragging = false;
@@ -1154,7 +1154,7 @@ class FilesInput extends Row {
         new Property(object, 'ShowButton', data.showButton ?? true, object.OnPropertyChanged);
         new Property(object, 'Files', data.files ?? [], object.OnPropertyChanged);
 
-        object.OnDrop.Listen(function (sender, event) {
+        object.Listen('drop', function (sender, event) {
             object.AddFiles(event.dataTransfer.files);
         });
     }

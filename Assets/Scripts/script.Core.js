@@ -1068,7 +1068,7 @@ class Editable extends View {
         if (data.onInput) object.OnInput.Listen(data.onInput);
         if (data.onChange) object.OnChange.Listen(data.onChange);
 
-        object.OnBlur.Listen(function (sender, event) {
+        object.Listen('blur', function (sender, event) {
             object.OnChange.Invoke(sender, event);
         });
     }

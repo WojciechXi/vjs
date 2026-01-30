@@ -12,7 +12,7 @@ class Textarea extends View {
         if (data.onChange) object.OnChange.Listen(data.onChange);
         if (data.onPaste) object.OnPaste.Listen(data.onPaste);
 
-        object.OnKeyDown.Listen(function (sender, event) {
+        object.Listen('keydown', function (sender, event) {
             if (event.key == 'Enter' && !(event.ctrlKey || event.shiftKey)) {
                 event.preventDefault();
                 object.Element.blur();
