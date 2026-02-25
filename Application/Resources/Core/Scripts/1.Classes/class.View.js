@@ -96,7 +96,7 @@ class View {
             object.OnLayoutChange.Listen(data.onLayoutChange);
         }
         if (data.onClick) object.Listen('click', data.onClick);
-        if (data.onDblClick) object.Listen('dblClick', data.onDblClick);
+        if (data.onDblClick) object.Listen('dblclick', data.onDblClick);
         if (data.onContextMenu) object.Listen('contextmenu', data.onContextMenu);
         if (data.onFocus) object.Listen('focus', data.onFocus);
         if (data.onBlur) object.Listen('blur', data.onBlur);
