@@ -4,7 +4,8 @@ class App extends Layout {
         App.v2Prevent = [
             'submit',
             // 'click', 'mousedown', 'mouseup',
-            'dragmove', 'dragenter', 'dragover', 'dragstart', 'dragleave', 'drop',
+            // 'dragmove', 'dragenter', 'dragover', 'dragstart', 'dragleave',
+            'drop',
         ];
     }
     Init(data = {}) {

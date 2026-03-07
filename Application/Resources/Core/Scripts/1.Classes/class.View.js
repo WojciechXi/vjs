@@ -12,6 +12,17 @@ class View {
     }
     Init(data = {}) {
         const object = this;
+
+        if (data.onPropertyChange) {
+            object.Listen('propertyChange', data.onPropertyChange);
+            object.OnPropertyChange.Listen(data.onPropertyChange);
+        }
+
+        if (data.onLayoutChange) {
+            object.Listen('layoutChange', data.onLayoutChange);
+            object.OnLayoutChange.Listen(data.onLayoutChange);
+        }
+
         new Property(object, 'Parent', data.parent ?? null, object.OnPropertyChanged);
         new Property(object, 'Classes', data.classes ?? [], object.OnPropertyChanged);
         new Property(object, 'Name', data.name ?? null, object.OnPropertyChanged);
@@ -19,6 +30,7 @@ class View {
         new Property(object, 'CanSelect', data.canSelect ?? false, object.OnPropertyChanged);
         new Property(object, 'IsSelected', data.isSelected ?? false, object.OnPropertyChanged);
         new Property(object, 'Disabled', data.disabled ?? null, object.OnPropertyChanged);
+        new Property(object, 'Draggable', data.draggable ?? null, object.OnPropertyChanged);
         new Property(object, 'Multiple', data.multiple ?? null, object.OnPropertyChanged);
         new Property(object, 'BackgroundColor', data.backgroundColor ?? null, object.OnPropertyChanged);
         new Property(object, 'BackgroundImage', data.backgroundImage ?? null, object.OnPropertyChanged);
@@ -87,16 +99,9 @@ class View {
         new Property(object, 'WritingMode', data.writingMode ?? null, object.OnPropertyChanged);
         new Property(object, 'Transition', data.transition ?? null, object.OnPropertyChanged);
         new Property(object, 'Transform', data.transform ?? null, object.OnPropertyChanged);
-        if (data.onPropertyChange) {
-            object.Listen('propertyChange', data.onPropertyChange);
-            object.OnPropertyChange.Listen(data.onPropertyChange);
-        }
-        if (data.onLayoutChange) {
-            object.Listen('layoutChange', data.onLayoutChange);
-            object.OnLayoutChange.Listen(data.onLayoutChange);
-        }
+
         if (data.onClick) object.Listen('click', data.onClick);
-        if (data.onDblClick) object.Listen('dblClick', data.onDblClick);
+        if (data.onDblClick) object.Listen('dblclick', data.onDblClick);
         if (data.onContextMenu) object.Listen('contextmenu', data.onContextMenu);
         if (data.onFocus) object.Listen('focus', data.onFocus);
         if (data.onBlur) object.Listen('blur', data.onBlur);
@@ -131,234 +136,82 @@ class View {
                 object.Removed();
             }
         });
-        new Binding(object, 'Classes', function (sender, data) {
-            if (data.value && data.value.length) object.Attr('class', data.value.join(' '));
-            else object.Attr('class', null);
-        });
-        new Binding(object, 'Name', function (sender, data) {
-            object.Attr('name', object.Name);
-        });
-        new Binding(object, 'Tooltip', function (sender, data) {
-            object.Attr('title', object.Tooltip);
-        });
-        new Binding(object, 'Disabled', function (sender, data) {
-            object.Attr('disabled', object.Disabled);
-        });
-        new Binding(object, 'Multiple', function (sender, data) {
-            object.Attr('multiple', object.Multiple);
-        });
-        new Binding(object, 'CanSelect', function (sender, data) {
-            if (object.CanSelect) object.Attr('selectable', true);
-            else object.Attr('selectable', null);
-        });
-        new Binding(object, 'IsSelected', function (sender, data) {
-            if (object.IsSelected) object.Attr('is-selected', true);
-            else object.Attr('is-selected', null);
-        });
-        new Binding(object, 'BackgroundColor', function (sender, data) {
-            object.Css('background-color', object.BackgroundColor);
-        });
-        new Binding(object, 'BackgroundImage', function (sender, data) {
-            object.Css('background-image', object.BackgroundImage);
-        });
-        new Binding(object, 'BackgroundSize', function (sender, data) {
-            object.Css('background-size', object.BackgroundSize);
-        });
-        new Binding(object, 'BackgroundRepeat', function (sender, data) {
-            object.Css('background-repeat', object.BackgroundRepeat);
-        });
-        new Binding(object, 'BackgroundPosition', function (sender, data) {
-            object.Css('background-position', object.BackgroundPosition);
-        });
-        new Binding(object, 'BackgroundAttachment', function (sender, data) {
-            object.Css('background-attachment', object.BackgroundAttachment);
-        });
-        new Binding(object, 'BorderLeft', function (sender, data) {
-            object.Css('border-left', object.BorderLeft);
-        });
-        new Binding(object, 'BorderTop', function (sender, data) {
-            object.Css('border-top', object.BorderTop);
-        });
-        new Binding(object, 'BorderRight', function (sender, data) {
-            object.Css('border-right', object.BorderRight);
-        });
-        new Binding(object, 'BorderBottom', function (sender, data) {
-            object.Css('border-bottom', object.BorderBottom);
-        });
-        new Binding(object, 'Border', function (sender, data) {
-            object.Css('border', object.Border);
-        });
-        new Binding(object, 'BorderWidth', function (sender, data) {
-            object.Css('border-width', object.BorderWidth);
-        });
-        new Binding(object, 'BorderStyle', function (sender, data) {
-            object.Css('border-style', object.BorderStyle);
-        });
-        new Binding(object, 'BorderColor', function (sender, data) {
-            object.Css('border-color', object.BorderColor);
-        });
-        new Binding(object, 'BorderWidth', function (sender, data) {
-            object.Css('border-width', object.BorderWidth);
-        });
-        new Binding(object, 'BorderRadius', function (sender, data) {
-            object.Css('border-radius', object.BorderRadius, 'rem');
-        });
-        new Binding(object, 'Display', function (sender, data) {
-            object.Css('display', data.value);
-        });
-        new Binding(object, 'BoxShadow', function (sender, data) {
-            object.Css('box-shadow', object.BoxShadow);
-        });
-        new Binding(object, 'PointerEvents', function (sender, data) {
-            object.Css('pointer-events', object.PointerEvents);
-        });
-        new Binding(object, 'Cursor', function (sender, data) {
-            object.Css('cursor', data.value);
-        });
-        new Binding(object, 'Opacity', function (sender, data) {
-            object.Css('opacity', data.value);
-        });
-        new Binding(object, 'TextOverflow', function (sender, data) {
-            object.Css('text-overflow', object.TextOverflow);
-        });
-        new Binding(object, 'Overflow', function (sender, data) {
-            object.Css('overflow', object.Overflow);
-        });
-        new Binding(object, 'AlignSelf', function (sender, data) {
-            object.Css('align-self', object.AlignSelf);
-        });
-        new Binding(object, 'AlignItems', function (sender, data) {
-            object.Css('align-items', object.AlignItems);
-        });
-        new Binding(object, 'JustifyContent', function (sender, data) {
-            object.Css('justify-content', data.value);
-        });
-        new Binding(object, 'FlexGrow', function (sender, data) {
-            object.Css('flex-grow', data.value);
-        });
-        new Binding(object, 'FlexShrink', function (sender, data) {
-            object.Css('flex-shrink', data.value);
-        });
-        new Binding(object, 'FlexWrap', function (sender, data) {
-            object.Css('flex-wrap', data.value);
-        });
-        new Binding(object, 'FlexOrder', function (sender, data) {
-            object.Css('order', object.FlexOrder);
-        });
-        new Binding(object, 'Gap', function (sender, data) {
-            object.Css('gap', data.value, 'rem');
-        });
-        new Binding(object, 'Resize', function (sender, data) {
-            object.Css('resize', object.Resize);
-        });
-        new Binding(object, 'Position', function (sender, data) {
-            object.Css('position', data.value);
-        });
-        new Binding(object, 'ZIndex', function (sender, data) {
-            object.Css('z-index', data.value);
-        });
-        new Binding(object, 'Left', function (sender, data) {
-            object.Css('left', data.value, 'px');
-        });
-        new Binding(object, 'Top', function (sender, data) {
-            object.Css('top', data.value, 'px');
-        });
-        new Binding(object, 'Right', function (sender, data) {
-            object.Css('right', data.value, 'px');
-        });
-        new Binding(object, 'Bottom', function (sender, data) {
-            object.Css('bottom', data.value, 'px');
-        });
-        new Binding(object, 'Outline', function (sender, data) {
-            object.Css('outline', data.value);
-        });
-        new Binding(object, 'Margin', function (sender, data) {
-            object.Css('margin', data.value, 'rem');
-        });
-        new Binding(object, 'Padding', function (sender, data) {
-            object.Css('padding', data.value, 'rem');
-        });
-        new Binding(object, 'MinWidth', function (sender, data) {
-            object.Css('min-width', data.value, 'px');
-        });
-        new Binding(object, 'Width', function (sender, data) {
-            object.Css('width', data.value, 'px');
-        });
-        new Binding(object, 'MaxWidth', function (sender, data) {
-            object.Css('max-width', data.value, 'px');
-        });
-        new Binding(object, 'MinHeight', function (sender, data) {
-            object.Css('min-height', data.value, 'px');
-        });
-        new Binding(object, 'Height', function (sender, data) {
-            object.Css('height', data.value, 'px');
-        });
-        new Binding(object, 'MaxHeight', function (sender, data) {
-            object.Css('max-height', data.value, 'px');
-        });
-        new Binding(object, 'AspectRatio', function (sender, data) {
-            object.Css('aspect-ratio', data.value);
-        });
-        new Binding(object, 'Color', function (sender, data) {
-            object.Css('color', data.value);
-        });
-        new Binding(object, 'LineHeight', function (sender, data) {
-            object.Css('line-height', data.value);
-        });
-        new Binding(object, 'VerticalAlign', function (sender, data) {
-            object.Css('vertical-align', data.value);
-        });
-        new Binding(object, 'TextAlign', function (sender, data) {
-            object.Css('text-align', data.value);
-        });
-        new Binding(object, 'TextTransform', function (sender, data) {
-            object.Css('text-transform', data.value);
-        });
-        new Binding(object, 'TextIdent', function (sender, data) {
-            object.Css('text-ident', data.value);
-        });
-        new Binding(object, 'LetterSpacing', function (sender, data) {
-            object.Css('letter-spacing', data.value);
-        });
-        new Binding(object, 'WordSpacing', function (sender, data) {
-            object.Css('word-spacing', data.value);
-        });
-        new Binding(object, 'WhiteSpace', function (sender, data) {
-            object.Css('white-space', data.value);
-        });
-        new Binding(object, 'TextAlignLast', function (sender, data) {
-            object.Css('text-align-last', data.value);
-        });
-        new Binding(object, 'TextDecoration', function (sender, data) {
-            object.Css('text-decoration', data.value);
-        });
-        new Binding(object, 'TextShadow', function (sender, data) {
-            object.Css('text-shadow', data.value);
-        });
-        new Binding(object, 'FontSize', function (sender, data) {
-            object.Css('font-size', data.value, 'rem');
-        });
-        new Binding(object, 'FontFamily', function (sender, data) {
-            object.Css('font-family', data.value);
-        });
-        new Binding(object, 'FontStyle', function (sender, data) {
-            object.Css('font-style', data.value);
-        });
-        new Binding(object, 'FontWeight', function (sender, data) {
-            object.Css('font-weight', data.value);
-        });
-        new Binding(object, 'FontVariant', function (sender, data) {
-            object.Css('font-variant', data.value);
-        });
-        new Binding(object, 'WritingMode', function (sender, data) {
-            object.Css('writing-mode', data.value);
-        });
-        new Binding(object, 'Transition', function (sender, data) {
-            object.Css('transition', object.Transition);
-        });
-        new Binding(object, 'Transform', function (sender, data) {
-            object.Css('transform', object.Transform);
-        });
+        new Binding(object, 'Classes', function (sender, data) { object.Attr('class', data.value ? (Array.isArray(data.value) ? data.value.join(' ') : data.value) : null); });
+        new Binding(object, 'Name', function (sender, data) { object.Attr('name', object.Name); });
+        new Binding(object, 'Tooltip', function (sender, data) { object.Attr('title', object.Tooltip); });
+        new Binding(object, 'Disabled', function (sender, data) { object.Attr('disabled', object.Disabled); });
+        new Binding(object, 'Draggable', function (sender, data) { object.Attr('draggable', object.Draggable); });
+        new Binding(object, 'Multiple', function (sender, data) { object.Attr('multiple', object.Multiple); });
+        new Binding(object, 'CanSelect', function (sender, data) { object.Attr('selectable', object.CanSelect ? true : null); });
+        new Binding(object, 'IsSelected', function (sender, data) { object.Attr('is-selected', object.IsSelected ? true : null); });
+        new Binding(object, 'BackgroundColor', function (sender, data) { object.Css('background-color', object.BackgroundColor); });
+        new Binding(object, 'BackgroundImage', function (sender, data) { object.Css('background-image', object.BackgroundImage); });
+        new Binding(object, 'BackgroundSize', function (sender, data) { object.Css('background-size', object.BackgroundSize); });
+        new Binding(object, 'BackgroundRepeat', function (sender, data) { object.Css('background-repeat', object.BackgroundRepeat); });
+        new Binding(object, 'BackgroundPosition', function (sender, data) { object.Css('background-position', object.BackgroundPosition); });
+        new Binding(object, 'BackgroundAttachment', function (sender, data) { object.Css('background-attachment', object.BackgroundAttachment); });
+        new Binding(object, 'BorderLeft', function (sender, data) { object.Css('border-left', object.BorderLeft); });
+        new Binding(object, 'BorderTop', function (sender, data) { object.Css('border-top', object.BorderTop); });
+        new Binding(object, 'BorderRight', function (sender, data) { object.Css('border-right', object.BorderRight); });
+        new Binding(object, 'BorderBottom', function (sender, data) { object.Css('border-bottom', object.BorderBottom); });
+        new Binding(object, 'Border', function (sender, data) { object.Css('border', object.Border); });
+        new Binding(object, 'BorderWidth', function (sender, data) { object.Css('border-width', object.BorderWidth); });
+        new Binding(object, 'BorderStyle', function (sender, data) { object.Css('border-style', object.BorderStyle); });
+        new Binding(object, 'BorderColor', function (sender, data) { object.Css('border-color', object.BorderColor); });
+        new Binding(object, 'BorderWidth', function (sender, data) { object.Css('border-width', object.BorderWidth); });
+        new Binding(object, 'BorderRadius', function (sender, data) { object.Css('border-radius', object.BorderRadius, 'rem'); });
+        new Binding(object, 'Display', function (sender, data) { object.Css('display', data.value); });
+        new Binding(object, 'BoxShadow', function (sender, data) { object.Css('box-shadow', object.BoxShadow); });
+        new Binding(object, 'PointerEvents', function (sender, data) { object.Css('pointer-events', object.PointerEvents); });
+        new Binding(object, 'Cursor', function (sender, data) { object.Css('cursor', data.value); });
+        new Binding(object, 'Opacity', function (sender, data) { object.Css('opacity', data.value); });
+        new Binding(object, 'TextOverflow', function (sender, data) { object.Css('text-overflow', object.TextOverflow); });
+        new Binding(object, 'Overflow', function (sender, data) { object.Css('overflow', object.Overflow); });
+        new Binding(object, 'AlignSelf', function (sender, data) { object.Css('align-self', object.AlignSelf); });
+        new Binding(object, 'AlignItems', function (sender, data) { object.Css('align-items', object.AlignItems); });
+        new Binding(object, 'JustifyContent', function (sender, data) { object.Css('justify-content', data.value); });
+        new Binding(object, 'FlexGrow', function (sender, data) { object.Css('flex-grow', data.value); });
+        new Binding(object, 'FlexShrink', function (sender, data) { object.Css('flex-shrink', data.value); });
+        new Binding(object, 'FlexWrap', function (sender, data) { object.Css('flex-wrap', data.value); });
+        new Binding(object, 'FlexOrder', function (sender, data) { object.Css('order', object.FlexOrder); });
+        new Binding(object, 'Gap', function (sender, data) { object.Css('gap', data.value, 'rem'); });
+        new Binding(object, 'Resize', function (sender, data) { object.Css('resize', object.Resize); });
+        new Binding(object, 'Position', function (sender, data) { object.Css('position', data.value); });
+        new Binding(object, 'ZIndex', function (sender, data) { object.Css('z-index', data.value); });
+        new Binding(object, 'Left', function (sender, data) { object.Css('left', data.value, 'px'); });
+        new Binding(object, 'Top', function (sender, data) { object.Css('top', data.value, 'px'); });
+        new Binding(object, 'Right', function (sender, data) { object.Css('right', data.value, 'px'); });
+        new Binding(object, 'Bottom', function (sender, data) { object.Css('bottom', data.value, 'px'); });
+        new Binding(object, 'Outline', function (sender, data) { object.Css('outline', data.value); });
+        new Binding(object, 'Margin', function (sender, data) { object.Css('margin', data.value, 'rem'); });
+        new Binding(object, 'Padding', function (sender, data) { object.Css('padding', data.value, 'rem'); });
+        new Binding(object, 'MinWidth', function (sender, data) { object.Css('min-width', data.value, 'px'); });
+        new Binding(object, 'Width', function (sender, data) { object.Css('width', data.value, 'px'); });
+        new Binding(object, 'MaxWidth', function (sender, data) { object.Css('max-width', data.value, 'px'); });
+        new Binding(object, 'MinHeight', function (sender, data) { object.Css('min-height', data.value, 'px'); });
+        new Binding(object, 'Height', function (sender, data) { object.Css('height', data.value, 'px'); });
+        new Binding(object, 'MaxHeight', function (sender, data) { object.Css('max-height', data.value, 'px'); });
+        new Binding(object, 'AspectRatio', function (sender, data) { object.Css('aspect-ratio', data.value); });
+        new Binding(object, 'Color', function (sender, data) { object.Css('color', data.value); });
+        new Binding(object, 'LineHeight', function (sender, data) { object.Css('line-height', data.value); });
+        new Binding(object, 'VerticalAlign', function (sender, data) { object.Css('vertical-align', data.value); });
+        new Binding(object, 'TextAlign', function (sender, data) { object.Css('text-align', data.value); });
+        new Binding(object, 'TextTransform', function (sender, data) { object.Css('text-transform', data.value); });
+        new Binding(object, 'TextIdent', function (sender, data) { object.Css('text-ident', data.value); });
+        new Binding(object, 'LetterSpacing', function (sender, data) { object.Css('letter-spacing', data.value); });
+        new Binding(object, 'WordSpacing', function (sender, data) { object.Css('word-spacing', data.value); });
+        new Binding(object, 'WhiteSpace', function (sender, data) { object.Css('white-space', data.value); });
+        new Binding(object, 'TextAlignLast', function (sender, data) { object.Css('text-align-last', data.value); });
+        new Binding(object, 'TextDecoration', function (sender, data) { object.Css('text-decoration', data.value); });
+        new Binding(object, 'TextShadow', function (sender, data) { object.Css('text-shadow', data.value); });
+        new Binding(object, 'FontSize', function (sender, data) { object.Css('font-size', data.value, 'rem'); });
+        new Binding(object, 'FontFamily', function (sender, data) { object.Css('font-family', data.value); });
+        new Binding(object, 'FontStyle', function (sender, data) { object.Css('font-style', data.value); });
+        new Binding(object, 'FontWeight', function (sender, data) { object.Css('font-weight', data.value); });
+        new Binding(object, 'FontVariant', function (sender, data) { object.Css('font-variant', data.value); });
+        new Binding(object, 'WritingMode', function (sender, data) { object.Css('writing-mode', data.value); });
+        new Binding(object, 'Transition', function (sender, data) { object.Css('transition', object.Transition); });
+        new Binding(object, 'Transform', function (sender, data) { object.Css('transform', object.Transform); });
     }
     Render() {
         const object = this;
@@ -371,94 +224,42 @@ class View {
     get ElementTag() { return 'view'; }
     get ElementAttrs() {
         const object = this;
-        return {
-        };
+        return {};
     }
     get ElementEvents() {
         const object = this;
         return App.v2 ? {} : {
             // Click
-            click: function (sender, event) {
-                object.OnClick.Invoke(object, event);
-            },
-            dblclick: function (sender, event) {
-                object.OnDblClick.Invoke(object, event);
-            },
+            click: function (sender, event) { object.OnClick.Invoke(object, event); },
+            dblclick: function (sender, event) { object.OnDblClick.Invoke(object, event); },
             // ContextMenu
-            contextmenu: function (sender, event) {
-                object.OnContextMenu.Invoke(object, event);
-            },
+            contextmenu: function (sender, event) { object.OnContextMenu.Invoke(object, event); },
             // Focus
-            focus: function (sender, event) {
-                object.OnFocus.Invoke(object, event);
-            },
-            blur: function (sender, event) {
-                object.OnBlur.Invoke(object, event);
-            },
+            focus: function (sender, event) { object.OnFocus.Invoke(object, event); },
+            blur: function (sender, event) { object.OnBlur.Invoke(object, event); },
             // Mouse
-            wheel: function (sender, event) {
-                object.OnMouseWheel.Invoke(object, event);
-            },
-            mousedown: function (sender, event) {
-                object.OnMouseDown.Invoke(object, event);
-            },
-            mouseup: function (sender, event) {
-                object.OnMouseUp.Invoke(object, event);
-            },
-            mouseenter: function (sender, event) {
-                object.OnMouseEnter.Invoke(object, event);
-            },
-            mousemove: function (sender, event) {
-                object.OnMouseMove.Invoke(object, event);
-            },
-            mouseover: function (sender, event) {
-                object.OnMouseOver.Invoke(object, event);
-            },
-            mouseleave: function (sender, event) {
-                object.OnMouseLeave.Invoke(object, event);
-            },
+            wheel: function (sender, event) { object.OnMouseWheel.Invoke(object, event); },
+            mousedown: function (sender, event) { object.OnMouseDown.Invoke(object, event); },
+            mouseup: function (sender, event) { object.OnMouseUp.Invoke(object, event); },
+            mouseenter: function (sender, event) { object.OnMouseEnter.Invoke(object, event); },
+            mousemove: function (sender, event) { object.OnMouseMove.Invoke(object, event); },
+            mouseover: function (sender, event) { object.OnMouseOver.Invoke(object, event); },
+            mouseleave: function (sender, event) { object.OnMouseLeave.Invoke(object, event); },
             // Touch
-            touchstart: function (sender, event) {
-                object.OnTouchStart.Invoke(object, event);
-            },
-            touchmove: function (sender, event) {
-                object.OnTouchMove.Invoke(object, event);
-            },
-            touchend: function (sender, event) {
-                object.onTouchEnd.Invoke(object, event);
-            },
-            touchcancel: function (sender, event) {
-                object.OnTouchCancel.Invoke(object, event);
-            },
+            touchstart: function (sender, event) { object.OnTouchStart.Invoke(object, event); },
+            touchmove: function (sender, event) { object.OnTouchMove.Invoke(object, event); },
+            touchend: function (sender, event) { object.onTouchEnd.Invoke(object, event); },
+            touchcancel: function (sender, event) { object.OnTouchCancel.Invoke(object, event); },
             // Drag
-            dragstart: function (sender, event) {
-                window.dragItem = event.target.view;
-                object.OnDragStart.Invoke(object, event);
-            },
-            dragenter: function (sender, event) {
-                event.preventDefault();
-                object.OnDragEnter.Invoke(object, event);
-            },
-            dragover: function (sender, event) {
-                event.preventDefault();
-                object.OnDragOver.Invoke(object, event);
-            },
-            dragleave: function (sender, event) {
-                event.preventDefault();
-                object.OnDragLeave.Invoke(object, event);
-            },
+            dragstart: function (sender, event) { window.dragItem = event.target.view; object.OnDragStart.Invoke(object, event); },
+            dragenter: function (sender, event) { event.preventDefault(); object.OnDragEnter.Invoke(object, event); },
+            dragover: function (sender, event) { event.preventDefault(); object.OnDragOver.Invoke(object, event); },
+            dragleave: function (sender, event) { event.preventDefault(); object.OnDragLeave.Invoke(object, event); },
             // Drop
-            drop: function (sender, event) {
-                event.preventDefault();
-                object.OnDrop.Invoke(object, event);
-            },
+            drop: function (sender, event) { event.preventDefault(); object.OnDrop.Invoke(object, event); },
             // Key
-            keydown: function (sender, event) {
-                object.OnKeyDown.Invoke(object, event);
-            },
-            keyup: function (sender, event) {
-                object.OnKeyUp.Invoke(object, event);
-            },
+            keydown: function (sender, event) { object.OnKeyDown.Invoke(object, event); },
+            keyup: function (sender, event) { object.OnKeyUp.Invoke(object, event); },
         };
     }
     get Element() {
@@ -596,118 +397,41 @@ class View {
         object.OnRemove.Invoke(object, {});
         object.Trigger('remove');
     }
+
     //Layout Change
-    get OnLayoutChange() {
-        const object = this;
-        return object.onLayoutChange ?? (object.onLayoutChange = new Callback());
-    }
+    get OnLayoutChange() { return this.onLayoutChange ?? (this.onLayoutChange = new Callback()); }
     //Property Change
-    get OnPropertyChange() {
-        const object = this;
-        return object.onPropertyChange ?? (object.onPropertyChange = new Callback());
-    }
+    get OnPropertyChange() { return this.onPropertyChange ?? (this.onPropertyChange = new Callback()); }
     //Click
-    get OnClick() {
-        const object = this;
-        return object.onClick ?? (object.onClick = new Callback());
-    }
-    get OnDblClick() {
-        const object = this;
-        return object.onDblClick ?? (object.onDblClick = new Callback());
-    }
+    get OnClick() { return this.onClick ?? (this.onClick = new Callback()); }
+    get OnDblClick() { return this.onDblClick ?? (this.onDblClick = new Callback()); }
     //ContextMenu
-    get OnContextMenu() {
-        const object = this;
-        return object.onContextMenu ?? (object.onContextMenu = new Callback());
-    }
+    get OnContextMenu() { return this.onContextMenu ?? (this.onContextMenu = new Callback()); }
     // Focus
-    get OnFocus() {
-        const object = this;
-        return object.onFocus ?? (object.onFocus = new Callback());
-    }
-    get OnBlur() {
-        const object = this;
-        return object.onBlur ?? (object.onBlur = new Callback());
-    }
+    get OnFocus() { return this.onFocus ?? (this.onFocus = new Callback()); }
+    get OnBlur() { return this.onBlur ?? (this.onBlur = new Callback()); }
     //Mouse
-    get OnMouseWheel() {
-        const object = this;
-        return object.onMouseWheel ?? (object.onMouseWheel = new Callback());
-    }
-    get OnMouseDown() {
-        const object = this;
-        return object.onMouseDown ?? (object.onMouseDown = new Callback());
-    }
-    get OnMouseUp() {
-        const object = this;
-        return object.onMouseUp ?? (object.onMouseUp = new Callback());
-    }
-    get OnMouseEnter() {
-        const object = this;
-        return object.onMouseEnter ?? (object.onMouseEnter = new Callback());
-    }
-    get OnMouseMove() {
-        const object = this;
-        return object.onMouseMove ?? (object.onMouseMove = new Callback());
-    }
-    get OnMouseOver() {
-        const object = this;
-        return object.onMouseOver ?? (object.onMouseOver = new Callback());
-    }
-    get OnMouseLeave() {
-        const object = this;
-        return object.onMouseLeave ?? (object.onMouseLeave = new Callback());
-    }
+    get OnMouseWheel() { return this.onMouseWheel ?? (this.onMouseWheel = new Callback()); }
+    get OnMouseDown() { return this.onMouseDown ?? (this.onMouseDown = new Callback()); }
+    get OnMouseUp() { return this.onMouseUp ?? (this.onMouseUp = new Callback()); }
+    get OnMouseEnter() { return this.onMouseEnter ?? (this.onMouseEnter = new Callback()); }
+    get OnMouseMove() { return this.onMouseMove ?? (this.onMouseMove = new Callback()); }
+    get OnMouseOver() { return this.onMouseOver ?? (this.onMouseOver = new Callback()); }
+    get OnMouseLeave() { return this.onMouseLeave ?? (this.onMouseLeave = new Callback()); }
     //Touch
-    get OnTouchStart() {
-        const object = this;
-        return object.onTouchStart ?? (object.onTouchStart = new Callback());
-    }
-    get OnTouchMove() {
-        const object = this;
-        return object.onTouchMove ?? (object.onTouchMove = new Callback());
-    }
-    get OnTouchEnd() {
-        const object = this;
-        return object.onTouchEnd ?? (object.onTouchEnd = new Callback());
-    }
-    get OnTouchCancel() {
-        const object = this;
-        return object.onTouchCancel ?? (object.onTouchCancel = new Callback());
-    }
+    get OnTouchStart() { return this.onTouchStart ?? (this.onTouchStart = new Callback()); }
+    get OnTouchMove() { return this.onTouchMove ?? (this.onTouchMove = new Callback()); }
+    get OnTouchEnd() { return this.onTouchEnd ?? (this.onTouchEnd = new Callback()); }
+    get OnTouchCancel() { return this.onTouchCancel ?? (this.onTouchCancel = new Callback()); }
     //Drag
-    get OnDragStart() {
-        const object = this;
-        return object.onDragStart ?? (object.onDragStart = new Callback());
-    }
-    get OnDragEnter() {
-        const object = this;
-        return object.onDragEnter ?? (object.onDragEnter = new Callback());
-    }
-    get OnDragOver() {
-        const object = this;
-        return object.onDragOver ?? (object.onDragOver = new Callback());
-    }
-    get OnDragLeave() {
-        const object = this;
-        return object.onDragLeave ?? (object.onDragLeave = new Callback());
-    }
-    get OnDrop() {
-        const object = this;
-        return object.onDrop ?? (object.onDrop = new Callback());
-    }
+    get OnDragStart() { return this.onDragStart ?? (this.onDragStart = new Callback()); }
+    get OnDragEnter() { return this.onDragEnter ?? (this.onDragEnter = new Callback()); }
+    get OnDragOver() { return this.onDragOver ?? (this.onDragOver = new Callback()); }
+    get OnDragLeave() { return this.onDragLeave ?? (this.onDragLeave = new Callback()); }
+    get OnDrop() { return this.onDrop ?? (this.onDrop = new Callback()); }
     //Key
-    get OnKeyDown() {
-        const object = this;
-        return object.onKeyDown ?? (object.onKeyDown = new Callback());
-    }
-    get OnKeyUp() {
-        const object = this;
-        return object.onKeyUp ?? (object.onKeyUp = new Callback());
-    }
+    get OnKeyDown() { return this.onKeyDown ?? (this.onKeyDown = new Callback()); }
+    get OnKeyUp() { return this.onKeyUp ?? (this.onKeyUp = new Callback()); }
     //Remove
-    get OnRemove() {
-        const object = this;
-        return object.onRemove ?? (object.onRemove = new Callback());
-    }
+    get OnRemove() { return this.onRemove ?? (this.onRemove = new Callback()); }
 }
