@@ -7,6 +7,8 @@ class Binding {
         object.onChange = onChange;
 
         object.Source = source;
+
+        if (source._bindings) source._bindings.push(object);
     }
 
     set Source(newValue) {
@@ -26,6 +28,13 @@ class Binding {
                 value: object.source[object.property],
             });
         }
+    }
+
+    Destroy() {
+        const object = this;
+        Object.keys(object).forEach(function (key) {
+            object[key] = null;
+        });
     }
 
 }
