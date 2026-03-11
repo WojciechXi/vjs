@@ -56,23 +56,30 @@ class Page extends Layout {
         let object = this;
         return object.onPull ?? (object.onPull = new Callback());
     }
+
     GetHistory() {
         let object = this;
         return {
             class: object.constructor.name,
         };
     }
+
     Push() {
         let object = this;
         object.OnPush.Invoke(object, {});
         if (object.Out) object.Out.Stop();
         if (object.In) object.In.Start();
     }
-    Pull() {
+
+    Pull(dispose = false) {
         let object = this;
         object.OnPull.Invoke(object, {});
         if (object.In) object.In.Stop();
         if (object.Out) object.Out.Start();
         else object.Remove();
+
+        if (dispose) setTimeout(function () {
+            object.Dispose();
+        }, 5000);
     }
 }

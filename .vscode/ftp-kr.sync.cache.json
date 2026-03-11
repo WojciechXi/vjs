@@ -106,6 +106,26 @@
             },
             "Core": {
               "Scripts": {
+                "0.Extensions": {
+                  "class.Bindable.js": {
+                    "type": "-",
+                    "size": 253,
+                    "lmtime": 1773272268630.372,
+                    "modified": false
+                  },
+                  "extension.Array.js": {
+                    "type": "-",
+                    "size": 402,
+                    "lmtime": 0,
+                    "modified": false
+                  },
+                  "extension.Math.js": {
+                    "type": "-",
+                    "size": 468,
+                    "lmtime": 0,
+                    "modified": false
+                  }
+                },
                 "1.Classes": {
                   "0.View": {
                     "Input": {
@@ -371,8 +391,8 @@
                   },
                   "class.Binding.js": {
                     "type": "-",
-                    "size": 939,
-                    "lmtime": 1769287898898.9502,
+                    "size": 1353,
+                    "lmtime": 1773272629019.8774,
                     "modified": false
                   },
                   "class.BindingProperty.js": {
@@ -383,8 +403,8 @@
                   },
                   "class.Callback.js": {
                     "type": "-",
-                    "size": 852,
-                    "lmtime": 1769287903535.5352,
+                    "size": 856,
+                    "lmtime": 1773272633541.1582,
                     "modified": false
                   },
                   "class.Model.js": {
@@ -395,8 +415,8 @@
                   },
                   "class.Property.js": {
                     "type": "-",
-                    "size": 926,
-                    "lmtime": 1769287904864.4763,
+                    "size": 1126,
+                    "lmtime": 1773272752805.1108,
                     "modified": false
                   },
                   "class.Storage.js": {
@@ -407,8 +427,8 @@
                   },
                   "class.View.js": {
                     "type": "-",
-                    "size": 29250,
-                    "lmtime": 1772904899734.0134,
+                    "size": 29401,
+                    "lmtime": 1773272610572.1038,
                     "modified": false
                   }
                 },
@@ -419,6 +439,12 @@
                     "lmtime": 1769287892574.3433,
                     "modified": false
                   }
+                },
+                "class.Disposable.js": {
+                  "type": "-",
+                  "size": 244,
+                  "lmtime": 1773272595908.7446,
+                  "modified": false
                 }
               },
               "Styles": {
