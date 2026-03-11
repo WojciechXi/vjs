@@ -1554,7 +1554,7 @@ class Checkbox extends Input {
         let events = super.ElementEvents;
         let object = this;
         events.change = function (event) {
-            object.Checked = this.checked;
+            object.Checked = sender.checked;
             object.OnChange.Invoke(object, event);
         };
         return events;
