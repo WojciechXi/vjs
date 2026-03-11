@@ -1,6 +1,7 @@
 class View {
     constructor(data = {}) {
         const object = this;
+        object._bindings = [];
         object.Init(data);
         object.Bind();
         object.Render();
@@ -109,7 +110,7 @@ class View {
         if (data.onMouseDown) object.Listen('mousedown', data.onMouseDown);
         if (data.onMouseUp) object.Listen('mouseup', data.onMouseUp);
         if (data.onMouseEnter) object.Listen('mouseenter', data.onMouseEnter);
-        if (data.onMouseMove) object.Listen('mousedown', data.onMouseMove);
+        if (data.onMouseMove) object.Listen('mousemove', data.onMouseMove);
         if (data.onMouseOver) object.Listen('mouseover', data.onMouseOver);
         if (data.onMouseLeave) object.Listen('mouseleave', data.onMouseLeave);
         if (data.onTouchStart) object.Listen('touchstart', data.onTouchStart);
@@ -434,4 +435,13 @@ class View {
     get OnKeyUp() { return this.onKeyUp ?? (this.onKeyUp = new Callback()); }
     //Remove
     get OnRemove() { return this.onRemove ?? (this.onRemove = new Callback()); }
+
+    Destroy() {
+        const object = this;
+        if (object._bindings) for (let binding of object._bindings) binding.Destroy();
+        Object.keys(object).forEach(function (key) {
+            if (object[key] instanceof View) object[key].Destroy();
+            object[key] = null;
+        });
+    }
 }
