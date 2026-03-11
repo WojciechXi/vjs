@@ -1,6 +1,8 @@
 class Property extends Disposable {
 
     constructor(target, property, value = null, onChange = null, parser = null, disposable = false) {
+        super();
+
         let object = this;
 
         object.value = null;
