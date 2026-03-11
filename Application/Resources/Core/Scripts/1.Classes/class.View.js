@@ -1,7 +1,9 @@
-class View {
+class View extends Bindable {
+
     constructor(data = {}) {
+        super();
+
         const object = this;
-        object._bindings = [];
         object.Init(data);
         object.Bind();
         object.Render();
@@ -11,6 +13,7 @@ class View {
             });
         }
     }
+
     Init(data = {}) {
         const object = this;
 
@@ -436,12 +439,10 @@ class View {
     //Remove
     get OnRemove() { return this.onRemove ?? (this.onRemove = new Callback()); }
 
-    Destroy() {
+    Dispose() {
         const object = this;
-        if (object._bindings) for (let binding of object._bindings) binding.Destroy();
-        Object.keys(object).forEach(function (key) {
-            if (object[key] instanceof View) object[key].Destroy();
-            object[key] = null;
-        });
+        object.Remove();
+        super.Dispose();
     }
+
 }

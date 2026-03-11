@@ -1,6 +1,8 @@
-class Binding {
+class Binding extends Disposable {
 
     constructor(source, property, onChange = null) {
+        super();
+
         let object = this;
 
         object.property = property;
@@ -8,33 +10,36 @@ class Binding {
 
         object.Source = source;
 
-        if (source._bindings) source._bindings.push(object);
+        (source._bindings ?? (source._bindings = [])).push(object);
     }
 
     set Source(newValue) {
         let object = this;
+
+        if (object.source == newValue) return;
+
+        if (object.source && object.source.OnPropertyChange && object.listener) {
+            object.source.OnPropertyChange.Remove(object.listener);
+            object.listener = null;
+        }
+
         object.source = newValue;
         if (object.source && object.source.OnPropertyChange) {
-            object.source.OnPropertyChange.Listen(function (sender, property) {
+            object.listener = function (sender, property) {
                 if (property != object.property) return;
                 if (object.onChange) object.onChange(object.source, {
                     property: object.property,
                     value: object.source[object.property],
                 });
-            });
+            };
+
+            object.source.OnPropertyChange.Listen(object.listener);
 
             if (object.onChange) object.onChange(object.source, {
                 property: object.property,
                 value: object.source[object.property],
             });
         }
-    }
-
-    Destroy() {
-        const object = this;
-        Object.keys(object).forEach(function (key) {
-            object[key] = null;
-        });
     }
 
 }
