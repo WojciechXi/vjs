@@ -441,7 +441,9 @@ class View extends Bindable {
 
     Dispose() {
         const object = this;
-        object.Remove();
+        if (object._properties) Object.keys(object._properties).forEach(function (key) { object._properties[key].Dispose(); });
+        object.Element.remove();
+        object.Element.view = null;
         super.Dispose();
     }
 

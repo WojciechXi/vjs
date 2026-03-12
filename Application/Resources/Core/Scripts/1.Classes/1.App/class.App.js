@@ -1,4 +1,5 @@
 class App extends Layout {
+
     static {
         App.v2 = false;
         App.v2Prevent = [
@@ -8,12 +9,14 @@ class App extends Layout {
             'drop',
         ];
     }
+
     Init(data = {}) {
         super.Init(data);
-        let object = this;
+        const object = this;
         App.Instance = object;
         new Property(object, 'Title', data.title ?? 'App', object.OnPropertyChanged);
         new Property(object, 'Description', data.description ?? '', object.OnPropertyChanged);
+
         if (App.v2) {
             console.log('App.v2');
             for (let event of App.v2Prevent) window.addEventListener(event, function (event) { event.preventDefault(); event.stopPropagation(); });
@@ -30,31 +33,38 @@ class App extends Layout {
                 object.OnLoad.Invoke(object, event);
             });
         }
+
         window.addEventListener('resize', function (event) {
             object.OnResize.Invoke(object, event);
         });
+
         window.addEventListener('dragenter', function () {
         });
     }
+
     Bind() {
         super.Bind();
-        let object = this;
+        const object = this;
         new Binding(object, 'Title', function (sender, data) {
             document.title = data.value;
         });
     }
+
     Loaded() {
-        let object = this;
+        const object = this;
     }
+
     get ElementTag() {
         return 'app';
     }
+
     get OnLoad() {
-        let object = this;
+        const object = this;
         return object.onLoad ?? (object.onLoad = new Callback());
     }
+
     get OnResize() {
-        let object = this;
+        const object = this;
         return object.onResize ?? (object.onResize = new Callback());
     }
 }

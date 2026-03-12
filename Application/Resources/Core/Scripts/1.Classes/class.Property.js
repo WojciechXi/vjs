@@ -31,6 +31,8 @@ class Property extends Disposable {
         });
 
         object.target[property] = value;
+
+        (target._properties ?? (target._properties = {}))[property] = object;
     }
 
 }
