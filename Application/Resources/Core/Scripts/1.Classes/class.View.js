@@ -29,6 +29,7 @@ class View extends Bindable {
 
         new Property(object, 'Parent', data.parent ?? null, object.OnPropertyChanged);
         new Property(object, 'Classes', data.classes ?? [], object.OnPropertyChanged);
+        new Property(object, 'Id', data.id ?? null, object.OnPropertyChanged);
         new Property(object, 'Name', data.name ?? null, object.OnPropertyChanged);
         new Property(object, 'Tooltip', data.tooltip ?? null, object.OnPropertyChanged);
         new Property(object, 'CanSelect', data.canSelect ?? false, object.OnPropertyChanged);
@@ -141,6 +142,7 @@ class View extends Bindable {
             }
         });
         new Binding(object, 'Classes', function (sender, data) { object.Attr('class', data.value ? (Array.isArray(data.value) ? data.value.join(' ') : data.value) : null); });
+        new Binding(object, 'Id', function (sender, data) { object.Attr('id', object.Id); });
         new Binding(object, 'Name', function (sender, data) { object.Attr('name', object.Name); });
         new Binding(object, 'Tooltip', function (sender, data) { object.Attr('title', object.Tooltip); });
         new Binding(object, 'Disabled', function (sender, data) { object.Attr('disabled', object.Disabled); });
