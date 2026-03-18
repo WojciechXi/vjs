@@ -49,7 +49,7 @@ class View extends Bindable {
         new Property(object, 'BorderColor', data.borderColor ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderLeft', data.borderLeft ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderTop', data.borderTop ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderRight', data.bordeRight ?? null, object.OnPropertyChanged);
+        new Property(object, 'BorderRight', data.borderRight ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderBottom', data.borderBottom ?? null, object.OnPropertyChanged);
         new Property(object, 'BorderRadius', data.borderRadius ?? null, object.OnPropertyChanged);
         new Property(object, 'PointerEvents', data.pointerEvents ?? null, object.OnPropertyChanged);
