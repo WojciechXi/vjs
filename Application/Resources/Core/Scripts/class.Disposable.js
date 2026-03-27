@@ -1,8 +1,13 @@
 class Disposable {
 
     Dispose() {
+        if (this.isDisposed) return;
+
         const object = this;
-        Object.keys(object).forEach(function (key) { object[key] = null; });
+        object.isDisposed = true;
+        Object.keys(object).forEach(function (key) {
+            if (key != 'isDisposed') object[key] = null;
+        });
     }
 
 }
