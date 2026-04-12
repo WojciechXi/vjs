@@ -29,7 +29,7 @@ class Layout extends View {
         } else if (newChildren instanceof Object) {
             Object.keys(newChildren).forEach(function (key, index) {
                 let newChild = newChildren[key];
-                if (object.childrenLoop) newChild = object.childrenLoop(newChild, key);
+                if (object.childrenLoop) newChild = object.childrenLoop(newChild, key, index);
                 if (newChild) object.AttachChild(newChild);
             });
         }

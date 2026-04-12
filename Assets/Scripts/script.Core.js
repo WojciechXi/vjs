@@ -1270,7 +1270,7 @@ class Layout extends View {
             if (object.ChildrenLoop) {
                 let newChildren = [];
                 children.forEach(function (child, index) {
-                    newChildren[index] = object.ChildrenLoop(child);
+                    newChildren[index] = object.ChildrenLoop(child, index);
                 });
                 return newChildren;
             }
