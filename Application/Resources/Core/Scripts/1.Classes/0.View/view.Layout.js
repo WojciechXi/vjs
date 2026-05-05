@@ -52,21 +52,23 @@ class Layout extends View {
     }
     AttachChild(child, index = -1) {
         const object = this;
+
+        if (!object.Element.appendChild) return false;
+
         if (child.Parent) child.Parent.RemoveChild(child);
-        if (object.Element.appendChild) {
-            if (index == 0) object.Children.unshift(child);
-            else if (index > 0) object.Children.splice(index, 0, child);
-            else object.Children.push(child);
 
-            if (index == 0) object.Children[index].Element.prepend(child);
-            if (index > 0 && object.Children[index]) object.Children[index].Element.after(child);
-            else object.Element.appendChild(child.Element);
+        if (index == 0) object.Children.unshift(child);
+        else if (index > 0) object.Children.splice(index, 0, child);
+        else object.Children.push(child);
 
-            object.OnLayoutChange.Invoke(object, {});
-            child.Parent = object;
-            return true;
-        }
-        return false;
+        if (index == 0) object.Element.prepend(child.Element);
+        else if (index > 0 && object.Children[index - 1]) object.Children[index - 1].Element.after(child.Element);
+        else object.Element.appendChild(child.Element);
+
+        object.OnLayoutChange.Invoke(object, {});
+        child.Parent = object;
+        return true;
+
     }
     DetachChild(child) {
         const object = this;

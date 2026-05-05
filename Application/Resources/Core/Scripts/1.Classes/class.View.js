@@ -144,7 +144,6 @@ class View extends Bindable {
         const object = this;
         if (parent && parent.AddChild) {
             parent.AddChild(object, index);
-            object.Parent = parent;
         } else object.Remove();
     }
 
@@ -335,7 +334,6 @@ class View extends Bindable {
     Remove() {
         const object = this;
         if (object.Parent) object.Parent.RemoveChild(object);
-        object.Parent = null;
         object.Element.remove();
         object.Removed();
     }

@@ -30,9 +30,7 @@ class Page extends Layout {
         let object = this;
 
         new Binding(object, 'Parent', function (sender, data) {
-            if (object.Parent) {
-                object.Push();
-            }
+            if (object.Parent) object.Push();
         });
 
         new Binding(object, 'Content', function (sender, data) {
