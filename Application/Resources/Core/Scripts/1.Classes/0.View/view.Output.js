@@ -1,21 +1,15 @@
 class Output extends View {
 
+    get ElementTag() { return 'output'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
 
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
-
-    get ElementTag() { return 'output'; }
 
 }

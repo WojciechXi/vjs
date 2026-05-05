@@ -1,23 +1,5 @@
 class Select extends Layout {
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-
-        if (data.onChange) object.OnChange.Listen(data.onChange);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
-        });
-    }
-
     get ElementTag() { return 'select'; }
     get ElementEvents() {
         let events = super.ElementEvents;
@@ -29,9 +11,18 @@ class Select extends Layout {
         return events;
     }
 
-    get OnChange() {
+    get OnChange() { return this.onChange ?? (this.onChange = new Callback()); }
+
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onChange ?? (object.onChange = new Callback());
+
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onChange) object.OnChange.Listen(data.onChange);
     }
 
 }

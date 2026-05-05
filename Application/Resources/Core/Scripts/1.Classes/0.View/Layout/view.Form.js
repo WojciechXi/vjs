@@ -1,31 +1,5 @@
 class Form extends Layout {
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Action', data.action ?? '', object.OnPropertyChanged);
-        new Property(object, 'Method', data.method ?? 'GET', object.OnPropertyChanged);
-        new Property(object, 'Enctype', data.enctype ?? 'multipart/form-data', object.OnPropertyChanged);
-
-        if (data.onSubmit) object.OnSubmit.Listen(data.onSubmit);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Action', function (sender, data) {
-            object.Prop('action', data.value);
-        });
-        new Binding(object, 'Method', function (sender, data) {
-            object.Prop('method', data.value);
-        });
-        new Binding(object, 'Enctype', function (sender, data) {
-            object.Prop('enctype', data.value);
-        });
-    }
-
     get ElementTag() { return 'form'; }
     get ElementEvents() {
         let events = super.ElementEvents;
@@ -38,9 +12,26 @@ class Form extends Layout {
         return events;
     }
 
-    get OnSubmit() {
+    get OnSubmit() { return this.onSubmit ?? (this.onSubmit = new Callback()); }
+
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onSubmit ?? (object.onSubmit = new Callback());
+
+        new Property(object, 'Action', data.action ?? null, function (property, oldValue, newValue) {
+            object.Prop('action', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Method', data.method ?? null, function (property, oldValue, newValue) {
+            object.Prop('method', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Enctype', data.enctype ?? 'multipart/form-data', function (property, oldValue, newValue) {
+            object.Prop('enctype', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onSubmit) object.OnSubmit.Listen(data.onSubmit);
     }
 
     Submit() {

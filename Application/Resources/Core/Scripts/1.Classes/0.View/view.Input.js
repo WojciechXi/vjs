@@ -1,37 +1,5 @@
 class Input extends View {
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Autocomplete', data.autocomplete ?? 'bday', object.OnPropertyChanged);
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-        new Property(object, 'Placeholder', data.placeholder ?? '', object.OnPropertyChanged);
-        new Property(object, 'Type', data.type ?? 'text', object.OnPropertyChanged);
-
-        if (data.onInput) object.OnInput.Listen(data.onInput);
-        if (data.onChange) object.OnChange.Listen(data.onChange);
-        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Autocomplete', function (sender, data) {
-            object.Attr('autocomplete', object.Autocomplete);
-        });
-        new Binding(object, 'Placeholder', function (sender, data) {
-            object.Attr('placeholder', object.Placeholder);
-        });
-        new Binding(object, 'Type', function (sender, data) {
-            object.Attr('type', object.Type);
-        });
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
-        });
-    }
-
     get ElementTag() { return 'input'; }
     get ElementEvents() {
         let events = super.ElementEvents;
@@ -51,19 +19,37 @@ class Input extends View {
         return events;
     }
 
-    get OnInput() {
-        let object = this;
-        return object.onInput ?? (object.onInput = new Callback());
-    }
+    get OnInput() { return this.onInput ?? (this.onInput = new Callback()); }
+    get OnChange() { return this.onChange ?? (this.onChange = new Callback()); }
+    get OnPaste() { return this.onPaste ?? (this.onPaste = new Callback()); }
 
-    get OnChange() {
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onChange ?? (object.onChange = new Callback());
-    }
 
-    get OnPaste() {
-        let object = this;
-        return object.onPaste ?? (object.onPaste = new Callback());
+        new Property(object, 'Autocomplete', data.autocomplete ?? 'bday', function (property, oldValue, newValue) {
+            object.Attr('autocomplete', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Value', data.value ?? null, function (property, oldValue, newValue) {
+            object.Attr('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Placeholder', data.placeholder ?? null, function (property, oldValue, newValue) {
+            object.Attr('placeholder', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Type', data.type ?? null, function (property, oldValue, newValue) {
+            object.Prop('type', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onInput) object.OnInput.Listen(data.onInput);
+        if (data.onChange) object.OnChange.Listen(data.onChange);
+        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
     }
 
 }

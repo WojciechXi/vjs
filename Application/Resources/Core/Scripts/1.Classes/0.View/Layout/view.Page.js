@@ -1,8 +1,18 @@
 class Page extends Layout {
+
+    get ElementTag() { return 'page'; }
+    get ContentView() { return this.contentView ?? (this.contentView = new Main()); }
+    get OnPush() { return this.onPush ?? (this.onPush = new Callback()); }
+    get OnPull() { return this.onPull ?? (this.onPull = new Callback()); }
+
     Init(data = {}) {
         super.Init(data);
         const object = this;
-        new Property(object, 'Content', data.content ?? [], object.OnPropertyChanged);
+
+        new Property(object, 'Content', data.content ?? [], function (property, oldValue, newValue) {
+            object.ContentView.Children = Array.isArray(newValue) ? newValue : [];
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
 
         new Property(object, 'InAnimation', data.inAnimation ?? new Anim(data.inDuration ?? 250, function (sender, data) {
             if (object.InStep) object.InStep(object, data);
@@ -46,10 +56,6 @@ class Page extends Layout {
         new Binding(object, 'Parent', function (sender, data) {
             if (object.Parent) object.Push();
         });
-
-        new Binding(object, 'Content', function (sender, data) {
-            object.ContentView.Children = Array.isArray(object.Content) ? object.Content : [];
-        });
     }
 
     Render() {
@@ -57,21 +63,6 @@ class Page extends Layout {
         object.Children = [
             object.ContentView,
         ];
-    }
-
-    get ElementTag() { return 'page'; }
-    get ContentView() {
-        const object = this;
-        return object.contentView ?? (object.contentView = new Main());
-    }
-    get OnPush() {
-        const object = this;
-        return object.onPush ?? (object.onPush = new Callback());
-    }
-
-    get OnPull() {
-        const object = this;
-        return object.onPull ?? (object.onPull = new Callback());
     }
 
     GetHistory() {

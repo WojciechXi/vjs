@@ -3,36 +3,32 @@ class Img extends View {
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Source', data.source ?? '', object.OnPropertyChanged);
-        new Property(object, 'Alt', data.alt ?? '', object.OnPropertyChanged);
-        new Property(object, 'ObjectFit', data.objectFit ?? '', object.OnPropertyChanged);
-        new Property(object, 'ObjectPosition', data.objectPosition ?? '', object.OnPropertyChanged);
-        new Property(object, 'IsLazy', data.isLazy ?? true, object.OnPropertyChanged);
-    }
 
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Source', function (sender, data) {
-            if (object.IsLazy && object.Source && object.Source.startsWith('http')) {
+        new Property(object, 'IsLazy', data.isLazy ?? true);
+        new Property(object, 'Source', data.source ?? '', function (property, oldValue, newValue) {
+            if (object.IsLazy && newValue && newValue.startsWith('http')) {
                 let image = new Image();
                 image.onload = function (event) {
-                    object.Attr('src', object.Source);
+                    object.Prop('src', newValue);
                 };
-                image.src = object.Source;
-                object.Attr('src', '/Assets/loading.gif');
+                image.src = newValue;
+                object.Prop('src', '/Assets/loading.gif');
             } else {
-                object.Attr('src', object.Source);
+                object.Prop('src', newValue);
             }
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Alt', function (sender, data) {
-            object.Prop('alt', data.value);
+        new Property(object, 'Alt', data.alt ?? '', function (property, oldValue, newValue) {
+            object.Prop('alt', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'ObjectFit', function (sender, data) {
-            object.Css('object-fit', data.value);
+        new Property(object, 'ObjectFit', data.objectFit ?? '', function (property, oldValue, newValue) {
+            object.Css('object-fit', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'ObjectPosition', function (sender, data) {
-            object.Css('object-position', data.value);
+        new Property(object, 'ObjectPosition', data.objectPosition ?? '', function (property, oldValue, newValue) {
+            object.Css('object-position', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
 

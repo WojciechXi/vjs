@@ -14,7 +14,11 @@ class App extends Layout {
         super.Init(data);
         const object = this;
         App.Instance = object;
-        new Property(object, 'Title', data.title ?? 'App', object.OnPropertyChanged);
+
+        new Property(object, 'Title', data.title ?? 'App', function (property, oldValue, newValue) {
+            document.title = newValue;
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
         new Property(object, 'Description', data.description ?? '', object.OnPropertyChanged);
 
         if (App.v2) {
@@ -38,15 +42,7 @@ class App extends Layout {
             object.OnResize.Invoke(object, event);
         });
 
-        window.addEventListener('dragenter', function () {
-        });
-    }
-
-    Bind() {
-        super.Bind();
-        const object = this;
-        new Binding(object, 'Title', function (sender, data) {
-            document.title = data.value;
+        window.addEventListener('dragenter', function (event) {
         });
     }
 

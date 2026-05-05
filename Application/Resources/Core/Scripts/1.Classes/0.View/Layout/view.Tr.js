@@ -7,10 +7,10 @@ class Tr extends Layout {
         let object = this;
 
         object.Listen('mousedown', function (sender, event) {
-            if (event.ctrlKey && object.CanSelect) {
+            if (event.ctrlKey && sender.CanSelect) {
                 event.preventDefault();
                 event.stopPropagation();
-                object.IsSelected = !object.IsSelected;
+                sender.IsSelected = !sender.IsSelected;
             }
         });
     }

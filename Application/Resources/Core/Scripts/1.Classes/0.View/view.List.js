@@ -1,27 +1,25 @@
-class List extends Layout {
-
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-        new Property(object, 'ListStyleType', data.listStyleType ?? null, object.OnPropertyChanged);
-        new Property(object, 'ListStyleImage', data.listStyleImage ?? null, object.OnPropertyChanged);
-        new Property(object, 'ListStylePosition', data.listStylePosition ?? null, object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'ListStyleType', function (sender, data) {
-            object.Css('list-style-type', data.value);
-        });
-        new Binding(object, 'ListStyleImage', function (sender, data) {
-            object.Css('list-style-image', data.value);
-        });
-        new Binding(object, 'ListStylePosition', function (sender, data) {
-            object.Css('list-style-position', data.value);
-        });
-    }
-
-    get ElementTag() { return 'ul'; }
-
+class List extends Layout {
+
+    get ElementTag() { return 'ul'; }
+
+    Init(data = {}) {
+        super.Init(data);
+        let object = this;
+
+        new Property(object, 'ListStyleType', data.listStyleType ?? null, function (property, oldValue, newValue) {
+            object.Css('list-style-type', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'ListStyleImage', data.listStyleImage ?? null, function (property, oldValue, newValue) {
+            object.Css('list-style-image', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'ListStylePosition', data.listStylePosition ?? null, function (property, oldValue, newValue) {
+            object.Css('list-style-position', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+    }
+
 }

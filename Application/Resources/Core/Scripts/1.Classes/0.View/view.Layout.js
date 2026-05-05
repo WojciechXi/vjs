@@ -1,23 +1,26 @@
 class Layout extends View {
+
+    get ElementTag() { return 'layout'; }
+
     Init(data = {}) {
         super.Init(data);
+
         const object = this;
         object.childrenLoop = data.childrenLoop ?? null;
         object.children = [];
         object.Children = data.children;
-        new Property(object, 'Direction', data.direction ?? null, object.OnPropertyChanged);
-    }
-    Bind() {
-        super.Bind();
-        const object = this;
-        new Binding(object, 'Direction', function (sender, data) {
-            object.Css('flex-direction', data.value);
+
+        new Property(object, 'Direction', data.direction ?? null, function (property, oldValue, newValue) {
+            object.Css('flex-direction', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
+
     get Children() {
         const object = this;
         return object.children ?? (object.children = []);
     }
+
     set Children(newChildren) {
         const object = this;
         object.Clear();
@@ -34,6 +37,7 @@ class Layout extends View {
             });
         }
     }
+
     Clear() {
         const object = this;
         object.Element.innerHTML = null;
@@ -42,14 +46,17 @@ class Layout extends View {
         });
         object.children = [];
     }
+
     AddChild(child, index = -1) {
         const object = this;
         return object.AttachChild(child, index);
     }
+
     RemoveChild(child) {
         const object = this;
         return object.DetachChild(child);
     }
+
     AttachChild(child, index = -1) {
         const object = this;
 
@@ -70,6 +77,7 @@ class Layout extends View {
         return true;
 
     }
+
     DetachChild(child) {
         const object = this;
         const index = object.Children.indexOf(child);
@@ -79,11 +87,11 @@ class Layout extends View {
         child.Parent = object;
         return true;
     }
-    get ElementTag() { return 'layout'; }
 
     Dispose() {
         const object = this;
         for (let child of object.children) child.Dispose();
         super.Dispose();
     }
+
 }

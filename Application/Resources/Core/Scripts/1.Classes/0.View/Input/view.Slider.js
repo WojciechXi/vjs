@@ -1,28 +1,23 @@
 class Slider extends Input {
 
     Init(data = {}) {
+        data.type = data.type ?? 'slider';
         super.Init(data);
         let object = this;
 
-        object.Type = 'slider';
-
-        new Property(object, 'Min', data.min ?? null, object.OnPropertyChanged);
-        new Property(object, 'Max', data.max ?? null, object.OnPropertyChanged);
-        new Property(object, 'Step', data.step ?? 1, object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Min', function (sender, data) {
-            object.Prop('min', object.Min);
+        new Property(object, 'Min', data.min ?? null, function (property, oldValue, newValue) {
+            object.Prop('min', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Max', function (sender, data) {
-            object.Prop('max', object.Max);
+
+        new Property(object, 'Max', data.max ?? null, function (property, oldValue, newValue) {
+            object.Prop('max', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Step', function (sender, data) {
-            object.Prop('step', object.Step);
+
+        new Property(object, 'Step', data.step ?? 1, function (property, oldValue, newValue) {
+            object.Prop('step', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
 

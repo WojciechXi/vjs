@@ -1,19 +1,15 @@
 class Text extends View {
 
+    get ElementTag() { return 'text'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Text', data.text ?? '', object.OnPropertyChanged);
-    }
 
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Text', function (sender, data) {
-            object.Element.innerHTML = object.Text;
+        new Property(object, 'Text', data.text ?? '', function (property, oldValue, newValue) {
+            object.InnerHTML = newValue;
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
-
-    get ElementTag() { return 'text'; }
 
 }

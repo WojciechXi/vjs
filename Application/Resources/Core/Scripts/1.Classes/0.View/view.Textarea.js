@@ -1,41 +1,5 @@
 class Textarea extends View {
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-        new Property(object, 'Placeholder', data.placeholder ?? '', object.OnPropertyChanged);
-        new Property(object, 'Rows', data.rows ?? '5', object.OnPropertyChanged);
-
-        if (data.onInput) object.OnInput.Listen(data.onInput);
-        if (data.onChange) object.OnChange.Listen(data.onChange);
-        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
-
-        object.Listen('keydown', function (sender, event) {
-            if (event.key == 'Enter' && !(event.ctrlKey || event.shiftKey)) {
-                event.preventDefault();
-                object.Element.blur();
-            } else {
-            }
-        });
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
-        });
-        new Binding(object, 'Placeholder', function (sender, data) {
-            object.Prop('placeholder', object.Placeholder);
-        });
-        new Binding(object, 'Rows', function (sender, data) {
-            object.Prop('rows', object.Rows);
-        });
-    }
-
     get ElementTag() { return 'textarea'; }
     get ElementEvents() {
         let events = super.ElementEvents;
@@ -55,19 +19,40 @@ class Textarea extends View {
         return events;
     }
 
-    get OnInput() {
-        let object = this;
-        return object.onInput ?? (object.onInput = new Callback());
-    }
+    get OnInput() { return this.onInput ?? (this.onInput = new Callback()); }
+    get OnChange() { return this.onChange ?? (this.onChange = new Callback()); }
+    get OnPaste() { return this.onPaste ?? (this.onPaste = new Callback()); }
 
-    get OnChange() {
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onChange ?? (object.onChange = new Callback());
-    }
 
-    get OnPaste() {
-        let object = this;
-        return object.onPaste ?? (object.onPaste = new Callback());
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Placeholder', data.placeholder ?? '', function (property, oldValue, newValue) {
+            object.Prop('placeholder', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Rows', data.rows ?? '5', function (property, oldValue, newValue) {
+            object.Prop('rows', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onInput) object.OnInput.Listen(data.onInput);
+        if (data.onChange) object.OnChange.Listen(data.onChange);
+        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
+
+        object.Listen('keydown', function (sender, event) {
+            if (event.key == 'Enter' && !(event.ctrlKey || event.shiftKey)) {
+                event.preventDefault();
+                object.Element.blur();
+            } else {
+            }
+        });
     }
 
 }
