@@ -36,7 +36,7 @@ class App extends Layout {
             object.Loaded();
             object.OnLoad.Invoke(object, data.event ?? null);
         } else {
-            window.addEventListener('load', function (event) {
+            window.addEventListener('DOMContentLoaded', function (event) {
                 document.body.appendChild(object.Element);
                 object.Loaded();
                 object.OnLoad.Invoke(object, event);
