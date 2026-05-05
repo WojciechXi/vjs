@@ -4,12 +4,12 @@ class Page extends Layout {
         const object = this;
         new Property(object, 'Content', data.content ?? [], object.OnPropertyChanged);
 
-        new Property(object, 'InAnimation', data.inAnimation ?? new Anim(125, function (sender, data) {
+        new Property(object, 'InAnimation', data.inAnimation ?? new Anim(data.inDuration ?? 250, function (sender, data) {
             if (object.InStep) object.InStep(object, data);
         }, function (sender, data) {
             if (object.InEnd) object.InEnd(object, data);
         }));
-        new Property(object, 'OutAnimation', data.outAnimation ?? new Anim(125, function (sender, data) {
+        new Property(object, 'OutAnimation', data.outAnimation ?? new Anim(data.outDuration ?? 250, function (sender, data) {
             if (object.OutStep) object.OutStep(object, data);
         }, function (sender, data) {
             if (object.OutEnd) object.OutEnd(object, data);
