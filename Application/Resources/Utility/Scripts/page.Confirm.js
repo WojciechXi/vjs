@@ -1,28 +1,29 @@
 class ConfirmPage extends Page {
 
     Init(data = {}) {
+        data.inStep = function (sender, data) {
+            let opacity = data.t;
+            let scale = Math.Lerp(0.5, 1, data.t);
+            let y = data.i * -100;
+            sender.Opacity = opacity;
+            sender.ContentView.Transform = `scale(${scale}) translateY(${y}%)`;
+        };
+
+        data.outStep = function (sender, data) {
+            let opacity = data.i;
+            let scale = Math.Lerp(1, 0.5, data.t);
+            let y = data.t * -100;
+            sender.Opacity = opacity;
+            sender.ContentView.Transform = `scale(${scale}) translateY(${y}%)`;
+        };
+
         data.zIndex = data.zIndex ?? 9998;
+
         super.Init(data);
         let object = this;
 
         object.BackgroundColor = 'transparent';
         object.Padding = 1;
-
-        object.In = new Anim(125, function (sender, data) {
-            let opacity = data.t;
-            let scale = Math.Lerp(0.5, 1, data.t);
-            let y = data.i * -100;
-            object.Opacity = opacity;
-            object.ContentView.Transform = `scale(${scale}) translateY(${y}%)`;
-        });
-
-        object.Out = new Anim(125, function (sender, data) {
-            let opacity = data.i;
-            let scale = Math.Lerp(1, 0.5, data.t);
-            let y = data.t * -100;
-            object.Opacity = opacity;
-            object.ContentView.Transform = `scale(${scale}) translateY(${y}%)`;
-        });
 
         object.ContentView.BoxShadow = '0rem 0.5rem 1rem rgba(0, 0, 0, 0.5)';
         object.ContentView.BackgroundColor = 'var(--pageBackground)';
