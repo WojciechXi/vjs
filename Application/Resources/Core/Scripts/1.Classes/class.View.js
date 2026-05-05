@@ -143,8 +143,13 @@ class View extends Bindable {
     SetParent(parent, index = -1) {
         const object = this;
         if (object.Parent) object.Parent.RemoveChild(object);
-        if (parent) parent.AddChild(object, index);
-        object.Parent = parent;
+        if (parent && parent.AddChild) {
+            parent.AddChild(object, index);
+            object.Parent = parent;
+        } else {
+            object.Removed();
+            object.Parent = null;
+        }
     }
 
     get ElementTag() { return 'view'; }
