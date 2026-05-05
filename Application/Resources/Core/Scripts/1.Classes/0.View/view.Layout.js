@@ -42,20 +42,26 @@ class Layout extends View {
         });
         object.children = [];
     }
-    AddChild(child) {
+    AddChild(child, index = -1) {
         const object = this;
-        return object.AttachChild(child);
+        return object.AttachChild(child, index);
     }
     RemoveChild(child) {
         const object = this;
         return object.DetachChild(child);
     }
-    AttachChild(child) {
+    AttachChild(child, index = -1) {
         const object = this;
         if (child.Parent) child.Parent.RemoveChild(child);
         if (object.Element.appendChild) {
-            if (object.Children.indexOf(child) < 0) object.Children.push(child);
-            object.Element.appendChild(child.Element);
+            if (object.Children.indexOf(child) < 0) {
+                if (index >= 0) object.Children.splice(index, 0, child);
+                else object.Children.push(child);
+            }
+
+            if (index >= 0 && object.Children[index]) object.Children[index].Element.after(child);
+            else object.Element.appendChild(child.Element);
+
             object.OnLayoutChange.Invoke(object, {});
             child.Parent = object;
             return true;
