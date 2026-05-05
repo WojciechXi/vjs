@@ -75,9 +75,11 @@ class View extends Bindable {
         super();
 
         const object = this;
+
         object.Init(data);
         object.Bind();
         object.Render();
+
         if (data.callback) {
             requestAnimationFrame(function () {
                 data.callback(object);
@@ -110,21 +112,25 @@ class View extends Bindable {
         new Property(object, 'Disabled', data.disabled ?? null, function (property, oldValue, newValue) { object.Attr('disabled', newValue ? true : null); });
         new Property(object, 'Draggable', data.draggable ?? null, function (property, oldValue, newValue) { object.Attr('draggable', newValue ? true : null); });
         new Property(object, 'Multiple', data.multiple ?? null, function (property, oldValue, newValue) { object.Attr('multiple', newValue ? true : null); });
+
         new Property(object, 'BackgroundColor', data.backgroundColor ?? null, function (property, oldValue, newValue) { object.Css('background-color', newValue); });
         new Property(object, 'BackgroundImage', data.backgroundImage ?? null, function (property, oldValue, newValue) { object.Css('background-image', newValue); });
         new Property(object, 'BackgroundSize', data.backgroundSize ?? null, function (property, oldValue, newValue) { object.Css('background-size', newValue); });
         new Property(object, 'BackgroundRepeat', data.backgroundRepeat ?? null, function (property, oldValue, newValue) { object.Css('background-repeat', newValue); });
         new Property(object, 'BackgroundPosition', data.backgroundPosition ?? null, function (property, oldValue, newValue) { object.Css('background-position', newValue); });
         new Property(object, 'BackgroundAttachment', data.backgroundAttachment ?? null, function (property, oldValue, newValue) { object.Css('background-attachment', newValue); });
+
         new Property(object, 'Border', data.border ?? null, function (property, oldValue, newValue) { object.Css('border', newValue); });
         new Property(object, 'BorderWidth', data.borderWidth ?? null, function (property, oldValue, newValue) { object.Css('border-width', newValue); });
         new Property(object, 'BorderStyle', data.borderStyle ?? null, function (property, oldValue, newValue) { object.Css('border-style', newValue); });
         new Property(object, 'BorderColor', data.borderColor ?? null, function (property, oldValue, newValue) { object.Css('border-color', newValue); });
         new Property(object, 'BorderRadius', data.borderRadius ?? null, function (property, oldValue, newValue) { object.Css('border-radius', newValue, 'rem'); });
-        new Property(object, 'BorderLeft', data.borderLeft ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderTop', data.borderTop ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderRight', data.borderRight ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderBottom', data.borderBottom ?? null, object.OnPropertyChanged);
+
+        new Property(object, 'BorderLeft', data.borderLeft ?? null, function (property, oldValue, newValue) { object.Css('border-left', newValue); });
+        new Property(object, 'BorderTop', data.borderTop ?? null, function (property, oldValue, newValue) { object.Css('border-top', newValue); });
+        new Property(object, 'BorderRight', data.borderRight ?? null, function (property, oldValue, newValue) { object.Css('border-right', newValue); });
+        new Property(object, 'BorderBottom', data.borderBottom ?? null, function (property, oldValue, newValue) { object.Css('border-bottom', newValue); });
+
         new Property(object, 'PointerEvents', data.pointerEvents ?? null, function (property, oldValue, newValue) { object.Css('pointer-events', newValue); });
         new Property(object, 'Cursor', data.cursor ?? null, function (property, oldValue, newValue) { object.Css('cursor', newValue); });
         new Property(object, 'Display', data.display ?? null, function (property, oldValue, newValue) { object.Css('display', newValue); });
@@ -178,10 +184,21 @@ class View extends Bindable {
         new Property(object, 'Transition', data.transition ?? null, function (property, oldValue, newValue) { object.Css('transition', newValue, 'ms'); });
         new Property(object, 'Transform', data.transform ?? null, function (property, oldValue, newValue) { object.Css('transform', newValue); });
 
+        if (data.css && data.css instanceof Object) {
+            Object.keys(data.css).forEach(function (key) {
+                const value = data.css[key];
+                key = key.split(/(?=[A-Z])/).map(word => word.toLowerCase()).join('-');
+
+                if (value !== null) object.Element.style.setProperty(key, value);
+                else object.Element.style.removeProperty(key);
+            });
+        }
+
         new Property(object, 'CanSelect', data.canSelect ?? false, function (property, oldValue, newValue) {
             object.Attr('selectable', newValue ? true : null);
             object.OnPropertyChanged(property, oldValue, newValue);
         });
+
         new Property(object, 'IsSelected', data.isSelected ?? false, function (property, oldValue, newValue) {
             object.Attr('is-selected', newValue ? true : null);
             object.OnPropertyChanged(property, oldValue, newValue);
@@ -306,6 +323,7 @@ class View extends Bindable {
             object.Prop(key, properties[key]);
         });
     }
+
     Css(property, value, unit = null) {
         if (!property) return false;
         property = property.split(/(?=[A-Z])/).join('-').toLowerCase();
@@ -319,6 +337,7 @@ class View extends Bindable {
             }
         } else object.Element.style.removeProperty(property);
     }
+
     Style(property, value, unit = null) {
         if (!property) return false;
         property = property.split(/(?=[A-Z])/).join('-').toLowerCase();
@@ -332,6 +351,7 @@ class View extends Bindable {
             }
         } else object.Element.style.removeProperty(property);
     }
+
     Styles(style) {
         const object = this;
         Object.keys(style).forEach(function (key) {
@@ -339,6 +359,7 @@ class View extends Bindable {
             else object.Css(key, style[key]);
         });
     }
+
     OnPropertyChanged(propertyName, oldValue = null, newValue = null) {
         const object = this;
         object.OnPropertyChange.Invoke(object, propertyName, {
@@ -346,16 +367,19 @@ class View extends Bindable {
             newValue: newValue
         });
     }
+
     OnLayoutChanged() {
         const object = this;
         object.OnLayoutChange.Invoke(object, {});
     }
+
     Remove() {
         const object = this;
         if (object.Parent) object.Parent.RemoveChild(object);
         object.Element.remove();
         object.Removed();
     }
+
     Removed() {
         const object = this;
         object.OnRemove.Invoke(object, {});

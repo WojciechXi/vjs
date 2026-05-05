@@ -10,6 +10,11 @@ class App extends Layout {
         ];
     }
 
+    get ElementTag() { return 'app'; }
+
+    get OnLoad() { return this.onLoad ?? (this.onLoad = new Callback()); }
+    get OnResize() { return this.onResize ?? (this.onResize = new Callback()); }
+
     Init(data = {}) {
         super.Init(data);
         const object = this;
@@ -41,26 +46,9 @@ class App extends Layout {
         window.addEventListener('resize', function (event) {
             object.OnResize.Invoke(object, event);
         });
-
-        window.addEventListener('dragenter', function (event) {
-        });
     }
 
     Loaded() {
         const object = this;
-    }
-
-    get ElementTag() {
-        return 'app';
-    }
-
-    get OnLoad() {
-        const object = this;
-        return object.onLoad ?? (object.onLoad = new Callback());
-    }
-
-    get OnResize() {
-        const object = this;
-        return object.onResize ?? (object.onResize = new Callback());
     }
 }
