@@ -142,14 +142,27 @@ class View extends Bindable {
 
     SetParent(parent, index = -1) {
         const object = this;
-        if (object.Parent) object.Parent.RemoveChild(object);
         if (parent && parent.AddChild) {
             parent.AddChild(object, index);
             object.Parent = parent;
-        } else {
-            object.Removed();
-            object.Parent = null;
-        }
+        } else object.Remove();
+    }
+
+    AppendBefore(element) {
+        const object = this;
+        if (!object.Parent) return false;
+        object.Parent.AddChild(element, object.Index);
+    }
+
+    AppendAfter(element) {
+        const object = this;
+        if (!object.Parent) return false;
+        object.Parent.AddChild(element, object.Index + 1);
+    }
+
+    get Index() {
+        const object = this;
+        return object.Parent ? object.Parent.Children.indexOf(object) : -1;
     }
 
     get ElementTag() { return 'view'; }
@@ -321,7 +334,9 @@ class View extends Bindable {
     }
     Remove() {
         const object = this;
-        object.SetParent(null);
+        if (object.Parent) object.Parent.RemoveChild(object);
+        object.Parent = null;
+        object.Element.remove();
         object.Removed();
     }
     Removed() {
