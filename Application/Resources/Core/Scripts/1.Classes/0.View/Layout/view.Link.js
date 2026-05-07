@@ -12,7 +12,12 @@ class Link extends Layout {
         });
 
         new Property(object, 'Href', data.href ?? null, function (property, oldValue, newValue) {
-            object.Attr('target', newValue);
+            object.Attr('href', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Download', data.download ?? null, function (property, oldValue, newValue) {
+            object.Attr('download', newValue);
             object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
