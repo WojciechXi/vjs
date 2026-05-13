@@ -103,15 +103,39 @@ class View extends Bindable {
         new Property(object, 'Parent', data.parent ?? null, function (property, oldValue, newValue) {
             object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Property(object, 'Classes', data.classes ?? [], function (property, oldValue, newValue) { object.Attr('class', newValue && newValue.length ? (Array.isArray(newValue) ? newValue.join(' ') : newValue) : null); });
-        new Property(object, 'Id', data.id ?? null, function (property, oldValue, newValue) { object.Attr('id', newValue); });
-        new Property(object, 'Name', data.name ?? null, function (property, oldValue, newValue) { object.Attr('name', newValue); });
-        new Property(object, 'Tooltip', data.tooltip ?? null, function (property, oldValue, newValue) { object.Attr('title', newValue); });
+        new Property(object, 'Classes', data.classes ?? [], function (property, oldValue, newValue) {
+            object.Attr('class', newValue && newValue.length ? (Array.isArray(newValue) ? newValue.join(' ') : newValue) : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Id', data.id ?? null, function (property, oldValue, newValue) {
+            object.Attr('id', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Name', data.name ?? null, function (property, oldValue, newValue) {
+            object.Attr('name', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Tooltip', data.tooltip ?? null, function (property, oldValue, newValue) {
+            object.Attr('title', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
 
-        new Property(object, 'Selected', data.selected ?? null, function (property, oldValue, newValue) { object.Attr('selected', newValue ? true : null); });
-        new Property(object, 'Disabled', data.disabled ?? null, function (property, oldValue, newValue) { object.Attr('disabled', newValue ? true : null); });
-        new Property(object, 'Draggable', data.draggable ?? null, function (property, oldValue, newValue) { object.Attr('draggable', newValue ? true : null); });
-        new Property(object, 'Multiple', data.multiple ?? null, function (property, oldValue, newValue) { object.Attr('multiple', newValue ? true : null); });
+        new Property(object, 'Selected', data.selected ?? null, function (property, oldValue, newValue) {
+            object.Attr('selected', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Disabled', data.disabled ?? null, function (property, oldValue, newValue) {
+            object.Attr('disabled', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Draggable', data.draggable ?? null, function (property, oldValue, newValue) {
+            object.Attr('draggable', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Multiple', data.multiple ?? null, function (property, oldValue, newValue) {
+            object.Attr('multiple', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
 
         new Property(object, 'BackgroundColor', data.backgroundColor ?? null, function (property, oldValue, newValue) { object.Css('background-color', newValue); });
         new Property(object, 'BackgroundImage', data.backgroundImage ?? null, function (property, oldValue, newValue) { object.Css('background-image', newValue); });
