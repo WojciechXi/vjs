@@ -378,7 +378,7 @@
                   },
                   "class.Anim.js": {
                     "type": "-",
-                    "size": 2254,
+                    "size": 2286,
                     "lmtime": 1769178519182.0293,
                     "modified": true
                   },
@@ -420,8 +420,8 @@
                   },
                   "class.View.js": {
                     "type": "-",
-                    "size": 24118,
-                    "lmtime": 1777985697246.7173,
+                    "size": 27391,
+                    "lmtime": 1778625273316.2273,
                     "modified": false
                   }
                 },

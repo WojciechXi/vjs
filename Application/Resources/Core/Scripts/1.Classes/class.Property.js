@@ -23,14 +23,14 @@ class Property extends Disposable {
                 let oldValue = object.value;
                 if (oldValue != newValue) {
                     if (object.disposable && oldValue instanceof Disposable) oldValue.Dispose();
-
-                    object.value = newValue;
-                    if (object.onChange) object.onChange.call(object.target, object.property, oldValue, newValue);
                 }
+
+                object.value = newValue;
+                if (object.onChange) object.onChange.call(object.target, object.property, oldValue, newValue);
             }
         });
 
-        object.target[property] = value;
+        if (value !== null && value !== undefined) object.target[property] = value;
 
         (target._properties ?? (target._properties = {}))[property] = object;
     }
