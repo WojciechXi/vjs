@@ -321,26 +321,51 @@ class View extends Bindable {
         const object = this;
         object.Trigger('change');
     }
+
+    ParentUntil(filter) {
+        const object = this;
+        if (!object.Parent) return null;
+        if (filter(object.Parent)) return object.Parent;
+        return object.Parent.ParentUntil(filter);
+    }
+
+    FindChild(filter) {
+        const object = this;
+
+        for (let child of object.Children) if (filter(child)) return child;
+
+        for (let child of object.Children) {
+            const subChild = child.FindChild(filter);
+            if (subChild) return subChild;
+        }
+
+        return null;
+    }
+
     Find(name) {
         const object = this;
         let element = object.Element.querySelector(`[name="${name}"]`);
         return element ? element.view : null;
     }
+
     Attr(attribute, value) {
         const object = this;
         if (value !== null) object.Element.setAttribute(attribute, value);
         else object.Element.removeAttribute(attribute);
     }
+
     Attrs(attributes) {
         const object = this;
         Object.keys(attributes).forEach(function (key) {
             object.Attr(key, attributes[key]);
         });
     }
+
     Prop(property, value) {
         const object = this;
         object.Element[property] = value;
     }
+
     Props(properties) {
         const object = this;
         Object.keys(properties).forEach(function (key) {
