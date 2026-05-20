@@ -10,7 +10,7 @@
 
 loading {
     border-radius: 100%;
-    border: 0.25rem solid crimson;
+    border: 0.125rem solid var(--app-main);
     border-top-color: transparent;
     border-radius: 100%;
     display: block;
@@ -22,7 +22,7 @@ loading {
     &::after {
         content: "";
         display: block;
-        border: 0.25rem solid crimson;
+        border: 0.125rem solid var(--app-main);
         border-top-color: transparent;
         border-radius: 100%;
         position: absolute;

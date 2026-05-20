@@ -26,9 +26,9 @@ class Layout extends View {
         object.SetChildren(newChildren);
     }
 
-    SetChildren(newChildren, useChildrenLoop = true) {
+    SetChildren(newChildren, useChildrenLoop = true, dispose = false) {
         const object = this;
-        object.Clear();
+        object.Clear(dispose);
         if (newChildren instanceof View) {
             object.AttachChild(newChildren);
         } else if (Array.isArray(newChildren)) {
@@ -45,11 +45,13 @@ class Layout extends View {
         }
     }
 
-    Clear() {
+    Clear(dispose = false) {
         const object = this;
         object.Element.innerHTML = null;
         object.Children.forEach(function (child) {
-            if (child) child.Remove();
+            if (!child) return;
+            if (dispose) child.Dispose();
+            else child.Remove();
         });
         object.children = [];
     }

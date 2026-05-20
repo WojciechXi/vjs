@@ -95,10 +95,30 @@
                   "size": 69,
                   "lmtime": 0,
                   "modified": false
-                },
-                "view.Loading.js": {
+                }
+              },
+              "Styles": {
+                "style.HalfPage.css": {
                   "type": "-",
-                  "size": 827,
+                  "size": 975,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.Icon.css": {
+                  "type": "-",
+                  "size": 570,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.ModalPage.css": {
+                  "type": "-",
+                  "size": 237,
+                  "lmtime": 0,
+                  "modified": false
+                },
+                "style.WindowPage.css": {
+                  "type": "-",
+                  "size": 382,
                   "lmtime": 0,
                   "modified": false
                 }
@@ -207,8 +227,8 @@
                       "view.Page.js": {
                         "type": "-",
                         "size": 3317,
-                        "lmtime": 1777992900276.942,
-                        "modified": true
+                        "lmtime": 1779256359282.787,
+                        "modified": false
                       },
                       "view.Row.js": {
                         "type": "-",
@@ -267,19 +287,19 @@
                     },
                     "view.Audio.js": {
                       "type": "-",
-                      "size": 445,
+                      "size": 392,
                       "lmtime": 0,
                       "modified": true
                     },
                     "view.Canvas.js": {
                       "type": "-",
-                      "size": 937,
+                      "size": 841,
                       "lmtime": 0,
                       "modified": true
                     },
                     "view.Editable.js": {
                       "type": "-",
-                      "size": 1906,
+                      "size": 1701,
                       "lmtime": 1769692046212.6035,
                       "modified": true
                     },
@@ -291,43 +311,43 @@
                     },
                     "view.IFrame.js": {
                       "type": "-",
-                      "size": 447,
+                      "size": 390,
                       "lmtime": 0,
                       "modified": true
                     },
                     "view.Img.js": {
                       "type": "-",
-                      "size": 1601,
+                      "size": 1540,
                       "lmtime": 0,
                       "modified": true
                     },
                     "view.Input.js": {
                       "type": "-",
-                      "size": 2352,
+                      "size": 2182,
                       "lmtime": 1769694093773.7324,
-                      "modified": false
+                      "modified": true
                     },
                     "view.Layout.js": {
                       "type": "-",
-                      "size": 3029,
-                      "lmtime": 1777985501784.4976,
+                      "size": 3291,
+                      "lmtime": 1779254750520.4424,
                       "modified": false
                     },
                     "view.List.js": {
                       "type": "-",
-                      "size": 1009,
+                      "size": 940,
                       "lmtime": 1765805313108.9836,
                       "modified": true
                     },
                     "view.ListItem.js": {
                       "type": "-",
-                      "size": 81,
+                      "size": 77,
                       "lmtime": 1765805310497.622,
                       "modified": true
                     },
                     "view.Output.js": {
                       "type": "-",
-                      "size": 452,
+                      "size": 392,
                       "lmtime": 0,
                       "modified": true
                     },
@@ -339,34 +359,46 @@
                     },
                     "view.SelectOption.js": {
                       "type": "-",
-                      "size": 891,
+                      "size": 623,
                       "lmtime": 0,
                       "modified": true
                     },
                     "view.Text.js": {
                       "type": "-",
-                      "size": 445,
+                      "size": 383,
                       "lmtime": 0,
                       "modified": true
                     },
                     "view.Textarea.js": {
                       "type": "-",
-                      "size": 2379,
+                      "size": 2203,
                       "lmtime": 1769694076533.235,
                       "modified": true
                     },
                     "view.Video.js": {
                       "type": "-",
-                      "size": 445,
+                      "size": 388,
                       "lmtime": 0,
                       "modified": true
+                    },
+                    "view.Loading.js": {
+                      "type": "-",
+                      "size": 197,
+                      "lmtime": 1779254853735.131,
+                      "modified": false
                     }
                   },
                   "1.App": {
                     "class.App.js": {
                       "type": "-",
                       "size": 1809,
-                      "lmtime": 1777997216144.4314,
+                      "lmtime": 1777983974951.9612,
+                      "modified": true
+                    },
+                    "page.Loading.js": {
+                      "type": "-",
+                      "size": 314,
+                      "lmtime": 1779255794376.7754,
                       "modified": false
                     }
                   },
@@ -421,16 +453,16 @@
                   "class.View.js": {
                     "type": "-",
                     "size": 27943,
-                    "lmtime": 1779107033455.8374,
-                    "modified": false
+                    "lmtime": 1778625273316.2273,
+                    "modified": true
                   }
                 },
                 "2.App": {
                   "page.Navigator.js": {
                     "type": "-",
-                    "size": 1638,
-                    "lmtime": 1765579478892.9055,
-                    "modified": true
+                    "size": 1551,
+                    "lmtime": 1779256187801.6282,
+                    "modified": false
                   }
                 },
                 "class.Disposable.js": {
@@ -537,6 +569,12 @@
                   "lmtime": 0,
                   "modified": false
                 },
+                "style.Loading.css": {
+                  "type": "-",
+                  "size": 1079,
+                  "lmtime": 1779255769685.2793,
+                  "modified": false
+                },
                 "style.Navigator.css": {
                   "type": "-",
                   "size": 254,
@@ -615,9 +653,9 @@
                 },
                 "material.DateField.js": {
                   "type": "-",
-                  "size": 1657,
+                  "size": 1610,
                   "lmtime": 1764194325147.2246,
-                  "modified": true
+                  "modified": false
                 },
                 "material.EmailField.js": {
                   "type": "-",
@@ -633,9 +671,9 @@
                 },
                 "material.TextArea.js": {
                   "type": "-",
-                  "size": 1897,
+                  "size": 1844,
                   "lmtime": 1764194317702.525,
-                  "modified": true
+                  "modified": false
                 },
                 "material.TextField.js": {
                   "type": "-",
