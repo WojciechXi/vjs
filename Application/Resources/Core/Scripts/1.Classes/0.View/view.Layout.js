@@ -23,16 +23,23 @@ class Layout extends View {
 
     set Children(newChildren) {
         const object = this;
+        object.SetChildren(newChildren);
+    }
+
+    SetChildren(newChildren, useChildrenLoop = true) {
+        const object = this;
         object.Clear();
-        if (Array.isArray(newChildren)) {
+        if (newChildren instanceof View) {
+            object.AttachChild(newChildren);
+        } else if (Array.isArray(newChildren)) {
             newChildren.forEach(function (newChild, index) {
-                if (object.childrenLoop) newChild = object.childrenLoop(newChild, index);
+                if (useChildrenLoop && object.childrenLoop) newChild = object.childrenLoop(newChild, index);
                 if (newChild) object.AttachChild(newChild);
             });
         } else if (newChildren instanceof Object) {
             Object.keys(newChildren).forEach(function (key, index) {
                 let newChild = newChildren[key];
-                if (object.childrenLoop) newChild = object.childrenLoop(newChild, key, index);
+                if (useChildrenLoop && object.childrenLoop) newChild = object.childrenLoop(newChild, key, index);
                 if (newChild) object.AttachChild(newChild);
             });
         }

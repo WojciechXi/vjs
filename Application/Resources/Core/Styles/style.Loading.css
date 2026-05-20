@@ -1,0 +1,46 @@
+@keyframes spin {
+    0% {
+        transform: translateX(-50%) translateY(-50%) rotateZ(0deg);
+    }
+
+    100% {
+        transform: translateX(-50%) translateY(-50%) rotateZ(360deg);
+    }
+}
+
+loading {
+    border-radius: 100%;
+    border: 0.25rem solid crimson;
+    border-top-color: transparent;
+    border-radius: 100%;
+    display: block;
+    aspect-ratio: 1;
+    position: relative;
+    user-select: none;
+
+    &::before,
+    &::after {
+        content: "";
+        display: block;
+        border: 0.25rem solid crimson;
+        border-top-color: transparent;
+        border-radius: 100%;
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translateX(-50%) translateY(-50%);
+        z-index: 100;
+    }
+
+    &::before {
+        width: calc(100% - 0.5rem);
+        height: calc(100% - 0.5rem);
+        animation: spin 1s infinite ease-in-out reverse;
+    }
+
+    &::after {
+        width: calc(100% - 1rem);
+        height: calc(100% - 1rem);
+        animation: spin 1s infinite ease-in-out;
+    }
+}

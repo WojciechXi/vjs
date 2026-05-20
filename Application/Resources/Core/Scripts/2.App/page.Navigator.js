@@ -45,11 +45,6 @@ class Navigator extends Layout {
         return 'navigator';
     }
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-    }
-
     Render() {
         let object = this;
         if (App.Instance) App.Instance.AddChild(object);

@@ -82,13 +82,13 @@ class Page extends Layout {
     Pull(dispose = false) {
         const object = this;
 
-        object.OnPull.Invoke(object, {
-            dispose: dispose,
-        });
-
         if (object.InAnimation) object.InAnimation.Stop();
         if (object.OutAnimation) object.OutAnimation.Start();
         else object.Remove();
+
+        object.OnPull.Invoke(object, {
+            dispose: dispose,
+        });
 
         if (dispose) setTimeout(function () {
             object.Dispose();
