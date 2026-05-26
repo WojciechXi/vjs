@@ -98,6 +98,8 @@ class Layout extends View {
     }
 
     Dispose() {
+        if (this.isDisposed) return;
+
         const object = this;
         for (let child of object.children) child.Dispose();
         super.Dispose();

@@ -485,6 +485,8 @@ class View extends Bindable {
     get OnRemove() { return this.onRemove ?? (this.onRemove = new Callback()); }
 
     Dispose() {
+        if (this.isDisposed) return;
+
         const object = this;
         if (object._properties) Object.keys(object._properties).forEach(function (key) { object._properties[key].Dispose(); });
         object.Element.remove();

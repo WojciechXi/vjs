@@ -7,6 +7,8 @@ class Bindable extends Disposable {
     }
 
     Dispose() {
+        if (this.isDisposed) return;
+
         for (let binding of this._bindings) binding.Dispose();
         super.Dispose();
     }
