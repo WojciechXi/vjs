@@ -1,11 +1,16 @@
 class Page extends Layout {
 
     get ElementTag() { return 'page'; }
-    get ContentView() { return this.contentView ?? (this.contentView = new Main()); }
+    get ContentView() {
+        return this.contentView ?? (this.contentView = new Main({
+            classes: ['page-main'],
+        }));
+    }
     get OnPush() { return this.onPush ?? (this.onPush = new Callback()); }
     get OnPull() { return this.onPull ?? (this.onPull = new Callback()); }
 
     Init(data = {}) {
+        data.classes = ['page', ...data.classes ?? []];
         super.Init(data);
         const object = this;
 
