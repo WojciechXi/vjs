@@ -348,13 +348,13 @@ class View extends Bindable {
         return element ? element.view : null;
     }
 
-    Query(selector) {
+    QuerySelector(selector) {
         const object = this;
         const element = object.Element.querySelector(selector);
         return element ? element.view : null;
     }
 
-    QueryAll(selector) {
+    QuerySelectorAll(selector) {
         const object = this;
         const elements = object.Element.querySelectorAll(selector);
         return elements.filter(e => e.view).map(e => e.view);
