@@ -50,8 +50,8 @@ class Layout extends View {
         object.Element.innerHTML = null;
         object.Children.forEach(function (child) {
             if (!child) return;
-            if (dispose) child.Dispose();
-            else child.Remove();
+            if (dispose && child.Dispose) child.Dispose();
+            else if (child.Remove) child.Remove();
         });
         object.children = [];
     }
