@@ -69,7 +69,8 @@ class Layout extends View {
     AttachChild(child, index = -1) {
         const object = this;
 
-        if (!object.Element.appendChild) return false;
+        if (!object.Element || !object.Element.appendChild) return false;
+        if (!child || !child.Element) return false;
 
         if (child.Parent) child.Parent.RemoveChild(child);
 
