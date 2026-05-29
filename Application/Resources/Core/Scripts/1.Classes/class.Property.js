@@ -21,9 +21,7 @@ class Property extends Disposable {
                 if (object.parser) newValue = object.parser(newValue);
 
                 let oldValue = object.value;
-                if (oldValue != newValue) {
-                    if (object.disposable && oldValue instanceof Disposable) oldValue.Dispose();
-                }
+                if (oldValue != newValue && object.disposable && oldValue instanceof Disposable) oldValue.Dispose();
 
                 object.value = newValue;
                 if (object.onChange) object.onChange.call(object.target, object.property, oldValue, newValue);
