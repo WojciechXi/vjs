@@ -33,12 +33,12 @@ class Input extends View {
         });
 
         new Property(object, 'Value', data.value ?? null, function (property, oldValue, newValue) {
-            object.Attr('value', newValue);
+            object.Prop('value', newValue);
             object.OnPropertyChanged(property, oldValue, newValue);
         });
 
         new Property(object, 'Placeholder', data.placeholder ?? null, function (property, oldValue, newValue) {
-            object.Attr('placeholder', newValue);
+            object.Prop('placeholder', newValue);
             object.OnPropertyChanged(property, oldValue, newValue);
         });
 

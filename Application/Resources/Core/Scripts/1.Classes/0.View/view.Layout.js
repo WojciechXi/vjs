@@ -50,8 +50,8 @@ class Layout extends View {
         object.Element.innerHTML = null;
         object.Children.forEach(function (child) {
             if (!child) return;
-            if (dispose) child.Dispose();
-            else child.Remove();
+            if (dispose && child.Dispose) child.Dispose();
+            else if (child.Remove) child.Remove();
         });
         object.children = [];
     }
@@ -69,7 +69,8 @@ class Layout extends View {
     AttachChild(child, index = -1) {
         const object = this;
 
-        if (!object.Element.appendChild) return false;
+        if (!object.Element || !object.Element.appendChild) return false;
+        if (!child || !child.Element) return false;
 
         if (child.Parent) child.Parent.RemoveChild(child);
 

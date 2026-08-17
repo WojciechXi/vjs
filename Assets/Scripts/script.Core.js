@@ -29,6 +29,8 @@ class Bindable extends Disposable {
     }
 
     Dispose() {
+        if (this.isDisposed) return;
+
         for (let binding of this._bindings) binding.Dispose();
         super.Dispose();
     }
@@ -74,98 +76,109 @@ Math.ZeroBefore = function (value, count = 1) {
     return value;
 };
 
-class Ajax {
-
-    static get OnResponse() {
-        return Ajax.onResponse ? Ajax.onResponse : (Ajax.onResponse = new Callback());
-    }
-
-    static Get(url, data = {}) {
-        const params = new URLSearchParams(data.data ?? {});
-        const ajax = new Ajax('GET', `${url}?${params.toString()}`);
-        ajax.Send(data);
-        return ajax;
-    }
-
-    static Post(url, data = {}) {
-        const ajax = new Ajax('POST', url);
-        ajax.Send(data);
-        return ajax;
-    }
-
-    static Put(url, data = {}) {
-        const ajax = new Ajax('PUT', url);
-        ajax.Send(data);
-        return ajax;
-    }
-
-    static Delete(url, data = {}) {
-        const ajax = new Ajax('DELETE', url);
-        ajax.Send(data);
-        return ajax;
-    }
-
-    constructor(method, url, async = true) {
-        const object = this;
-        object.method = method;
-        object.url = url;
-        object.async = async;
-    }
-
-    Send(data) {
-        const object = this;
-
-        object.xhr = new XMLHttpRequest();
-        object.xhr.open(object.method == 'GET' ? 'GET' : 'POST', object.url, object.async);
-
-        if (data.load) object.xhr.addEventListener('load', function (event) {
-            if (object.xhr.responseType == 'json' || object.xhr.getResponseHeader('Content-type') == 'application/json') {
-                try {
-                    let response = JSON.parse(object.xhr.responseText);
-                    Ajax.OnResponse.Invoke(object, {
-                        response: response,
-                        responseText: object.xhr.responseText,
-                        responseType: object.xhr.responseType,
-                    });
-                    data.load(response, object.xhr.responseType);
-                } catch (exception) {
-                    console.log(exception);
-                    console.log(object.xhr.responseText);
-                }
-            } else {
-                Ajax.OnResponse.Invoke(object, {
-                    responseText: object.xhr.responseText,
-                    responseType: object.xhr.responseType,
-                });
-                data.load(object.xhr.responseText, object.xhr.responseType);
-            }
-        });
-
-        if (data.error) object.xhr.addEventListener('error', function (event) {
-            data.error(object.xhr.error);
-        });
-
-        const formData = data.form ? new FormData(data.form) : new FormData();
-
-        formData.append('REQUEST_METHOD', object.method);
-
-        if (data.data) {
-            Object.keys(data.data).forEach(function (key) {
-                formData.append(key, data.data[key]);
-            });
-        }
-
-        if (data.files) {
-            Object.keys(data.files).forEach(function (index) {
-                formData.append(`file-${index}`, data.files[index]);
-            });
-        }
-
-        if (data.before) data.before(object);
-
-        object.xhr.send(formData);
-    }
-
+class Ajax {
+
+    static get OnResponse() {
+        return Ajax.onResponse ? Ajax.onResponse : (Ajax.onResponse = new Callback());
+    }
+
+    static Get(url, data = {}) {
+        const params = new URLSearchParams(data.data ?? {});
+        const ajax = new Ajax('GET', `${url}?${params.toString()}`);
+        ajax.Send(data);
+        return ajax;
+    }
+
+    static Post(url, data = {}) {
+        const ajax = new Ajax('POST', url);
+        ajax.Send(data);
+        return ajax;
+    }
+
+    static Put(url, data = {}) {
+        const ajax = new Ajax('PUT', url);
+        ajax.Send(data);
+        return ajax;
+    }
+
+    static Delete(url, data = {}) {
+        const ajax = new Ajax('DELETE', url);
+        ajax.Send(data);
+        return ajax;
+    }
+
+    constructor(method, url, async = true) {
+        const object = this;
+        object.loading = false;
+        object.progress = false;
+
+        object.method = method;
+        object.url = url;
+        object.async = async;
+    }
+
+    Send(data) {
+        const object = this;
+
+        if (data.update) data.update(object, object.loading = true);
+
+        object.xhr = new XMLHttpRequest();
+        object.xhr.open(object.method == 'GET' ? 'GET' : 'POST', object.url, object.async);
+
+        if (data.load) object.xhr.addEventListener('load', function (event) {
+            if (data.update) data.update(object, object.loading = false);
+            if (object.xhr.responseType == 'json' || object.xhr.getResponseHeader('Content-type') == 'application/json') {
+                try {
+                    let response = JSON.parse(object.xhr.responseText);
+                    Ajax.OnResponse.Invoke(object, {
+                        response: response,
+                        responseText: object.xhr.responseText,
+                        responseType: object.xhr.responseType,
+                    });
+                    data.load(response, object.xhr.responseType);
+                } catch (exception) {
+                    console.log(exception);
+                    console.log(object.xhr.responseText);
+                }
+            } else {
+                Ajax.OnResponse.Invoke(object, {
+                    responseText: object.xhr.responseText,
+                    responseType: object.xhr.responseType,
+                });
+                data.load(object.xhr.responseText, object.xhr.responseType);
+            }
+        });
+
+        if (data.error) object.xhr.addEventListener('error', function (event) {
+            if (data.update) data.update(object, object.loading = false);
+            data.error(object.xhr.error);
+        });
+
+        const formData = data.form ? new FormData(data.form) : new FormData();
+        formData.append('REQUEST_METHOD', object.method);
+
+        if (data.data) {
+            Object.keys(data.data).forEach(function (key) {
+                formData.append(key, data.data[key]);
+            });
+        }
+
+        if (data.files) {
+            Object.keys(data.files).forEach(function (index) {
+                formData.append(`file-${index}`, data.files[index]);
+            });
+        }
+
+        if (data.before) data.before(object);
+
+        object.xhr.send(formData);
+    }
+
+    Abort() {
+        const object = this;
+        object.xhr.abort();
+    }
+
 }
 
 class Anim {
@@ -521,16 +534,14 @@ class Property extends Disposable {
                 if (object.parser) newValue = object.parser(newValue);
 
                 let oldValue = object.value;
-                if (oldValue != newValue) {
-                    if (object.disposable && oldValue instanceof Disposable) oldValue.Dispose();
+                if (oldValue != newValue && object.disposable && oldValue instanceof Disposable) oldValue.Dispose();
 
-                    object.value = newValue;
-                    if (object.onChange) object.onChange.call(object.target, object.property, oldValue, newValue);
-                }
+                object.value = newValue;
+                if (object.onChange) object.onChange.call(object.target, object.property, oldValue, newValue);
             }
         });
 
-        object.target[property] = value;
+        if (value !== null && value !== undefined) object.target[property] = value;
 
         (target._properties ?? (target._properties = {}))[property] = object;
     }
@@ -555,174 +566,6 @@ class Storage {
 }
 
 class View extends Bindable {
-
-    constructor(data = {}) {
-        super();
-
-        const object = this;
-        object.Init(data);
-        object.Bind();
-        object.Render();
-        if (data.callback) {
-            requestAnimationFrame(function () {
-                data.callback(object);
-            });
-        }
-    }
-
-    Init(data = {}) {
-        const object = this;
-
-        if (data.onPropertyChange) {
-            object.Listen('propertyChange', data.onPropertyChange);
-            object.OnPropertyChange.Listen(data.onPropertyChange);
-        }
-
-        if (data.onLayoutChange) {
-            object.Listen('layoutChange', data.onLayoutChange);
-            object.OnLayoutChange.Listen(data.onLayoutChange);
-        }
-
-        new Property(object, 'Parent', data.parent ?? null, object.OnPropertyChanged);
-        new Property(object, 'Classes', data.classes ?? [], function (property) { object.Attr('class', object[property] ? (Array.isArray(object[property]) ? object[property].join(' ') : object[property]) : null); });
-        new Property(object, 'Id', data.id ?? null, function (property) { object.Attr('id', object[property]); });
-        new Property(object, 'Name', data.name ?? null, function (property) { object.Attr('name', object[property]); });
-        new Property(object, 'Tooltip', data.tooltip ?? null, function (property) { object.Attr('title', object[property]); });
-
-        new Property(object, 'Selected', data.selected ?? null, function (property) { object.Attr('selected', object[property] ? true : null); });
-        new Property(object, 'Disabled', data.disabled ?? null, function (property) { object.Attr('disabled', object[property] ? true : null); });
-        new Property(object, 'Draggable', data.draggable ?? null, function (property) { object.Attr('draggable', object[property] ? true : null); });
-        new Property(object, 'Multiple', data.multiple ?? null, function (property) { object.Attr('multiple', object[property] ? true : null); });
-        new Property(object, 'BackgroundColor', data.backgroundColor ?? null, function (property) { object.Css('background-color', object[property]); });
-        new Property(object, 'BackgroundImage', data.backgroundImage ?? null, function (property) { object.Css('background-image', object[property]); });
-        new Property(object, 'BackgroundSize', data.backgroundSize ?? null, function (property) { object.Css('background-size', object[property]); });
-        new Property(object, 'BackgroundRepeat', data.backgroundRepeat ?? null, function (property) { object.Css('background-repeat', object[property]); });
-        new Property(object, 'BackgroundPosition', data.backgroundPosition ?? null, function (property) { object.Css('background-position', object[property]); });
-        new Property(object, 'BackgroundAttachment', data.backgroundAttachment ?? null, function (property) { object.Css('background-attachment', object[property]); });
-        new Property(object, 'Border', data.border ?? null, function (property) { object.Css('border', object[property]); });
-        new Property(object, 'BorderWidth', data.borderWidth ?? null, function (property) { object.Css('border-width', object[property]); });
-        new Property(object, 'BorderStyle', data.borderStyle ?? null, function (property) { object.Css('border-style', object[property]); });
-        new Property(object, 'BorderColor', data.borderColor ?? null, function (property) { object.Css('border-color', object[property]); });
-        new Property(object, 'BorderRadius', data.borderRadius ?? null, function (property) { object.Css('border-radius', object[property], 'rem'); });
-        new Property(object, 'BorderLeft', data.borderLeft ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderTop', data.borderTop ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderRight', data.borderRight ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderBottom', data.borderBottom ?? null, object.OnPropertyChanged);
-        new Property(object, 'PointerEvents', data.pointerEvents ?? null, function (property) { object.Css('pointer-events', object[property]); });
-        new Property(object, 'Cursor', data.cursor ?? null, function (property) { object.Css('cursor', object[property]); });
-        new Property(object, 'Display', data.display ?? null, function (property) { object.Css('display', object[property]); });
-        new Property(object, 'BoxShadow', data.boxShadow ?? null, function (property) { object.Css('box-shadow', object[property]); });
-        new Property(object, 'Opacity', data.opacity ?? null, function (property) { object.Css('opacity', object[property]); });
-        new Property(object, 'TextOverflow', data.textOverflow ?? null, function (property) { object.Css('text-overflow', object[property]); });
-        new Property(object, 'Overflow', data.overflow ?? null, function (property) { object.Css('overflow', object[property]); });
-        new Property(object, 'AlignSelf', data.alignSelf ?? null, function (property) { object.Css('align-self', object[property]); });
-        new Property(object, 'AlignItems', data.alignItems ?? null, function (property) { object.Css('align-items', object[property]); });
-        new Property(object, 'JustifyContent', data.justifyContent ?? null, function (property) { object.Css('justify-content', object[property]); });
-        new Property(object, 'FlexGrow', data.flexGrow ?? null, function (property) { object.Css('flex-grow', object[property]); });
-        new Property(object, 'FlexShrink', data.flexShrink ?? null, function (property) { object.Css('flex-shrink', object[property]); });
-        new Property(object, 'FlexWrap', data.flexWrap ?? null, function (property) { object.Css('flex-wrap', object[property]); });
-        new Property(object, 'FlexOrder', data.flexOrder ?? null, function (property) { object.Css('flex-order', object[property]); });
-        new Property(object, 'Gap', data.gap ?? null, function (property) { object.Css('gap', object[property], 'rem'); });
-        new Property(object, 'Resize', data.resize ?? null, function (property) { object.Css('resize', object[property]); });
-        new Property(object, 'Position', data.position ?? null, function (property) { object.Css('position', object[property]); });
-        new Property(object, 'ZIndex', data.zIndex ?? null, function (property) { object.Css('z-index', object[property]); });
-        new Property(object, 'Left', data.left ?? null, function (property) { object.Css('left', object[property], 'px'); });
-        new Property(object, 'Top', data.top ?? null, function (property) { object.Css('top', object[property], 'px'); });
-        new Property(object, 'Right', data.right ?? null, function (property) { object.Css('right', object[property], 'px'); });
-        new Property(object, 'Bottom', data.bottom ?? null, function (property) { object.Css('bottom', object[property], 'px'); });
-        new Property(object, 'Outline', data.outline ?? null, function (property) { object.Css('outline', object[property]); });
-        new Property(object, 'Margin', data.margin ?? null, function (property) { object.Css('margin', object[property], 'rem'); });
-        new Property(object, 'Padding', data.padding ?? null, function (property) { object.Css('padding', object[property], 'rem'); });
-        new Property(object, 'MinWidth', data.minWidth ?? null, function (property) { object.Css('min-width', object[property], 'px'); });
-        new Property(object, 'Width', data.width ?? null, function (property) { object.Css('width', object[property], 'px'); });
-        new Property(object, 'MaxWidth', data.maxWidth ?? null, function (property) { object.Css('max-width', object[property], 'px'); });
-        new Property(object, 'MinHeight', data.minHeight ?? null, function (property) { object.Css('min-height', object[property], 'px'); });
-        new Property(object, 'Height', data.height ?? null, function (property) { object.Css('height', object[property], 'px'); });
-        new Property(object, 'MaxHeight', data.maxHeight ?? null, function (property) { object.Css('max-height', object[property], 'px'); });
-        new Property(object, 'AspectRatio', data.aspectRatio ?? null, function (property) { object.Css('aspect-ratio', object[property]); });
-        new Property(object, 'Color', data.color ?? null, function (property) { object.Css('color', object[property]); });
-        new Property(object, 'LineHeight', data.lineHeight ?? null, function (property) { object.Css('line-height', object[property]); });
-        new Property(object, 'VerticalAlign', data.verticalAlign ?? null, function (property) { object.Css('vertical-align', object[property]); });
-        new Property(object, 'TextAlign', data.textAlign ?? null, function (property) { object.Css('text-align', object[property]); });
-        new Property(object, 'TextTransform', data.textTransform ?? null, function (property) { object.Css('text-transform', object[property]); });
-        new Property(object, 'TextIdent', data.textIdent ?? null, function (property) { object.Css('text-ident', object[property], 'rem'); });
-        new Property(object, 'LetterSpacing', data.letterSpacing ?? null, function (property) { object.Css('letter-spacing', object[property], 'px'); });
-        new Property(object, 'WordSpacing', data.wordSpacing ?? null, function (property) { object.Css('word-spacing', object[property], 'px'); });
-        new Property(object, 'WhiteSpace', data.whiteSpace ?? null, function (property) { object.Css('white-space', object[property]); });
-        new Property(object, 'TextAlignLast', data.textAlignLast ?? null, function (property) { object.Css('text-align-last', object[property]); });
-        new Property(object, 'TextDecoration', data.textDecoration ?? null, function (property) { object.Css('text-decoration', object[property]); });
-        new Property(object, 'TextShadow', data.textShadow ?? null, function (property) { object.Css('text-shadow', object[property]); });
-        new Property(object, 'FontSize', data.fontSize ?? null, function (property) { object.Css('font-size', object[property], 'rem'); });
-        new Property(object, 'FontFamily', data.fontFamily ?? null, function (property) { object.Css('font-family', object[property]); });
-        new Property(object, 'FontStyle', data.fontStyle ?? null, function (property) { object.Css('font-style', object[property]); });
-        new Property(object, 'FontWeight', data.fontWeight ?? null, function (property) { object.Css('font-weight', object[property]); });
-        new Property(object, 'FontVariant', data.fontVariant ?? null, function (property) { object.Css('font-variant', object[property]); });
-        new Property(object, 'WritingMode', data.writingMode ?? null, function (property) { object.Css('writing-mode', object[property]); });
-        new Property(object, 'Transition', data.transition ?? null, function (property) { object.Css('transition', object[property], 'ms'); });
-        new Property(object, 'Transform', data.transform ?? null, function (property) { object.Css('transform', object[property]); });
-
-        new Property(object, 'CanSelect', data.canSelect ?? false, function (property) {
-            object.Attr('selectable', object[property] ? true : null);
-            object.OnPropertyChanged(property);
-        });
-        new Property(object, 'IsSelected', data.isSelected ?? false, function (property) {
-            object.Attr('is-selected', object[property] ? true : null);
-            object.OnPropertyChanged(property);
-        });
-
-        if (data.onClick) object.Listen('click', data.onClick);
-        if (data.onDblClick) object.Listen('dblclick', data.onDblClick);
-        if (data.onContextMenu) object.Listen('contextmenu', data.onContextMenu);
-        if (data.onFocus) object.Listen('focus', data.onFocus);
-        if (data.onBlur) object.Listen('blur', data.onBlur);
-        if (data.onMouseWheel) object.Listen('mousewheel', data.onMouseWheel);
-        if (data.onMouseDown) object.Listen('mousedown', data.onMouseDown);
-        if (data.onMouseUp) object.Listen('mouseup', data.onMouseUp);
-        if (data.onMouseEnter) object.Listen('mouseenter', data.onMouseEnter);
-        if (data.onMouseMove) object.Listen('mousemove', data.onMouseMove);
-        if (data.onMouseOver) object.Listen('mouseover', data.onMouseOver);
-        if (data.onMouseLeave) object.Listen('mouseleave', data.onMouseLeave);
-        if (data.onTouchStart) object.Listen('touchstart', data.onTouchStart);
-        if (data.onTouchMove) object.Listen('touchmove', data.onTouchMove);
-        if (data.onTouchEnd) object.Listen('touchend', data.onTouchEnd);
-        if (data.onTouchCancel) object.Listen('touchcancel', data.onTouchCancel);
-        if (data.onDragStart) object.Listen('dragstart', data.onDragStart);
-        if (data.onDragEnter) object.Listen('dragenter', data.onDragEnter);
-        if (data.onDragOver) object.Listen('dragover', data.onDragOver);
-        if (data.onDragLeave) object.Listen('dragleave', data.onDragLeave);
-        if (data.onDrop) object.Listen('drop', data.onDrop);
-        if (data.onKeyDown) object.Listen('keydown', data.onKeyDown);
-        if (data.onKeyUp) object.Listen('keyup', data.onKeyUp);
-        if (data.onRemove) object.Listen('remove', data.onRemove);
-        if (data.onRemove) object.OnRemove.Listen(data.onRemove);
-    }
-
-    Bind() {
-        const object = this;
-    }
-
-    Render() {
-        const object = this;
-    }
-
-    SetParent(parent, index = -1) {
-        const object = this;
-        if (parent && parent.AddChild) {
-            parent.AddChild(object, index);
-        } else object.Remove();
-    }
-
-    AppendBefore(element) {
-        const object = this;
-        if (!object.Parent) return false;
-        object.Parent.AddChild(element, object.Index);
-    }
-
-    AppendAfter(element) {
-        const object = this;
-        if (!object.Parent) return false;
-        object.Parent.AddChild(element, object.Index + 1);
-    }
 
     get Index() {
         const object = this;
@@ -786,10 +629,226 @@ class View extends Bindable {
         }
         return object.element;
     }
-    get InnerHTML() { return this.element.innerHTML; }
-    set InnerHTML(html) { return this.element.innerHTML = html; }
-    get InnerText() { return this.element.innerText; }
-    set InnerText(text) { return this.element.innerText = text; }
+
+    get InnerHTML() { return this.Element.innerHTML; }
+    set InnerHTML(html) { return this.Element.innerHTML = html; }
+
+    get InnerText() { return this.Element.innerText; }
+    set InnerText(text) { return this.Element.innerText = text; }
+
+    get Rect() { return this.Element.getBoundingClientRect(); }
+
+    constructor(data = {}) {
+        super();
+
+        const object = this;
+
+        object.Init(data);
+        object.Bind();
+        object.Render();
+
+        if (data.callback) {
+            requestAnimationFrame(function () {
+                data.callback(object);
+            });
+        }
+    }
+
+    Init(data = {}) {
+        const object = this;
+
+        if (data.onPropertyChange) {
+            object.Listen('propertyChange', data.onPropertyChange);
+            object.OnPropertyChange.Listen(data.onPropertyChange);
+        }
+
+        if (data.onLayoutChange) {
+            object.Listen('layoutChange', data.onLayoutChange);
+            object.OnLayoutChange.Listen(data.onLayoutChange);
+        }
+
+        new Property(object, 'Parent', data.parent ?? null, function (property, oldValue, newValue) {
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Classes', data.classes ?? [], function (property, oldValue, newValue) {
+            object.Attr('class', newValue && newValue.length ? (Array.isArray(newValue) ? newValue.join(' ') : newValue) : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Id', data.id ?? null, function (property, oldValue, newValue) {
+            object.Attr('id', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Name', data.name ?? null, function (property, oldValue, newValue) {
+            object.Attr('name', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Tooltip', data.tooltip ?? null, function (property, oldValue, newValue) {
+            object.Attr('title', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Selected', data.selected ?? null, function (property, oldValue, newValue) {
+            object.Attr('selected', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Disabled', data.disabled ?? null, function (property, oldValue, newValue) {
+            object.Attr('disabled', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Draggable', data.draggable ?? null, function (property, oldValue, newValue) {
+            object.Attr('draggable', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Multiple', data.multiple ?? null, function (property, oldValue, newValue) {
+            object.Attr('multiple', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'BackgroundColor', data.backgroundColor ?? null, function (property, oldValue, newValue) { object.Css('background-color', newValue); });
+        new Property(object, 'BackgroundImage', data.backgroundImage ?? null, function (property, oldValue, newValue) { object.Css('background-image', newValue); });
+        new Property(object, 'BackgroundSize', data.backgroundSize ?? null, function (property, oldValue, newValue) { object.Css('background-size', newValue); });
+        new Property(object, 'BackgroundRepeat', data.backgroundRepeat ?? null, function (property, oldValue, newValue) { object.Css('background-repeat', newValue); });
+        new Property(object, 'BackgroundPosition', data.backgroundPosition ?? null, function (property, oldValue, newValue) { object.Css('background-position', newValue); });
+        new Property(object, 'BackgroundAttachment', data.backgroundAttachment ?? null, function (property, oldValue, newValue) { object.Css('background-attachment', newValue); });
+
+        new Property(object, 'Border', data.border ?? null, function (property, oldValue, newValue) { object.Css('border', newValue); });
+        new Property(object, 'BorderWidth', data.borderWidth ?? null, function (property, oldValue, newValue) { object.Css('border-width', newValue); });
+        new Property(object, 'BorderStyle', data.borderStyle ?? null, function (property, oldValue, newValue) { object.Css('border-style', newValue); });
+        new Property(object, 'BorderColor', data.borderColor ?? null, function (property, oldValue, newValue) { object.Css('border-color', newValue); });
+        new Property(object, 'BorderRadius', data.borderRadius ?? null, function (property, oldValue, newValue) { object.Css('border-radius', newValue, 'rem'); });
+
+        new Property(object, 'BorderLeft', data.borderLeft ?? null, function (property, oldValue, newValue) { object.Css('border-left', newValue); });
+        new Property(object, 'BorderTop', data.borderTop ?? null, function (property, oldValue, newValue) { object.Css('border-top', newValue); });
+        new Property(object, 'BorderRight', data.borderRight ?? null, function (property, oldValue, newValue) { object.Css('border-right', newValue); });
+        new Property(object, 'BorderBottom', data.borderBottom ?? null, function (property, oldValue, newValue) { object.Css('border-bottom', newValue); });
+
+        new Property(object, 'PointerEvents', data.pointerEvents ?? null, function (property, oldValue, newValue) { object.Css('pointer-events', newValue); });
+        new Property(object, 'Cursor', data.cursor ?? null, function (property, oldValue, newValue) { object.Css('cursor', newValue); });
+        new Property(object, 'Display', data.display ?? null, function (property, oldValue, newValue) { object.Css('display', newValue); });
+        new Property(object, 'BoxShadow', data.boxShadow ?? null, function (property, oldValue, newValue) { object.Css('box-shadow', newValue); });
+        new Property(object, 'Opacity', data.opacity ?? null, function (property, oldValue, newValue) { object.Css('opacity', newValue); });
+        new Property(object, 'TextOverflow', data.textOverflow ?? null, function (property, oldValue, newValue) { object.Css('text-overflow', newValue); });
+        new Property(object, 'Overflow', data.overflow ?? null, function (property, oldValue, newValue) { object.Css('overflow', newValue); });
+        new Property(object, 'AlignSelf', data.alignSelf ?? null, function (property, oldValue, newValue) { object.Css('align-self', newValue); });
+        new Property(object, 'AlignItems', data.alignItems ?? null, function (property, oldValue, newValue) { object.Css('align-items', newValue); });
+        new Property(object, 'JustifyContent', data.justifyContent ?? null, function (property, oldValue, newValue) { object.Css('justify-content', newValue); });
+        new Property(object, 'FlexGrow', data.flexGrow ?? null, function (property, oldValue, newValue) { object.Css('flex-grow', newValue); });
+        new Property(object, 'FlexShrink', data.flexShrink ?? null, function (property, oldValue, newValue) { object.Css('flex-shrink', newValue); });
+        new Property(object, 'FlexWrap', data.flexWrap ?? null, function (property, oldValue, newValue) { object.Css('flex-wrap', newValue); });
+        new Property(object, 'FlexOrder', data.flexOrder ?? null, function (property, oldValue, newValue) { object.Css('flex-order', newValue); });
+        new Property(object, 'Gap', data.gap ?? null, function (property, oldValue, newValue) { object.Css('gap', newValue, 'rem'); });
+        new Property(object, 'Resize', data.resize ?? null, function (property, oldValue, newValue) { object.Css('resize', newValue); });
+        new Property(object, 'Position', data.position ?? null, function (property, oldValue, newValue) { object.Css('position', newValue); });
+        new Property(object, 'ZIndex', data.zIndex ?? null, function (property, oldValue, newValue) { object.Css('z-index', newValue); });
+        new Property(object, 'Left', data.left ?? null, function (property, oldValue, newValue) { object.Css('left', newValue, 'px'); });
+        new Property(object, 'Top', data.top ?? null, function (property, oldValue, newValue) { object.Css('top', newValue, 'px'); });
+        new Property(object, 'Right', data.right ?? null, function (property, oldValue, newValue) { object.Css('right', newValue, 'px'); });
+        new Property(object, 'Bottom', data.bottom ?? null, function (property, oldValue, newValue) { object.Css('bottom', newValue, 'px'); });
+        new Property(object, 'Outline', data.outline ?? null, function (property, oldValue, newValue) { object.Css('outline', newValue); });
+        new Property(object, 'Margin', data.margin ?? null, function (property, oldValue, newValue) { object.Css('margin', newValue, 'rem'); });
+        new Property(object, 'Padding', data.padding ?? null, function (property, oldValue, newValue) { object.Css('padding', newValue, 'rem'); });
+        new Property(object, 'MinWidth', data.minWidth ?? null, function (property, oldValue, newValue) { object.Css('min-width', newValue, 'px'); });
+        new Property(object, 'Width', data.width ?? null, function (property, oldValue, newValue) { object.Css('width', newValue, 'px'); });
+        new Property(object, 'MaxWidth', data.maxWidth ?? null, function (property, oldValue, newValue) { object.Css('max-width', newValue, 'px'); });
+        new Property(object, 'MinHeight', data.minHeight ?? null, function (property, oldValue, newValue) { object.Css('min-height', newValue, 'px'); });
+        new Property(object, 'Height', data.height ?? null, function (property, oldValue, newValue) { object.Css('height', newValue, 'px'); });
+        new Property(object, 'MaxHeight', data.maxHeight ?? null, function (property, oldValue, newValue) { object.Css('max-height', newValue, 'px'); });
+        new Property(object, 'AspectRatio', data.aspectRatio ?? null, function (property, oldValue, newValue) { object.Css('aspect-ratio', newValue); });
+        new Property(object, 'Color', data.color ?? null, function (property, oldValue, newValue) { object.Css('color', newValue); });
+        new Property(object, 'LineHeight', data.lineHeight ?? null, function (property, oldValue, newValue) { object.Css('line-height', newValue); });
+        new Property(object, 'VerticalAlign', data.verticalAlign ?? null, function (property, oldValue, newValue) { object.Css('vertical-align', newValue); });
+        new Property(object, 'TextAlign', data.textAlign ?? null, function (property, oldValue, newValue) { object.Css('text-align', newValue); });
+        new Property(object, 'TextTransform', data.textTransform ?? null, function (property, oldValue, newValue) { object.Css('text-transform', newValue); });
+        new Property(object, 'TextIdent', data.textIdent ?? null, function (property, oldValue, newValue) { object.Css('text-ident', newValue, 'rem'); });
+        new Property(object, 'LetterSpacing', data.letterSpacing ?? null, function (property, oldValue, newValue) { object.Css('letter-spacing', newValue, 'px'); });
+        new Property(object, 'WordSpacing', data.wordSpacing ?? null, function (property, oldValue, newValue) { object.Css('word-spacing', newValue, 'px'); });
+        new Property(object, 'WhiteSpace', data.whiteSpace ?? null, function (property, oldValue, newValue) { object.Css('white-space', newValue); });
+        new Property(object, 'TextAlignLast', data.textAlignLast ?? null, function (property, oldValue, newValue) { object.Css('text-align-last', newValue); });
+        new Property(object, 'TextDecoration', data.textDecoration ?? null, function (property, oldValue, newValue) { object.Css('text-decoration', newValue); });
+        new Property(object, 'TextShadow', data.textShadow ?? null, function (property, oldValue, newValue) { object.Css('text-shadow', newValue); });
+        new Property(object, 'FontSize', data.fontSize ?? null, function (property, oldValue, newValue) { object.Css('font-size', newValue, 'rem'); });
+        new Property(object, 'FontFamily', data.fontFamily ?? null, function (property, oldValue, newValue) { object.Css('font-family', newValue); });
+        new Property(object, 'FontStyle', data.fontStyle ?? null, function (property, oldValue, newValue) { object.Css('font-style', newValue); });
+        new Property(object, 'FontWeight', data.fontWeight ?? null, function (property, oldValue, newValue) { object.Css('font-weight', newValue); });
+        new Property(object, 'FontVariant', data.fontVariant ?? null, function (property, oldValue, newValue) { object.Css('font-variant', newValue); });
+        new Property(object, 'WritingMode', data.writingMode ?? null, function (property, oldValue, newValue) { object.Css('writing-mode', newValue); });
+        new Property(object, 'Transition', data.transition ?? null, function (property, oldValue, newValue) { object.Css('transition', newValue, 'ms'); });
+        new Property(object, 'Transform', data.transform ?? null, function (property, oldValue, newValue) { object.Css('transform', newValue); });
+
+        if (data.css && data.css instanceof Object) {
+            Object.keys(data.css).forEach(function (key) {
+                const value = data.css[key];
+                key = key.split(/(?=[A-Z])/).map(word => word.toLowerCase()).join('-');
+
+                if (value !== null) object.Element.style.setProperty(key, value);
+                else object.Element.style.removeProperty(key);
+            });
+        }
+
+        new Property(object, 'CanSelect', data.canSelect ?? false, function (property, oldValue, newValue) {
+            object.Attr('selectable', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'IsSelected', data.isSelected ?? false, function (property, oldValue, newValue) {
+            object.Attr('is-selected', newValue ? true : null);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onClick) object.Listen('click', data.onClick);
+        if (data.onDblClick) object.Listen('dblclick', data.onDblClick);
+        if (data.onContextMenu) object.Listen('contextmenu', data.onContextMenu);
+        if (data.onFocus) object.Listen('focus', data.onFocus);
+        if (data.onBlur) object.Listen('blur', data.onBlur);
+        if (data.onMouseWheel) object.Listen('mousewheel', data.onMouseWheel);
+        if (data.onMouseDown) object.Listen('mousedown', data.onMouseDown);
+        if (data.onMouseUp) object.Listen('mouseup', data.onMouseUp);
+        if (data.onMouseEnter) object.Listen('mouseenter', data.onMouseEnter);
+        if (data.onMouseMove) object.Listen('mousemove', data.onMouseMove);
+        if (data.onMouseOver) object.Listen('mouseover', data.onMouseOver);
+        if (data.onMouseLeave) object.Listen('mouseleave', data.onMouseLeave);
+        if (data.onTouchStart) object.Listen('touchstart', data.onTouchStart);
+        if (data.onTouchMove) object.Listen('touchmove', data.onTouchMove);
+        if (data.onTouchEnd) object.Listen('touchend', data.onTouchEnd);
+        if (data.onTouchCancel) object.Listen('touchcancel', data.onTouchCancel);
+        if (data.onDragStart) object.Listen('dragstart', data.onDragStart);
+        if (data.onDragEnter) object.Listen('dragenter', data.onDragEnter);
+        if (data.onDragOver) object.Listen('dragover', data.onDragOver);
+        if (data.onDragLeave) object.Listen('dragleave', data.onDragLeave);
+        if (data.onDrop) object.Listen('drop', data.onDrop);
+        if (data.onKeyDown) object.Listen('keydown', data.onKeyDown);
+        if (data.onKeyUp) object.Listen('keyup', data.onKeyUp);
+        if (data.onRemove) object.Listen('remove', data.onRemove);
+        if (data.onRemove) object.OnRemove.Listen(data.onRemove);
+    }
+
+    Bind() {
+        const object = this;
+    }
+
+    Render() {
+        const object = this;
+    }
+
+    SetParent(parent, index = -1) {
+        const object = this;
+        if (parent && parent.AddChild) {
+            parent.AddChild(object, index);
+        } else object.Remove();
+    }
+
+    AppendBefore(element) {
+        const object = this;
+        if (!object.Parent) return false;
+        object.Parent.AddChild(element, object.Index);
+    }
+
+    AppendAfter(element) {
+        const object = this;
+        if (!object.Parent) return false;
+        object.Parent.AddChild(element, object.Index + 1);
+    }
+
     Property(propertyName, defaultValue, callback) {
         const object = this;
         return new Property(object, propertyName, defaultValue ?? null, callback ?? object.OnPropertyChanged);
@@ -829,32 +888,70 @@ class View extends Bindable {
         const object = this;
         object.Trigger('change');
     }
+
+    ParentUntil(filter) {
+        const object = this;
+        if (!object.Parent) return null;
+        if (filter(object.Parent)) return object.Parent;
+        return object.Parent.ParentUntil(filter);
+    }
+
+    FindChild(filter) {
+        const object = this;
+
+        for (let child of object.Children) if (filter(child)) return child;
+
+        for (let child of object.Children) {
+            const subChild = child.FindChild(filter);
+            if (subChild) return subChild;
+        }
+
+        return null;
+    }
+
     Find(name) {
         const object = this;
         let element = object.Element.querySelector(`[name="${name}"]`);
         return element ? element.view : null;
     }
+
+    QuerySelector(selector) {
+        const object = this;
+        const element = object.Element.querySelector(selector);
+        return element ? element.view : null;
+    }
+
+    QuerySelectorAll(selector) {
+        const object = this;
+        const elements = object.Element.querySelectorAll(selector);
+        return elements.filter(e => e.view).map(e => e.view);
+    }
+
     Attr(attribute, value) {
         const object = this;
         if (value !== null) object.Element.setAttribute(attribute, value);
         else object.Element.removeAttribute(attribute);
     }
+
     Attrs(attributes) {
         const object = this;
         Object.keys(attributes).forEach(function (key) {
             object.Attr(key, attributes[key]);
         });
     }
+
     Prop(property, value) {
         const object = this;
         object.Element[property] = value;
     }
+
     Props(properties) {
         const object = this;
         Object.keys(properties).forEach(function (key) {
             object.Prop(key, properties[key]);
         });
     }
+
     Css(property, value, unit = null) {
         if (!property) return false;
         property = property.split(/(?=[A-Z])/).join('-').toLowerCase();
@@ -868,6 +965,7 @@ class View extends Bindable {
             }
         } else object.Element.style.removeProperty(property);
     }
+
     Style(property, value, unit = null) {
         if (!property) return false;
         property = property.split(/(?=[A-Z])/).join('-').toLowerCase();
@@ -881,6 +979,7 @@ class View extends Bindable {
             }
         } else object.Element.style.removeProperty(property);
     }
+
     Styles(style) {
         const object = this;
         Object.keys(style).forEach(function (key) {
@@ -888,20 +987,27 @@ class View extends Bindable {
             else object.Css(key, style[key]);
         });
     }
-    OnPropertyChanged(propertyName) {
+
+    OnPropertyChanged(propertyName, oldValue = null, newValue = null) {
         const object = this;
-        object.OnPropertyChange.Invoke(object, propertyName);
+        object.OnPropertyChange.Invoke(object, propertyName, {
+            oldValue: oldValue,
+            newValue: newValue
+        });
     }
+
     OnLayoutChanged() {
         const object = this;
         object.OnLayoutChange.Invoke(object, {});
     }
+
     Remove() {
         const object = this;
         if (object.Parent) object.Parent.RemoveChild(object);
         object.Element.remove();
         object.Removed();
     }
+
     Removed() {
         const object = this;
         object.OnRemove.Invoke(object, {});
@@ -946,6 +1052,8 @@ class View extends Bindable {
     get OnRemove() { return this.onRemove ?? (this.onRemove = new Callback()); }
 
     Dispose() {
+        if (this.isDisposed) return;
+
         const object = this;
         if (object._properties) Object.keys(object._properties).forEach(function (key) { object._properties[key].Dispose(); });
         object.Element.remove();
@@ -957,27 +1065,26 @@ class View extends Bindable {
 
 class Audio extends View {
 
+    get ElementTag() { return 'audio'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Source', data.source ?? '', object.OnPropertyChanged);
-    }
 
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Source', function (sender, data) {
-            object.Attr('src', data.value);
+        new Property(object, 'Source', data.source ?? null, function (property, oldValue, newValue) {
+            object.Attr('src', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
-
-    get ElementTag() { return 'audio'; }
 
 }
 
 class Canvas extends View {
 
     get ElementTag() { return 'canvas'; }
+
+    get OnDraw() { return this.onDraw ?? (this.onDraw = new Callback()); }
+    get Context() { return this.context ?? (this.context = this.Element.getContext('2d')); }
 
     Init(data = {}) {
         super.Init(data);
@@ -986,20 +1093,10 @@ class Canvas extends View {
         if (data.onDraw) object.OnDraw.Listen(data.onDraw);
     }
 
-    get OnDraw() {
-        let object = this;
-        return object.onDraw ?? (object.onDraw = new Callback());
-    }
-
     Draw() {
         let object = this;
         object.ClearRect(0, 0, object.Element.width, object.Element.height);
         object.OnDraw.Invoke(object, object.Context);
-    }
-
-    get Context() {
-        let object = this;
-        return object.context ?? (object.context = object.Element.getContext('2d'));
     }
 
     ClearRect(x, y, w, h) {
@@ -1016,41 +1113,15 @@ class Canvas extends View {
 
 class Editable extends View {
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-        new Property(object, 'Placeholder', data.placeholder ?? '', object.OnPropertyChanged);
-
-        if (data.onInput) object.OnInput.Listen(data.onInput);
-        if (data.onChange) object.OnChange.Listen(data.onChange);
-
-        object.Listen('blur', function (sender, event) {
-            object.OnChange.Invoke(sender, event);
-        });
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Value', function (sender, data) {
-            if (object.Element.innerHTML != object.Value)
-                object.Element.innerHTML = object.Value;
-        });
-        new Binding(object, 'Placeholder', function (sender, data) {
-            object.Prop('placeholder', object.Placeholder);
-        });
-    }
-
     get ElementTag() { return 'editable'; }
+
     get ElementAttrs() {
         let attrs = super.ElementAttrs;
         let object = this;
         attrs.contenteditable = true;
         return attrs;
     }
+
     get ElementEvents() {
         let events = super.ElementEvents;
         let object = this;
@@ -1065,14 +1136,29 @@ class Editable extends View {
         return events;
     }
 
-    get OnInput() {
-        let object = this;
-        return object.onInput ?? (object.onInput = new Callback());
-    }
+    get OnInput() { return this.onInput ?? (this.onInput = new Callback()); }
+    get OnChange() { return this.onChange ?? (this.onChange = new Callback()); }
 
-    get OnChange() {
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onChange ?? (object.onChange = new Callback());
+
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            if (object.Element.innerHTML != newValue) object.Element.innerHTML = newValue;
+            object.OnPropertyChanged(property);
+        });
+
+        new Property(object, 'Placeholder', data.placeholder ?? '', function (property, oldValue, newValue) {
+            object.Prop('placeholder', newValue);
+            object.OnPropertyChanged(property);
+        });
+
+        if (data.onInput) object.OnInput.Listen(data.onInput);
+        if (data.onChange) object.OnChange.Listen(data.onChange);
+
+        object.Listen('blur', function (sender, event) {
+            object.OnChange.Invoke(sender, event);
+        });
     }
 
 }
@@ -1085,21 +1171,16 @@ class Hr extends View {
 
 class IFrame extends View {
 
+    get ElementTag() { return 'iframe'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Source', data.source ?? '', object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Source', function (sender, data) {
-            object.Attr('src', data.value);
+        new Property(object, 'Source', data.source ?? '', function (property, oldValue, newValue) {
+            object.Attr('src', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
-
-    get ElementTag() { return 'iframe'; }
 
 }
 
@@ -1108,36 +1189,32 @@ class Img extends View {
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Source', data.source ?? '', object.OnPropertyChanged);
-        new Property(object, 'Alt', data.alt ?? '', object.OnPropertyChanged);
-        new Property(object, 'ObjectFit', data.objectFit ?? '', object.OnPropertyChanged);
-        new Property(object, 'ObjectPosition', data.objectPosition ?? '', object.OnPropertyChanged);
-        new Property(object, 'IsLazy', data.isLazy ?? true, object.OnPropertyChanged);
-    }
 
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Source', function (sender, data) {
-            if (object.IsLazy && object.Source && object.Source.startsWith('http')) {
+        new Property(object, 'IsLazy', data.isLazy ?? true);
+        new Property(object, 'Source', data.source ?? '', function (property, oldValue, newValue) {
+            if (object.IsLazy && newValue && newValue.startsWith('http')) {
                 let image = new Image();
                 image.onload = function (event) {
-                    object.Attr('src', object.Source);
+                    object.Prop('src', newValue);
                 };
-                image.src = object.Source;
-                object.Attr('src', '/Assets/loading.gif');
+                image.src = newValue;
+                object.Prop('src', '/Assets/loading.gif');
             } else {
-                object.Attr('src', object.Source);
+                object.Prop('src', newValue);
             }
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Alt', function (sender, data) {
-            object.Prop('alt', data.value);
+        new Property(object, 'Alt', data.alt ?? '', function (property, oldValue, newValue) {
+            object.Prop('alt', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'ObjectFit', function (sender, data) {
-            object.Css('object-fit', data.value);
+        new Property(object, 'ObjectFit', data.objectFit ?? '', function (property, oldValue, newValue) {
+            object.Css('object-fit', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'ObjectPosition', function (sender, data) {
-            object.Css('object-position', data.value);
+        new Property(object, 'ObjectPosition', data.objectPosition ?? '', function (property, oldValue, newValue) {
+            object.Css('object-position', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
 
@@ -1146,38 +1223,6 @@ class Img extends View {
 }
 
 class Input extends View {
-
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Autocomplete', data.autocomplete ?? 'bday', object.OnPropertyChanged);
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-        new Property(object, 'Placeholder', data.placeholder ?? '', object.OnPropertyChanged);
-        new Property(object, 'Type', data.type ?? 'text', object.OnPropertyChanged);
-
-        if (data.onInput) object.OnInput.Listen(data.onInput);
-        if (data.onChange) object.OnChange.Listen(data.onChange);
-        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Autocomplete', function (sender, data) {
-            object.Attr('autocomplete', object.Autocomplete);
-        });
-        new Binding(object, 'Placeholder', function (sender, data) {
-            object.Attr('placeholder', object.Placeholder);
-        });
-        new Binding(object, 'Type', function (sender, data) {
-            object.Attr('type', object.Type);
-        });
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
-        });
-    }
 
     get ElementTag() { return 'input'; }
     get ElementEvents() {
@@ -1198,79 +1243,114 @@ class Input extends View {
         return events;
     }
 
-    get OnInput() {
-        let object = this;
-        return object.onInput ?? (object.onInput = new Callback());
-    }
+    get OnInput() { return this.onInput ?? (this.onInput = new Callback()); }
+    get OnChange() { return this.onChange ?? (this.onChange = new Callback()); }
+    get OnPaste() { return this.onPaste ?? (this.onPaste = new Callback()); }
 
-    get OnChange() {
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onChange ?? (object.onChange = new Callback());
-    }
 
-    get OnPaste() {
-        let object = this;
-        return object.onPaste ?? (object.onPaste = new Callback());
+        new Property(object, 'Autocomplete', data.autocomplete ?? 'bday', function (property, oldValue, newValue) {
+            object.Attr('autocomplete', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Value', data.value ?? null, function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Placeholder', data.placeholder ?? null, function (property, oldValue, newValue) {
+            object.Prop('placeholder', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Type', data.type ?? null, function (property, oldValue, newValue) {
+            object.Prop('type', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onInput) object.OnInput.Listen(data.onInput);
+        if (data.onChange) object.OnChange.Listen(data.onChange);
+        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
     }
 
 }
 
 class Layout extends View {
+
+    get ElementTag() { return 'layout'; }
+
     Init(data = {}) {
         super.Init(data);
+
         const object = this;
         object.childrenLoop = data.childrenLoop ?? null;
         object.children = [];
         object.Children = data.children;
-        new Property(object, 'Direction', data.direction ?? null, object.OnPropertyChanged);
-    }
-    Bind() {
-        super.Bind();
-        const object = this;
-        new Binding(object, 'Direction', function (sender, data) {
-            object.Css('flex-direction', data.value);
+
+        new Property(object, 'Direction', data.direction ?? null, function (property, oldValue, newValue) {
+            object.Css('flex-direction', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
+
     get Children() {
         const object = this;
         return object.children ?? (object.children = []);
     }
+
     set Children(newChildren) {
         const object = this;
-        object.Clear();
-        if (Array.isArray(newChildren)) {
+        object.SetChildren(newChildren);
+    }
+
+    SetChildren(newChildren, useChildrenLoop = true, dispose = false) {
+        const object = this;
+        object.Clear(dispose);
+        if (newChildren instanceof View) {
+            object.AttachChild(newChildren);
+        } else if (Array.isArray(newChildren)) {
             newChildren.forEach(function (newChild, index) {
-                if (object.childrenLoop) newChild = object.childrenLoop(newChild, index);
+                if (useChildrenLoop && object.childrenLoop) newChild = object.childrenLoop(newChild, index);
                 if (newChild) object.AttachChild(newChild);
             });
         } else if (newChildren instanceof Object) {
             Object.keys(newChildren).forEach(function (key, index) {
                 let newChild = newChildren[key];
-                if (object.childrenLoop) newChild = object.childrenLoop(newChild, key, index);
+                if (useChildrenLoop && object.childrenLoop) newChild = object.childrenLoop(newChild, key, index);
                 if (newChild) object.AttachChild(newChild);
             });
         }
     }
-    Clear() {
+
+    Clear(dispose = false) {
         const object = this;
         object.Element.innerHTML = null;
         object.Children.forEach(function (child) {
-            if (child) child.Remove();
+            if (!child) return;
+            if (dispose && child.Dispose) child.Dispose();
+            else if (child.Remove) child.Remove();
         });
         object.children = [];
     }
+
     AddChild(child, index = -1) {
         const object = this;
         return object.AttachChild(child, index);
     }
+
     RemoveChild(child) {
         const object = this;
         return object.DetachChild(child);
     }
+
     AttachChild(child, index = -1) {
         const object = this;
 
-        if (!object.Element.appendChild) return false;
+        if (!object.Element || !object.Element.appendChild) return false;
+        if (!child || !child.Element) return false;
 
         if (child.Parent) child.Parent.RemoveChild(child);
 
@@ -1287,6 +1367,7 @@ class Layout extends View {
         return true;
 
     }
+
     DetachChild(child) {
         const object = this;
         const index = object.Children.indexOf(child);
@@ -1296,68 +1377,74 @@ class Layout extends View {
         child.Parent = object;
         return true;
     }
-    get ElementTag() { return 'layout'; }
 
     Dispose() {
+        if (this.isDisposed) return;
+
         const object = this;
         for (let child of object.children) child.Dispose();
         super.Dispose();
     }
+
 }
 
-class List extends Layout {
-
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-        new Property(object, 'ListStyleType', data.listStyleType ?? null, object.OnPropertyChanged);
-        new Property(object, 'ListStyleImage', data.listStyleImage ?? null, object.OnPropertyChanged);
-        new Property(object, 'ListStylePosition', data.listStylePosition ?? null, object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'ListStyleType', function (sender, data) {
-            object.Css('list-style-type', data.value);
-        });
-        new Binding(object, 'ListStyleImage', function (sender, data) {
-            object.Css('list-style-image', data.value);
-        });
-        new Binding(object, 'ListStylePosition', function (sender, data) {
-            object.Css('list-style-position', data.value);
-        });
-    }
-
-    get ElementTag() { return 'ul'; }
-
-}
+class List extends Layout {
 
-class ListItem extends Layout {
-
-    get ElementTag() { return 'li'; }
-
-}
-
-class Output extends View {
+    get ElementTag() { return 'ul'; }
 
     Init(data = {}) {
         super.Init(data);
         let object = this;
 
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-    }
+        new Property(object, 'ListStyleType', data.listStyleType ?? null, function (property, oldValue, newValue) {
+            object.Css('list-style-type', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
 
-    Bind() {
-        super.Bind();
-        let object = this;
+        new Property(object, 'ListStyleImage', data.listStyleImage ?? null, function (property, oldValue, newValue) {
+            object.Css('list-style-image', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
 
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
+        new Property(object, 'ListStylePosition', data.listStylePosition ?? null, function (property, oldValue, newValue) {
+            object.Css('list-style-position', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
 
+}
+
+class ListItem extends Layout {
+
+    get ElementTag() { return 'li'; }
+
+}
+
+class Loading extends View {
+
+    get ElementTag() { return 'loading'; }
+
+    Init(data = {}) {
+        data.aspectRatio = 1;
+        super.Init(data);
+        let object = this;
+    }
+
+}
+
+class Output extends View {
+
     get ElementTag() { return 'output'; }
+
+    Init(data = {}) {
+        super.Init(data);
+        let object = this;
+
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+    }
 
 }
 
@@ -1369,84 +1456,42 @@ class Progress extends View {
 
 class SelectOption extends View {
 
+    get ElementTag() { return 'option'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
 
-        new Property(object, 'Text', data.text ?? '', object.OnPropertyChanged);
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
+        new Property(object, 'Text', data.text ?? '', function (property, oldValue, newValue) {
+            object.Prop('text', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
     }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Text', function (sender, data) { object.Prop('text', object.Text); });
-        new Binding(object, 'Value', function (sender, data) { object.Prop('value', object.Value); });
-        new Binding(object, 'Selected', function (sender, data) { object.Prop('selected', object.Selected); });
-    }
-
-    get ElementTag() { return 'option'; }
 
 }
 
 class Text extends View {
 
+    get ElementTag() { return 'text'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Text', data.text ?? '', object.OnPropertyChanged);
-    }
 
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Text', function (sender, data) {
-            object.Element.innerHTML = object.Text;
+        new Property(object, 'Text', data.text ?? '', function (property, oldValue, newValue) {
+            object.InnerHTML = newValue;
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
-
-    get ElementTag() { return 'text'; }
 
 }
 
 class Textarea extends View {
-
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-        new Property(object, 'Placeholder', data.placeholder ?? '', object.OnPropertyChanged);
-        new Property(object, 'Rows', data.rows ?? '5', object.OnPropertyChanged);
-
-        if (data.onInput) object.OnInput.Listen(data.onInput);
-        if (data.onChange) object.OnChange.Listen(data.onChange);
-        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
-
-        object.Listen('keydown', function (sender, event) {
-            if (event.key == 'Enter' && !(event.ctrlKey || event.shiftKey)) {
-                event.preventDefault();
-                object.Element.blur();
-            } else {
-            }
-        });
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
-        });
-        new Binding(object, 'Placeholder', function (sender, data) {
-            object.Prop('placeholder', object.Placeholder);
-        });
-        new Binding(object, 'Rows', function (sender, data) {
-            object.Prop('rows', object.Rows);
-        });
-    }
 
     get ElementTag() { return 'textarea'; }
     get ElementEvents() {
@@ -1467,62 +1512,60 @@ class Textarea extends View {
         return events;
     }
 
-    get OnInput() {
-        let object = this;
-        return object.onInput ?? (object.onInput = new Callback());
-    }
+    get OnInput() { return this.onInput ?? (this.onInput = new Callback()); }
+    get OnChange() { return this.onChange ?? (this.onChange = new Callback()); }
+    get OnPaste() { return this.onPaste ?? (this.onPaste = new Callback()); }
 
-    get OnChange() {
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onChange ?? (object.onChange = new Callback());
-    }
 
-    get OnPaste() {
-        let object = this;
-        return object.onPaste ?? (object.onPaste = new Callback());
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Placeholder', data.placeholder ?? '', function (property, oldValue, newValue) {
+            object.Prop('placeholder', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Rows', data.rows ?? '5', function (property, oldValue, newValue) {
+            object.Prop('rows', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onInput) object.OnInput.Listen(data.onInput);
+        if (data.onChange) object.OnChange.Listen(data.onChange);
+        if (data.onPaste) object.OnPaste.Listen(data.onPaste);
+
+        object.Listen('keydown', function (sender, event) {
+            if (event.key == 'Enter' && !(event.ctrlKey || event.shiftKey)) {
+                event.preventDefault();
+                object.Element.blur();
+            } else {
+            }
+        });
     }
 
 }
 
 class Video extends View {
 
+    get ElementTag() { return 'video'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Source', data.source ?? '', object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Source', function (sender, data) {
-            object.Attr('src', data.value);
+        new Property(object, 'Source', data.source ?? '', function (property, oldValue, newValue) {
+            object.Attr('src', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
-
-    get ElementTag() { return 'video'; }
 
 }
 
 class Checkbox extends Input {
-
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        object.Type = 'checkbox';
-
-        new Property(object, 'Checked', data.checked ?? false, object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Checked', function (sender, data) {
-            object.Prop('checked', object.Checked);
-        });
-    }
 
     get ElementEvents() {
         let events = super.ElementEvents;
@@ -1534,33 +1577,39 @@ class Checkbox extends Input {
         return events;
     }
 
+    Init(data = {}) {
+        data.type = data.type ?? 'checkbox';
+        super.Init(data);
+        let object = this;
+
+        new Property(object, 'Checked', data.checked ?? false, function (property, oldValue, newValue) {
+            object.Prop('checked', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+    }
+
 }
 
 class InputNumber extends Input {
 
     Init(data = {}) {
+        data.type = data.type ?? 'number';
         super.Init(data);
         let object = this;
 
-        object.Type = 'number';
-
-        new Property(object, 'Min', data.min ?? null, object.OnPropertyChanged);
-        new Property(object, 'Max', data.max ?? null, object.OnPropertyChanged);
-        new Property(object, 'Step', data.step ?? 1, object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Min', function (sender, data) {
-            object.Prop('min', object.Min);
+        new Property(object, 'Min', data.min ?? null, function (property, oldValue, newValue) {
+            object.Prop('min', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Max', function (sender, data) {
-            object.Prop('max', object.Max);
+
+        new Property(object, 'Max', data.max ?? null, function (property, oldValue, newValue) {
+            object.Prop('max', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Step', function (sender, data) {
-            object.Prop('step', object.Step);
+
+        new Property(object, 'Step', data.step ?? 1, function (property, oldValue, newValue) {
+            object.Prop('step', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
 
@@ -1569,28 +1618,23 @@ class InputNumber extends Input {
 class Slider extends Input {
 
     Init(data = {}) {
+        data.type = data.type ?? 'slider';
         super.Init(data);
         let object = this;
 
-        object.Type = 'slider';
-
-        new Property(object, 'Min', data.min ?? null, object.OnPropertyChanged);
-        new Property(object, 'Max', data.max ?? null, object.OnPropertyChanged);
-        new Property(object, 'Step', data.step ?? 1, object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Min', function (sender, data) {
-            object.Prop('min', object.Min);
+        new Property(object, 'Min', data.min ?? null, function (property, oldValue, newValue) {
+            object.Prop('min', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Max', function (sender, data) {
-            object.Prop('max', object.Max);
+
+        new Property(object, 'Max', data.max ?? null, function (property, oldValue, newValue) {
+            object.Prop('max', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Step', function (sender, data) {
-            object.Prop('step', object.Step);
+
+        new Property(object, 'Step', data.step ?? 1, function (property, oldValue, newValue) {
+            object.Prop('step', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
 
@@ -1622,32 +1666,6 @@ class DataList extends Layout {
 
 class Form extends Layout {
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Action', data.action ?? '', object.OnPropertyChanged);
-        new Property(object, 'Method', data.method ?? 'GET', object.OnPropertyChanged);
-        new Property(object, 'Enctype', data.enctype ?? 'multipart/form-data', object.OnPropertyChanged);
-
-        if (data.onSubmit) object.OnSubmit.Listen(data.onSubmit);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Action', function (sender, data) {
-            object.Prop('action', data.value);
-        });
-        new Binding(object, 'Method', function (sender, data) {
-            object.Prop('method', data.value);
-        });
-        new Binding(object, 'Enctype', function (sender, data) {
-            object.Prop('enctype', data.value);
-        });
-    }
-
     get ElementTag() { return 'form'; }
     get ElementEvents() {
         let events = super.ElementEvents;
@@ -1660,9 +1678,26 @@ class Form extends Layout {
         return events;
     }
 
-    get OnSubmit() {
+    get OnSubmit() { return this.onSubmit ?? (this.onSubmit = new Callback()); }
+
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onSubmit ?? (object.onSubmit = new Callback());
+
+        new Property(object, 'Action', data.action ?? null, function (property, oldValue, newValue) {
+            object.Prop('action', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Method', data.method ?? null, function (property, oldValue, newValue) {
+            object.Prop('method', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+        new Property(object, 'Enctype', data.enctype ?? 'multipart/form-data', function (property, oldValue, newValue) {
+            object.Prop('enctype', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onSubmit) object.OnSubmit.Listen(data.onSubmit);
     }
 
     Submit() {
@@ -1689,30 +1724,30 @@ class Label extends Layout {
 
 }
 
-class Link extends Layout {
-
-    get ElementTag() { return 'a'; }
-
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Target', data.target ?? null, object.OnPropertyChanged);
-        new Property(object, 'Href', data.href ?? null, object.OnPropertyChanged);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Target', function (sender, data) {
-            object.Attr('target', object.Target);
-        });
-        new Binding(object, 'Href', function (sender, data) {
-            object.Attr('href', object.Href);
-        });
-    }
-
+class Link extends Layout {
+
+    get ElementTag() { return 'a'; }
+
+    Init(data = {}) {
+        super.Init(data);
+        let object = this;
+
+        new Property(object, 'Target', data.target ?? null, function (property, oldValue, newValue) {
+            object.Attr('target', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Href', data.href ?? null, function (property, oldValue, newValue) {
+            object.Attr('href', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        new Property(object, 'Download', data.download ?? null, function (property, oldValue, newValue) {
+            object.Attr('download', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+    }
+
 }
 
 class Main extends Layout {
@@ -1722,10 +1757,25 @@ class Main extends Layout {
 }
 
 class Page extends Layout {
+
+    get ElementTag() { return 'page'; }
+    get ContentView() {
+        return this.contentView ?? (this.contentView = new Main({
+            classes: ['page-main'],
+        }));
+    }
+    get OnPush() { return this.onPush ?? (this.onPush = new Callback()); }
+    get OnPull() { return this.onPull ?? (this.onPull = new Callback()); }
+
     Init(data = {}) {
+        data.classes = ['page', ...data.classes ?? []];
         super.Init(data);
         const object = this;
-        new Property(object, 'Content', data.content ?? [], object.OnPropertyChanged);
+
+        new Property(object, 'Content', data.content ?? [], function (property, oldValue, newValue) {
+            object.ContentView.Children = Array.isArray(newValue) ? newValue : [];
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
 
         new Property(object, 'InAnimation', data.inAnimation ?? new Anim(data.inDuration ?? 250, function (sender, data) {
             if (object.InStep) object.InStep(object, data);
@@ -1769,10 +1819,6 @@ class Page extends Layout {
         new Binding(object, 'Parent', function (sender, data) {
             if (object.Parent) object.Push();
         });
-
-        new Binding(object, 'Content', function (sender, data) {
-            object.ContentView.Children = Array.isArray(object.Content) ? object.Content : [];
-        });
     }
 
     Render() {
@@ -1780,21 +1826,6 @@ class Page extends Layout {
         object.Children = [
             object.ContentView,
         ];
-    }
-
-    get ElementTag() { return 'page'; }
-    get ContentView() {
-        const object = this;
-        return object.contentView ?? (object.contentView = new Main());
-    }
-    get OnPush() {
-        const object = this;
-        return object.onPush ?? (object.onPush = new Callback());
-    }
-
-    get OnPull() {
-        const object = this;
-        return object.onPull ?? (object.onPull = new Callback());
     }
 
     GetHistory() {
@@ -1814,13 +1845,13 @@ class Page extends Layout {
     Pull(dispose = false) {
         const object = this;
 
-        object.OnPull.Invoke(object, {
-            dispose: dispose,
-        });
-
         if (object.InAnimation) object.InAnimation.Stop();
         if (object.OutAnimation) object.OutAnimation.Start();
         else object.Remove();
+
+        object.OnPull.Invoke(object, {
+            dispose: dispose,
+        });
 
         if (dispose) setTimeout(function () {
             object.Dispose();
@@ -1837,24 +1868,6 @@ class Row extends Layout {
 
 class Select extends Layout {
 
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
-
-        new Property(object, 'Value', data.value ?? '', object.OnPropertyChanged);
-
-        if (data.onChange) object.OnChange.Listen(data.onChange);
-    }
-
-    Bind() {
-        super.Bind();
-        let object = this;
-
-        new Binding(object, 'Value', function (sender, data) {
-            object.Prop('value', object.Value);
-        });
-    }
-
     get ElementTag() { return 'select'; }
     get ElementEvents() {
         let events = super.ElementEvents;
@@ -1866,9 +1879,18 @@ class Select extends Layout {
         return events;
     }
 
-    get OnChange() {
+    get OnChange() { return this.onChange ?? (this.onChange = new Callback()); }
+
+    Init(data = {}) {
+        super.Init(data);
         let object = this;
-        return object.onChange ?? (object.onChange = new Callback());
+
+        new Property(object, 'Value', data.value ?? '', function (property, oldValue, newValue) {
+            object.Prop('value', newValue);
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
+
+        if (data.onChange) object.OnChange.Listen(data.onChange);
     }
 
 }
@@ -1899,49 +1921,42 @@ class THead extends Layout {
 
 class Table extends Layout {
 
+
+    get ElementTag() { return 'table'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'BorderCollapse', data.borderCollapse ?? null, object.OnPropertyChanged);
-        new Property(object, 'BorderSpacing', data.borderSpacing ?? null, object.OnPropertyChanged);
-    }
 
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'BorderCollapse', function (sender, data) {
-            object.Css('border-collapse', object.BorderCollapse);
+        new Property(object, 'BorderCollapse', data.borderCollapse ?? null, function (property, oldValue, newValue) {
+            object.Css('border-collapse', object.Colspan);
         });
-        new Binding(object, 'BorderSpacing', function (sender, data) {
-            object.Css('border-spacing', object.BorderSpacing);
+
+        new Property(object, 'BorderSpacing', data.borderSpacing ?? null, function (property, oldValue, newValue) {
+            object.Css('border-spacing', object.Colspan);
         });
     }
-
-    get ElementTag() { return 'table'; }
 
 }
 
 class Td extends Layout {
 
+    get ElementTag() { return 'td'; }
+
     Init(data = {}) {
         super.Init(data);
         let object = this;
-        new Property(object, 'Colspan', data.colspan ?? null, object.OnPropertyChanged);
-        new Property(object, 'Rowspan', data.rowspan ?? null, object.OnPropertyChanged);
-    }
 
-    Bind() {
-        super.Bind();
-        let object = this;
-        new Binding(object, 'Colspan', function (sender, data) {
+        new Property(object, 'Colspan', data.colspan ?? null, function (property, oldValue, newValue) {
             object.Attr('colspan', object.Colspan);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
-        new Binding(object, 'Rowspan', function (sender, data) {
+
+        new Property(object, 'Rowspan', data.rowspan ?? null, function (property, oldValue, newValue) {
             object.Attr('rowspan', object.Rowspan);
+            object.OnPropertyChanged(property, oldValue, newValue);
         });
     }
-
-    get ElementTag() { return 'td'; }
 
 }
 
@@ -1954,10 +1969,10 @@ class Tr extends Layout {
         let object = this;
 
         object.Listen('mousedown', function (sender, event) {
-            if (event.ctrlKey && object.CanSelect) {
+            if (event.ctrlKey && sender.CanSelect) {
                 event.preventDefault();
                 event.stopPropagation();
-                object.IsSelected = !object.IsSelected;
+                sender.IsSelected = !sender.IsSelected;
             }
         });
     }
@@ -1982,11 +1997,20 @@ class App extends Layout {
         ];
     }
 
+    get ElementTag() { return 'app'; }
+
+    get OnLoad() { return this.onLoad ?? (this.onLoad = new Callback()); }
+    get OnResize() { return this.onResize ?? (this.onResize = new Callback()); }
+
     Init(data = {}) {
         super.Init(data);
         const object = this;
         App.Instance = object;
-        new Property(object, 'Title', data.title ?? 'App', object.OnPropertyChanged);
+
+        new Property(object, 'Title', data.title ?? 'App', function (property, oldValue, newValue) {
+            document.title = newValue;
+            object.OnPropertyChanged(property, oldValue, newValue);
+        });
         new Property(object, 'Description', data.description ?? '', object.OnPropertyChanged);
 
         if (App.v2) {
@@ -1999,7 +2023,7 @@ class App extends Layout {
             object.Loaded();
             object.OnLoad.Invoke(object, data.event ?? null);
         } else {
-            window.addEventListener('load', function (event) {
+            window.addEventListener('DOMContentLoaded', function (event) {
                 document.body.appendChild(object.Element);
                 object.Loaded();
                 object.OnLoad.Invoke(object, event);
@@ -2009,36 +2033,28 @@ class App extends Layout {
         window.addEventListener('resize', function (event) {
             object.OnResize.Invoke(object, event);
         });
-
-        window.addEventListener('dragenter', function () {
-        });
-    }
-
-    Bind() {
-        super.Bind();
-        const object = this;
-        new Binding(object, 'Title', function (sender, data) {
-            document.title = data.value;
-        });
     }
 
     Loaded() {
         const object = this;
     }
+}
 
-    get ElementTag() {
-        return 'app';
+class LoadingPage extends Page {
+
+    Init(data = {}) {
+        data.alignItems = 'center';
+        data.justifyContent = 'center';
+        super.Init(data);
     }
 
-    get OnLoad() {
+    Render() {
         const object = this;
-        return object.onLoad ?? (object.onLoad = new Callback());
+        object.Children = new Loading({
+            width: '4rem', maxWidth: '100%',
+        });
     }
 
-    get OnResize() {
-        const object = this;
-        return object.onResize ?? (object.onResize = new Callback());
-    }
 }
 
 class Navigator extends Layout {
@@ -2086,11 +2102,6 @@ class Navigator extends Layout {
 
     get ElementTag() {
         return 'navigator';
-    }
-
-    Init(data = {}) {
-        super.Init(data);
-        let object = this;
     }
 
     Render() {
