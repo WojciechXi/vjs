@@ -129,8 +129,8 @@
                 "0.Extensions": {
                   "class.Bindable.js": {
                     "type": "-",
-                    "size": 266,
-                    "lmtime": 1777983974951.9612,
+                    "size": 291,
+                    "lmtime": 1779830812601.1958,
                     "modified": false
                   },
                   "extension.Array.js": {
@@ -329,8 +329,8 @@
                     },
                     "view.Layout.js": {
                       "type": "-",
-                      "size": 3400,
-                      "lmtime": 1779257371391.6638,
+                      "size": 3440,
+                      "lmtime": 1779830814604.109,
                       "modified": false
                     },
                     "view.List.js": {
@@ -452,9 +452,9 @@
                   },
                   "class.View.js": {
                     "type": "-",
-                    "size": 27943,
-                    "lmtime": 1778625273316.2273,
-                    "modified": true
+                    "size": 28370,
+                    "lmtime": 1779830815997.6318,
+                    "modified": false
                   }
                 },
                 "2.App": {
@@ -467,8 +467,8 @@
                 },
                 "class.Disposable.js": {
                   "type": "-",
-                  "size": 279,
-                  "lmtime": 1777983974951.9612,
+                  "size": 267,
+                  "lmtime": 1779830810230.4622,
                   "modified": false
                 },
                 "functions.js": {

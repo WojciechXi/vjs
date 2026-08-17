@@ -32,18 +32,29 @@ class App extends Layout {
         } else console.log('App.v1');
 
         if (data.body) {
+            document.body.style.setProperty('--width', `${window.innerWidth}px`);
+            document.body.style.setProperty('--height', `${window.innerHeight}px`);
+
             data.body.appendChild(object.Element);
+
             object.Loaded();
             object.OnLoad.Invoke(object, data.event ?? null);
         } else {
             window.addEventListener('DOMContentLoaded', function (event) {
+                document.body.style.setProperty('--width', `${window.innerWidth}px`);
+                document.body.style.setProperty('--height', `${window.innerHeight}px`);
+
                 document.body.appendChild(object.Element);
+
                 object.Loaded();
                 object.OnLoad.Invoke(object, event);
             });
         }
 
         window.addEventListener('resize', function (event) {
+            document.body.style.setProperty('--width', `${window.innerWidth}px`);
+            document.body.style.setProperty('--height', `${window.innerHeight}px`);
+
             object.OnResize.Invoke(object, event);
         });
     }
