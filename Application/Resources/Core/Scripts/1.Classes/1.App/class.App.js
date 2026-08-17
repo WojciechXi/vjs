@@ -32,8 +32,8 @@ class App extends Layout {
         } else console.log('App.v1');
 
         if (data.body) {
-            document.body.style.setProperty('--app-width', `${window.innerWidth}px`);
-            document.body.style.setProperty('--app-height', `${window.innerHeight}px`);
+            object.Css('--app-width', `${window.innerWidth}px`);
+            object.Css('--app-height', `${window.innerHeight}px`);
 
             data.body.appendChild(object.Element);
 
@@ -41,8 +41,8 @@ class App extends Layout {
             object.OnLoad.Invoke(object, data.event ?? null);
         } else {
             window.addEventListener('DOMContentLoaded', function (event) {
-                document.body.style.setProperty('--app-width', `${window.innerWidth}px`);
-                document.body.style.setProperty('--app-height', `${window.innerHeight}px`);
+                object.Css('--app-width', `${window.innerWidth}px`);
+                object.Css('--app-height', `${window.innerHeight}px`);
 
                 document.body.appendChild(object.Element);
 
@@ -52,8 +52,8 @@ class App extends Layout {
         }
 
         window.addEventListener('resize', function (event) {
-            document.body.style.setProperty('--app-width', `${window.innerWidth}px`);
-            document.body.style.setProperty('--app-height', `${window.innerHeight}px`);
+            object.Css('--app-width', `${window.innerWidth}px`);
+            object.Css('--app-height', `${window.innerHeight}px`);
 
             object.OnResize.Invoke(object, event);
         });
